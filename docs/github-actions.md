@@ -88,3 +88,8 @@ GITHUB_EVENT_NAME=release \
 GITHUB_EVENT_RELEASE_TAG_NAME=v1.2.3 \
 python scripts/ci_build.py --output-dir dist
 ```
+
+
+## Test environment isolation
+
+A39 runs every regression test through `scripts/run_test_isolated.sh`. The wrapper removes outer GitHub release/tag version variables before invoking the test. Tests that verify release/tag behavior inject their own explicit environment. This prevents a `release.published` job from changing the semantics of historical development-fallback tests while leaving the real release build context untouched.
