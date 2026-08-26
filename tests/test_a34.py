@@ -22,7 +22,10 @@ def main():
     raw=wf.read_text(encoding='utf-8')
     for phrase in ['actions/checkout@v7','actions/setup-python@v7','actions/upload-artifact@v7','bash scripts/test.sh','scripts/ci_build.py','scripts/validate_custom_gpt.py','permissions:','contents: read','workflow_dispatch']:
         if phrase not in raw: return fail('workflow missing '+phrase)
-    if 'contents: write' in raw: return fail('A34 workflow must not write repository contents')
+    # A34 established read-only CI. A37 may grant write only to the isolated release job.
+    if 'contents: read' not in raw: return fail('workflow lost read-only default permissions')
+    if 'contents: write' in raw and 'name: Build and publish release assets' not in raw:
+        return fail('write permission is not isolated to a release publishing job')
     for dep in ['PyYAML','jsonschema','referencing']:
         if dep not in req.read_text(encoding='utf-8'): return fail('CI requirements missing '+dep)
     version=(ROOT/'VERSION').read_text(encoding='utf-8').strip()
@@ -46,7 +49,7 @@ def main():
     # A36 may route version resolution through a shared helper; it must remain non-hard-coded.
     chat_text=(ROOT/'scripts/package_chat.py').read_text(encoding='utf-8')
     if 'versioning.resolve' not in chat_text and "split('-dev.'" not in chat_text: return fail('Chat builder is not dynamically version-derived')
-    if 'A34' not in doc.read_text(encoding='utf-8'): return fail('A34 documentation marker missing')
+    if 'scripts/ci_build.py' not in doc.read_text(encoding='utf-8'): return fail('CI builder documentation missing')
     print('A34 tests passed'); return 0
 
 if __name__=='__main__': raise SystemExit(main())

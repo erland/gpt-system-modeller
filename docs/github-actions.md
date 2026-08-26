@@ -1,54 +1,90 @@
-# GitHub Actions – test och distributionsbygge
+# GitHub Actions – verifiering och releasepublicering
 
-Steg A34 introducerar `.github/workflows/build-distributions.yml` som den gemensamma CI-vägen för System Modeller.
+Steg A37 separerar kontinuerlig verifiering från faktisk releasepublicering.
 
 ## Triggers
 
-Workflowen körs på:
+Workflowen `.github/workflows/build-distributions.yml` reagerar på:
+
+- `pull_request` – verifierar varje ny/uppdaterad PR,
+- `push` till `main` – verifierar och gör ett distributionsbygge/paritetskontroll,
+- `release` med `types: [published]` – verifierar, bygger och publicerar releaseartefakter,
+- `workflow_dispatch` – verifierar och gör distributionsbygge manuellt.
+
+En publicerad GitHub Release är därmed den normala release-triggern. En separat tagg-push behövs inte för att workflowen ska starta.
+
+## Jobb 1 – verify
+
+Körs på alla triggers och har endast `contents: read`.
+
+1. checkout,
+2. Python/CI-beroenden,
+3. hela regressionstestsviten (`scripts/test.sh`).
+
+PR:er bygger alltså inte fulla distributionsartefakter i onödan, men hela kodbasens regression verifieras när PR:n skapas och när nya commits pushas till den.
+
+## Jobb 2 – build-check
+
+Körs efter `verify` på:
 
 - push till `main`,
-- pull requests,
-- manuell `workflow_dispatch`.
+- `workflow_dispatch`.
 
-A35 kan senare komplettera detta med själva GitHub Release-publiceringen utan att ändra hur distributionerna byggs.
+Jobbet:
 
-## CI-kontrakt
+1. bygger Chat och Custom GPT med `scripts/ci_build.py`,
+2. kör A33-paritetsvalideringen direkt mot ZIP-filerna,
+3. laddar upp Chat, Custom GPT och `build-manifest.yaml` som Actions artifacts.
 
-Jobbet ska i denna ordning:
+Det ger en extra distributionskontroll efter merge/direct commit till `main` utan write-behörighet.
 
-1. checka ut repositoryt,
-2. installera Python och `requirements-ci.txt`,
-3. köra hela `scripts/test.sh`,
-4. köra `scripts/ci_build.py`,
-5. validera Chat/Custom-paritet igen direkt mot de genererade ZIP-filerna,
-6. ladda upp Chat-ZIP, Custom GPT-ZIP och build-manifest som separata GitHub Actions artifacts.
+## Jobb 3 – release
 
-Builden har endast `contents: read`. Den behöver inga secrets och gör inga repository-writes.
+Körs endast när en GitHub Release publiceras och efter att `verify` gått grönt.
+
+Jobbet:
+
+1. checkar ut exakt `github.event.release.tag_name`,
+2. validerar att taggen följer `vX.Y.Z`,
+3. använder release-taggen som auktoritativ versionskälla,
+4. bygger Chat och Custom GPT,
+5. kör paritetsvalidering,
+6. laddar upp samma filer som Actions artifact,
+7. bifogar Chat-ZIP, Custom GPT-ZIP och `build-manifest.yaml` som assets på själva GitHub Release-sidan via `gh release upload`.
+
+Endast release-jobbet har `contents: write`; övriga jobb använder read-only-behörighet.
 
 ## Versionsprincip
 
-`VERSION` är fortsatt enda versionskälla. Om repositoryversionen exempelvis är `0.1.0-dev.34` producerar CI:
+Versionsresolvern känner i A37 till tre releasekontexter i prioriteringsordning:
 
-- `system-modeller-chat-v0.1.0.zip`
-- `system-modeller-custom-gpt-v0.1.0.zip`
+1. publicerad GitHub Release (`github_release`),
+2. explicit releaseversion för lokal simulering,
+3. Git-tagg (`github_tag`),
+4. annars `VERSION` som utvecklingsfallback.
 
-Det gör att releasefilnamn inte behöver hårdkodas i workflowen.
+För en GitHub Release `v1.2.3` byggs därför:
 
-## Gemensam lokal CI-builder
+```text
+system-modeller-chat-v1.2.3.zip
+system-modeller-custom-gpt-v1.2.3.zip
+build-manifest.yaml
+```
+
+och manifestet anger `version_source: github_release` samt `release_tag: v1.2.3`.
+
+## Lokal kontroll
+
+Vanlig distributionskontroll:
 
 ```bash
 python scripts/ci_build.py --output-dir dist
 ```
 
-Buildern:
+Simulerad release kan testas genom att sätta releaseeventets miljövariabler:
 
-- bygger båda distributionsformerna,
-- kör A33-paritetsvalideringen programmässigt,
-- skriver `dist/build-manifest.yaml`,
-- lagrar SHA-256 och filstorlek för båda ZIP-filerna.
-
-Den lokala buildern och GitHub Actions använder därmed samma distributionskod.
-
-## Action-versioner
-
-A34 använder de aktuella stora versionerna `actions/checkout@v7`, `actions/setup-python@v7` och `actions/upload-artifact@v7`. Versionsvalet är avsiktligt explicit så CI-testet kan upptäcka oavsiktliga nedgraderingar.
+```bash
+GITHUB_EVENT_NAME=release \
+GITHUB_EVENT_RELEASE_TAG_NAME=v1.2.3 \
+python scripts/ci_build.py --output-dir dist
+```
