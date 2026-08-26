@@ -1,0 +1,77 @@
+elements:
+  - id: SCN-000001
+    type: Scenario
+    name: Kund registrerar order
+    description: End-to-end-scenario för orderregistrering.
+    abstraction_level: conceptual
+    use_case: UC-000001
+    actors: [ACT-000001]
+    information: [INFO-000001, INFO-000002, INFO-000003]
+    components: [CMP-000001, CMP-000002]
+    external_systems: [EXT-000001, EXT-000002]
+    outcome: Ordern är lagrad, betalningen verifierad och OrderCreated publicerad.
+    origin: [declared, inferred]
+    evidence: [EVD-000001]
+  - id: INT-000001
+    type: Interaction
+    name: Registrera order
+    abstraction_level: logical
+    scenario: SCN-000001
+    participants:
+      - ref: ACT-000001
+      - ref: CMP-000001
+      - ref: CMP-000002
+      - ref: EXT-000001
+      - ref: DS-000001
+      - ref: EXT-000002
+    messages:
+      - id: IM-000001
+        order: 1
+        sender: ACT-000001
+        receiver: CMP-000001
+        label: Registrera order
+        operation: createOrder
+        communication_mode: synchronous
+        information: [INFO-000001, INFO-000002]
+      - id: IM-000002
+        order: 2
+        sender: CMP-000001
+        receiver: CMP-000002
+        label: Verifiera betalning
+        communication_mode: synchronous
+        information: [INFO-000003]
+      - id: IM-000003
+        order: 3
+        sender: CMP-000002
+        receiver: EXT-000001
+        label: Kontrollera betalning
+        communication_mode: synchronous
+        information: [INFO-000003]
+      - id: IM-000004
+        order: 4
+        sender: CMP-000001
+        receiver: DS-000001
+        label: Spara order
+        communication_mode: synchronous
+        information: [INFO-000001]
+      - id: IM-000005
+        order: 5
+        sender: CMP-000001
+        receiver: EXT-000002
+        label: Publicera OrderCreated
+        communication_mode: asynchronous
+        information: [INFO-000001]
+        message_ref: EVT-000001
+    origin: [inferred]
+    evidence: [EVD-000001, EVD-000002]
+relationships:
+  - id: REL-000032
+    type: scenario_for
+    source: SCN-000001
+    target: UC-000001
+    origin: [declared]
+  - id: REL-000033
+    type: realizes_scenario
+    source: INT-000001
+    target: SCN-000001
+    origin: [inferred]

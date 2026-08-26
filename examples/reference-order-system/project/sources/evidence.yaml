@@ -1,0 +1,27 @@
+elements:
+  - id: EVD-000001
+    type: Evidence
+    status: source_confirmed
+    confidence: high
+    source_refs: [REF-000001]
+  - id: EVD-000002
+    type: Evidence
+    status: source_confirmed
+    confidence: high
+    source_refs: [REF-000002]
+  - id: EVD-000003
+    type: Evidence
+    status: source_confirmed
+    confidence: high
+    source_refs: [REF-000003]
+  - id: EVD-000004
+    type: Evidence
+    status: source_confirmed
+    confidence: high
+    source_refs: [REF-000004]
+  - id: EVD-000005
+    type: Evidence
+    status: source_confirmed
+    confidence: high
+    source_refs: [REF-000005]
+relationships: []

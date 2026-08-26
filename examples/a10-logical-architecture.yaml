@@ -1,0 +1,57 @@
+elements:
+  - id: SYS-000001
+    type: System
+    name: Order System
+    abstraction_level: conceptual
+  - id: RSP-000001
+    type: Responsibility
+    name: Orderhantering
+    abstraction_level: conceptual
+  - id: INFO-000001
+    type: InformationObject
+    name: Order
+    abstraction_level: conceptual
+  - id: SUB-000001
+    type: Subsystem
+    name: Order Core
+    abstraction_level: logical
+    purpose: Samlar logiska delar som hanterar orderlivscykeln.
+  - id: CMP-000001
+    type: Component
+    name: Order Management
+    abstraction_level: logical
+    purpose: Hanterar orderns livscykel.
+  - id: SVC-000001
+    type: Service
+    name: Order Query Service
+    abstraction_level: logical
+    purpose: Erbjuder läsning av orderinformation.
+relationships:
+  - id: REL-000001
+    type: has_responsibility
+    source: SYS-000001
+    target: RSP-000001
+  - id: REL-000002
+    type: contains
+    source: SYS-000001
+    target: SUB-000001
+  - id: REL-000003
+    type: contains
+    source: SUB-000001
+    target: CMP-000001
+  - id: REL-000004
+    type: realized_by
+    source: RSP-000001
+    target: CMP-000001
+  - id: REL-000005
+    type: provides
+    source: CMP-000001
+    target: SVC-000001
+  - id: REL-000006
+    type: reads_information
+    source: SVC-000001
+    target: INFO-000001
+  - id: REL-000007
+    type: updates_information
+    source: CMP-000001
+    target: INFO-000001

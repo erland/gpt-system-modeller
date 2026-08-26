@@ -1,0 +1,7 @@
+id: VIEW-000005
+name: Funktionell översikt
+type: functional_overview
+purpose: Visa systemets huvudsakliga funktionella ansvar.
+audience: [arkitekt, verksamhet, utvecklare]
+detail_level: overview
+notation: neutral

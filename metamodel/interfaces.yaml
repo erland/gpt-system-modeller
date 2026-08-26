@@ -1,0 +1,76 @@
+metamodel:
+  id: system-modeller-interfaces
+  version: 0.1.0-dev.11
+  status: normative
+  purpose: Interface- och API-modell för Plan A steg A11.
+element_types:
+  Interface:
+    id_prefix: IF
+    abstraction_level: logical
+    description: Ett logiskt kontrakt eller en åtkomstpunkt som exponeras av ett System, ExternalSystem, Component eller Service.
+    required_fields:
+      - provider
+    optional_fields:
+      - consumers
+      - protocol
+      - version
+      - authentication
+      - exchanged_information
+  API:
+    id_prefix: API
+    abstraction_level: logical
+    description: Ett Interface som representerar ett maskinläsbart applikationsgränssnitt, exempelvis REST, GraphQL, SOAP eller gRPC.
+    required_fields:
+      - provider
+      - api_style
+    optional_fields:
+      - consumers
+      - protocol
+      - version
+      - authentication
+      - exchanged_information
+relationship_types:
+  exposes:
+    description: Provider exponerar ett Interface eller API.
+    allowed_pairs:
+      - [System, Interface]
+      - [System, API]
+      - [ExternalSystem, Interface]
+      - [ExternalSystem, API]
+      - [Component, Interface]
+      - [Component, API]
+      - [Service, Interface]
+      - [Service, API]
+  consumes_interface:
+    description: Ett arkitekturelement konsumerar ett Interface eller API.
+    allowed_pairs:
+      - [System, Interface]
+      - [System, API]
+      - [ExternalSystem, Interface]
+      - [ExternalSystem, API]
+      - [Component, Interface]
+      - [Component, API]
+      - [Service, Interface]
+      - [Service, API]
+  provides_interface:
+    description: Alternativ läsriktning där provider är source; ska inte dupliceras med exposes för samma faktum.
+    allowed_pairs:
+      - [System, Interface]
+      - [System, API]
+      - [ExternalSystem, Interface]
+      - [ExternalSystem, API]
+      - [Component, Interface]
+      - [Component, API]
+      - [Service, Interface]
+      - [Service, API]
+rules:
+  - id: INT-001
+    statement: Interface och API ligger på logical-nivån; ett endpoint är implementation och modelleras först senare.
+  - id: INT-002
+    statement: Varje Interface/API ska ha exakt en logisk provider i MVP-modellen; flera consumers är tillåtna.
+  - id: INT-003
+    statement: API är en specialisering av Interface och används när API-stil, protokoll eller versionsinformation är arkitekturellt relevant.
+  - id: INT-004
+    statement: exchanged_information ska referera till InformationObject och ska beskriva betydelsefullt informationsutbyte, inte varje tekniskt DTO-fält.
+  - id: INT-005
+    statement: Exponering och konsumtion får uttryckas både via provider/consumers-fält och relationer, men samma faktum ska inte lagras dubbelt i två relationstyper.

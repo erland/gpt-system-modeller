@@ -1,0 +1,36 @@
+elements:
+  - id: SYS-000001
+    type: System
+    name: Order System
+    description: Hanterar kundorder från registrering till publicerad orderhändelse.
+    abstraction_level: conceptual
+    origin: [declared, observed]
+    evidence: [EVD-000001]
+  - id: ACT-000001
+    type: Actor
+    name: Kund
+    description: Registrerar och följer sina order.
+    abstraction_level: conceptual
+    actor_kind: role
+    origin: [declared]
+    evidence: [EVD-000001]
+  - id: EXT-000001
+    type: ExternalSystem
+    name: Payment Gateway
+    description: Extern tjänst som verifierar betalning.
+    abstraction_level: conceptual
+    origin: [declared]
+    evidence: [EVD-000001]
+  - id: EXT-000002
+    type: ExternalSystem
+    name: Delivery System
+    description: Externt system som tar emot skapade order för leverans.
+    abstraction_level: conceptual
+    origin: [declared]
+    evidence: [EVD-000001]
+relationships:
+  - id: REL-000001
+    type: uses
+    source: ACT-000001
+    target: SYS-000001
+    origin: [declared]

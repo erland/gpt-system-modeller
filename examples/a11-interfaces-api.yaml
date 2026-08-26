@@ -1,0 +1,45 @@
+elements:
+  - id: SYS-000001
+    type: System
+    name: Order System
+    abstraction_level: conceptual
+  - id: CMP-000001
+    type: Component
+    name: Order Management
+    abstraction_level: logical
+  - id: CMP-000002
+    type: Component
+    name: Web Frontend
+    abstraction_level: logical
+  - id: INFO-000001
+    type: InformationObject
+    name: Order
+    abstraction_level: conceptual
+  - id: API-000001
+    type: API
+    name: Order API
+    abstraction_level: logical
+    provider: CMP-000001
+    consumers: [CMP-000002]
+    api_style: REST
+    protocol: HTTPS
+    version: v1
+    authentication: OIDC
+    exchanged_information: [INFO-000001]
+relationships:
+  - id: REL-000001
+    type: contains
+    source: SYS-000001
+    target: CMP-000001
+  - id: REL-000002
+    type: contains
+    source: SYS-000001
+    target: CMP-000002
+  - id: REL-000003
+    type: exposes
+    source: CMP-000001
+    target: API-000001
+  - id: REL-000004
+    type: consumes_interface
+    source: CMP-000002
+    target: API-000001

@@ -1,0 +1,41 @@
+views:
+- id: VIEW-000007
+  name: Use case-realisering
+  type: use_case_realization
+  purpose: Visa hur use cases realiseras av logiska delar och vilken information som
+    berörs.
+  audience:
+  - arkitekt
+  - verksamhet
+  - utvecklare
+  detail_level: logical
+  notation: uml
+- id: VIEW-000008
+  name: Integrationsvy
+  type: integration
+  purpose: Visa systemets viktigaste API:er, meddelanden, events och informationsutbyten.
+  audience:
+  - arkitekt
+  - utvecklare
+  - integration
+  detail_level: logical
+  notation: neutral
+- id: VIEW-000009
+  name: Sekvensvy
+  type: sequence
+  purpose: Visa ett viktigt scenarios ordnade interaktion mellan deltagare.
+  audience:
+  - arkitekt
+  - utvecklare
+  detail_level: logical
+  notation: uml
+- id: VIEW-000010
+  name: Deploymentvy
+  type: deployment
+  purpose: Visa runtime-enheter, deploymentnoder, miljöer och huvudkommunikation.
+  audience:
+  - arkitekt
+  - utvecklare
+  - drift
+  detail_level: technical
+  notation: uml

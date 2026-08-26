@@ -1,0 +1,100 @@
+name: Test and build distributions
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*.*.*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: system-modeller-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    name: Test, build and validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+
+      - name: Install CI dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+
+      - name: Resolve release version from tag
+        if: github.ref_type == 'tag'
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, str(Path('scripts').resolve()))
+          import versioning
+          release = versioning.normalize_release(os.environ['GITHUB_REF_NAME'])
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as fh:
+              fh.write(f'SYSTEM_MODELLER_RELEASE_VERSION={release}\n')
+          print(f'Release tag {os.environ["GITHUB_REF_NAME"]} -> {release}')
+          PY
+
+      - name: Run regression suite
+        run: bash scripts/test.sh
+
+      - name: Build Chat and Custom GPT distributions
+        run: python scripts/ci_build.py --output-dir dist
+
+      - name: Validate generated distributions again from ZIP files
+        run: |
+          RELEASE=$(python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path('scripts').resolve()))
+          import versioning
+          print(versioning.resolve().release_version)
+          PY
+          )
+          DIST_VERSION=$(python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path('scripts').resolve()))
+          import versioning
+          print(versioning.resolve().distribution_version)
+          PY
+          )
+          python scripts/validate_custom_gpt.py \
+            --custom "dist/system-modeller-custom-gpt-v${RELEASE}.zip" \
+            --chat "dist/system-modeller-chat-v${RELEASE}.zip" \
+            --expected-version "${DIST_VERSION}"
+
+      - name: Upload Chat distribution
+        uses: actions/upload-artifact@v7
+        with:
+          name: system-modeller-chat
+          path: dist/system-modeller-chat-v*.zip
+          if-no-files-found: error
+
+      - name: Upload Custom GPT distribution
+        uses: actions/upload-artifact@v7
+        with:
+          name: system-modeller-custom-gpt
+          path: dist/system-modeller-custom-gpt-v*.zip
+          if-no-files-found: error
+
+      - name: Upload build manifest
+        uses: actions/upload-artifact@v7
+        with:
+          name: system-modeller-build-manifest
+          path: dist/build-manifest.yaml
+          if-no-files-found: error

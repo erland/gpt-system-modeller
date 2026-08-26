@@ -1,0 +1,120 @@
+metamodel:
+  id: system-modeller-logical-structure
+  version: 0.1.0-dev.10
+  status: normative
+  purpose: Logisk systemstruktur för Plan A steg A10. Definierar Subsystem, Component
+    och Service samt strukturella och funktionella relationer mellan dem och tidigare
+    konceptuella modellobjekt.
+element_types:
+  Subsystem:
+    id_prefix: SUB
+    abstraction_level: logical
+    description: En större logisk del av det modellerade systemet som grupperar komponenter
+      med närliggande ansvar och skapar begriplig struktur utan att vara en deployment-
+      eller kodmodul.
+    required_fields: []
+    optional_fields:
+    - purpose
+    - scope
+  Component:
+    id_prefix: CMP
+    abstraction_level: logical
+    description: En logisk arkitekturkomponent med ett sammanhållet ansvar och tydliga
+      beroenden eller erbjudanden. En komponent är inte automatiskt samma sak som
+      en klass, package, repository eller deploybar enhet.
+    required_fields: []
+    optional_fields:
+    - purpose
+    - scope
+  Service:
+    id_prefix: SVC
+    abstraction_level: logical
+    description: En logiskt modellerad tjänst eller förmåga som erbjuds av en komponent
+      till andra delar av systemet eller externa konsumenter. Service beskriver ett
+      erbjudande/kontrakt, inte automatiskt en deploybar mikrotjänst.
+    required_fields: []
+    optional_fields:
+    - purpose
+relationship_types:
+  contains:
+    description: Hierarkisk logisk gruppering. Används när ett element strukturellt
+      omfattar ett annat.
+    allowed_pairs:
+    - - System
+      - Subsystem
+    - - System
+      - Component
+    - - Subsystem
+      - Component
+  part_of:
+    description: Invers riktning till contains när det är naturligare att uttrycka
+      underordnat element först. Samma faktum ska inte modelleras dubbelt med både
+      contains och part_of.
+    allowed_pairs:
+    - - Subsystem
+      - System
+    - - Component
+      - System
+    - - Component
+      - Subsystem
+  depends_on:
+    description: Ett logiskt beroende där source behöver target för att fullgöra sitt
+      ansvar.
+    allowed_pairs:
+    - - Subsystem
+      - Subsystem
+    - - Component
+      - Component
+    - - Service
+      - Service
+    - - Component
+      - Service
+    - - Service
+      - Component
+  uses:
+    description: Ett arkitekturelement använder ett annat elements erbjudande eller
+      funktion. A10 utökar den tidigare kontextrelationen uses till logiska element.
+    allowed_pairs:
+    - - Component
+      - Component
+    - - Component
+      - Service
+    - - Service
+      - Service
+    - - Service
+      - Component
+  provides:
+    description: En Component erbjuder en logisk Service.
+    allowed_pairs:
+    - - Component
+      - Service
+  realized_by:
+    description: Ett konceptuellt Responsibility realiseras av en logisk Component.
+    allowed_pairs:
+    - - Responsibility
+      - Component
+  realizes:
+    description: Motsatt läsriktning till realized_by. Får användas när komponenten
+      är naturlig source, men samma realiseringsfaktum ska inte lagras i båda riktningarna.
+    allowed_pairs:
+    - - Component
+      - Responsibility
+rules:
+- id: LOG-001
+  statement: Subsystem, Component och Service ligger på logical-nivån och får inte
+    användas för att representera ren kodstruktur eller fysisk deployment.
+- id: LOG-002
+  statement: En Component ska ha ett begripligt, sammanhållet arkitekturansvar; en
+    klass, package eller repository blir inte automatiskt en Component.
+- id: LOG-003
+  statement: En Service beskriver ett logiskt erbjudande från en Component och är
+    inte automatiskt synonym med en deploybar mikrotjänst eller RuntimeUnit.
+- id: LOG-004
+  statement: Responsibility kopplas till realiserande Component via realized_by eller
+    den inversa läsriktningen realizes; samma faktum ska inte lagras dubbelt.
+- id: LOG-005
+  statement: contains och part_of är alternativa läsriktningar för samma strukturella
+    innebörd och ska normalt inte dupliceras för samma elementpar.
+- id: LOG-006
+  statement: Logisk struktur ska hållas till den detaljnivå som behövs för systemförståelse;
+    implementation och runtime modelleras separat.

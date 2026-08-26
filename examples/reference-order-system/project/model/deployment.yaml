@@ -1,0 +1,117 @@
+elements:
+- id: ENV-000001
+  type: Environment
+  name: Production
+  abstraction_level: runtime
+  environment_kind: production
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+- id: NODE-000001
+  type: DeploymentNode
+  name: User Browser
+  abstraction_level: runtime
+  node_kind: client_device
+  origin:
+  - inferred
+  evidence:
+  - EVD-000001
+- id: NODE-000002
+  type: DeploymentNode
+  name: Container Platform Production
+  abstraction_level: runtime
+  node_kind: container_platform
+  platform: Container platform
+  environment: ENV-000001
+  origin:
+  - declared
+  - observed
+  evidence:
+  - EVD-000001
+  - EVD-000005
+- id: RUN-000001
+  type: RuntimeUnit
+  name: Order Web
+  abstraction_level: runtime
+  runtime_kind: web_application
+  origin:
+  - observed
+  evidence:
+  - EVD-000005
+- id: RUN-000002
+  type: RuntimeUnit
+  name: Order API Runtime
+  abstraction_level: runtime
+  runtime_kind: application_service
+  origin:
+  - observed
+  evidence:
+  - EVD-000005
+relationships:
+- id: REL-000034
+  type: realized_as
+  source: CMP-000003
+  target: RUN-000001
+  origin:
+  - inferred
+- id: REL-000023
+  type: realized_as
+  source: CMP-000001
+  target: RUN-000002
+  origin:
+  - inferred
+- id: REL-000024
+  type: deployed_on
+  source: RUN-000001
+  target: NODE-000001
+  origin:
+  - inferred
+- id: REL-000025
+  type: deployed_on
+  source: RUN-000002
+  target: NODE-000002
+  origin:
+  - observed
+- id: REL-000026
+  type: belongs_to
+  source: NODE-000002
+  target: ENV-000001
+  origin:
+  - declared
+- id: REL-000027
+  type: connects_to
+  source: RUN-000001
+  target: RUN-000002
+  protocol: HTTPS
+  direction: outbound
+  encryption: TLS
+  purpose: Registrera och läsa order.
+  exchanged_information:
+  - INFO-000001
+  - INFO-000002
+  origin:
+  - observed
+- id: REL-000028
+  type: connects_to
+  source: RUN-000002
+  target: DS-000001
+  protocol: JDBC
+  direction: outbound
+  purpose: Lagra och läsa order.
+  exchanged_information:
+  - INFO-000001
+  origin:
+  - observed
+- id: REL-000029
+  type: connects_to
+  source: RUN-000002
+  target: EXT-000001
+  protocol: HTTPS
+  direction: outbound
+  encryption: TLS
+  purpose: Verifiera betalning.
+  exchanged_information:
+  - INFO-000003
+  origin:
+  - declared

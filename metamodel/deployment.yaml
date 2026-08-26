@@ -1,0 +1,83 @@
+metamodel:
+  id: system-modeller-deployment-context
+  version: 0.1.0-dev.19
+  status: normative
+  purpose: Runtime/deployment model through Plan A step A19. Defines Environment and DeploymentNode plus deployment placement and high-level runtime communication relations.
+element_types:
+  Environment:
+    id_prefix: ENV
+    abstraction_level: runtime
+    description: A named lifecycle/runtime environment in which deployment nodes participate, such as development, test, staging or production.
+    required_fields:
+      - environment_kind
+    optional_fields:
+      - purpose
+      - scope
+    environment_kinds:
+      - development
+      - test
+      - staging
+      - production
+      - other
+  DeploymentNode:
+    id_prefix: NODE
+    abstraction_level: runtime
+    description: A runtime/deployment location or execution platform that answers where a RuntimeUnit can run at the architecture level.
+    required_fields:
+      - node_kind
+    optional_fields:
+      - purpose
+      - platform
+      - technology
+      - location_hint
+    node_kinds:
+      - client_device
+      - server
+      - virtual_machine
+      - container_platform
+      - cloud_service
+      - database_platform
+      - external_platform
+relationship_types:
+  deployed_on:
+    description: Places a RuntimeUnit on a DeploymentNode. Canonical direction is RuntimeUnit to DeploymentNode.
+    allowed_pairs:
+      - [RuntimeUnit, DeploymentNode]
+  belongs_to:
+    description: Associates a DeploymentNode with an Environment. Canonical direction is DeploymentNode to Environment.
+    allowed_pairs:
+      - [DeploymentNode, Environment]
+  connects_to:
+    description: Describes an architecture-relevant runtime communication path from a RuntimeUnit to another RuntimeUnit, a logical DataStore or an ExternalSystem.
+    allowed_pairs:
+      - [RuntimeUnit, RuntimeUnit]
+      - [RuntimeUnit, DataStore]
+      - [RuntimeUnit, ExternalSystem]
+    optional_fields:
+      - protocol
+      - direction
+      - encryption
+      - purpose
+      - exchanged_information
+    direction_values:
+      - source_to_target
+      - bidirectional
+rules:
+  - id: DEP-001
+    statement: Environment and DeploymentNode are runtime-level concepts. They describe deployment context, not logical responsibility or implementation source structure.
+  - id: DEP-002
+    statement: DeploymentNode answers where something runs at architecture level. Do not create one node per pod, replica or ephemeral process unless that detail is necessary for system understanding.
+  - id: DEP-003
+    statement: Environment represents lifecycle/runtime context such as development, test, staging or production; it is not itself a server or platform.
+  - id: DEP-004
+    statement: RuntimeUnit remains the concept for what runs. DeploymentNode must not duplicate RuntimeUnit merely because a runtime happens to be packaged as a container or service.
+  - id: DEP-005
+    statement: deployed_on, belongs_to and connects_to are first-class relationships in A19 and should be used instead of duplicating placement or communication facts in free text.
+  - id: DEP-006
+    statement: Use the highest deployment abstraction that still explains the system. Prefer a container platform or cloud service node over infrastructure internals when the internals do not improve architectural understanding.
+  - id: DEP-007
+    statement: A connects_to relationship is directional by default from source to target. Set direction to bidirectional only when both directions are architecturally meaningful as one communication path.
+  - id: DEP-008
+    statement: protocol, encryption and exchanged_information are optional architecture-level characteristics. Do not add packet-, port- or infrastructure-routing detail unless it materially improves system understanding.
+  - id: DEP-009
+    statement: exchanged_information on connects_to must reference conceptual InformationObject elements rather than implementation DTOs, tables or payload classes.

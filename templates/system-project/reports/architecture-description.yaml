@@ -1,0 +1,18 @@
+id: REPORT-ARCHITECTURE-DESCRIPTION
+name: Arkitekturbeskrivning
+type: architecture_description
+format: markdown
+sections:
+  - purpose_and_scope
+  - system_context
+  - functional_overview
+  - actors_and_use_cases
+  - information_architecture
+  - logical_architecture
+  - integration_architecture
+  - key_scenarios
+  - runtime_and_deployment
+  - decisions_and_constraints
+  - known_uncertainties
+  - sources_and_evidence
+include_diagrams: true

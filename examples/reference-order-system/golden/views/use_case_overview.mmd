@@ -1,0 +1,9 @@
+flowchart LR
+    ACT_000001["Kund<br/><small>Actor</small>"]
+    RSP_000001["Orderhantering<br/><small>Responsibility</small>"]
+    UC_000001["Registrera order<br/><small>UseCase</small>"]
+    UC_000002["Följ order<br/><small>UseCase</small>"]
+    RSP_000001 -->|groups_use_case| UC_000001
+    RSP_000001 -->|groups_use_case| UC_000002
+    ACT_000001 -->|performs| UC_000001
+    ACT_000001 -->|performs| UC_000002

@@ -1,0 +1,58 @@
+metamodel:
+  id: system-modeller-scenarios
+  version: 0.1.0-dev.14
+  status: normative
+  purpose: Scenario-modell för Plan A steg A14. Scenario beskriver viktiga end-to-end-förlopp
+    på konceptuell nivå och binder samman funktion, information och logisk arkitektur.
+element_types:
+  Scenario:
+    id_prefix: SCN
+    abstraction_level: conceptual
+    description: Ett representativt end-to-end-förlopp som hjälper läsaren förstå
+      hur systemet fungerar över relevanta aktörs-, system- och komponentgränser.
+    required_fields:
+    - outcome
+    optional_fields:
+    - use_case
+    - actors
+    - information
+    - components
+    - external_systems
+    - trigger
+relationship_types:
+  scenario_for:
+    description: Kopplar ett Scenario till det UseCase vars huvudflöde eller viktiga
+      variant scenariot illustrerar.
+    allowed_pairs:
+    - - Scenario
+      - UseCase
+  involves:
+    description: Anger en viktig deltagare eller lösningsdel i scenariot.
+    allowed_pairs:
+    - - Scenario
+      - Actor
+    - - Scenario
+      - ExternalSystem
+    - - Scenario
+      - Component
+  involves_information:
+    description: Anger ett centralt InformationObject som skapas, används eller förändras
+      i scenariot utan att ännu beskriva den exakta interaktionsordningen.
+    allowed_pairs:
+    - - Scenario
+      - InformationObject
+rules:
+- id: SCN-001
+  statement: Scenario ska representera ett viktigt och begripligt end-to-end-förlopp,
+    inte varje möjlig exekveringsväg.
+- id: SCN-002
+  statement: Scenario ligger på conceptual-nivån; ordnade tekniska meddelanden modelleras
+    först som Interaction i A15–A16.
+- id: SCN-003
+  statement: Outcome ska beskriva varför scenariot är meningsfullt för systemförståelsen.
+- id: SCN-004
+  statement: Scenario ska normalt väljas när det realiserar ett centralt use case,
+    korsar viktiga gränser eller förklarar ett kritiskt integrationsflöde.
+- id: SCN-005
+  statement: Referensfält och motsvarande scenario-relationer ska hållas konsistenta
+    när relationerna materialiseras för vyer och frågor.

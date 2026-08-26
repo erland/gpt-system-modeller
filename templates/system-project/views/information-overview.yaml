@@ -1,0 +1,7 @@
+id: VIEW-000003
+name: Informationsöversikt
+type: information_overview
+purpose: Visa centrala informationsobjekt och deras relationer.
+audience: [arkitekt, verksamhet, utvecklare]
+detail_level: conceptual
+notation: neutral

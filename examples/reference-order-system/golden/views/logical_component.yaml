@@ -1,0 +1,157 @@
+view:
+  id: VIEW-000001
+  name: Logical Component View
+  type: logical_component
+  purpose: Show logical decomposition and the main dependencies/services/interfaces/data
+    stores.
+  detail_level: logical
+  notation: neutral
+elements:
+- id: API-000001
+  type: API
+  name: Order API
+  description: HTTP API för att registrera och läsa order.
+  abstraction_level: logical
+  provider: CMP-000001
+  consumers:
+  - CMP-000003
+  api_style: REST
+  protocol: HTTPS
+  version: v1
+  exchanged_information:
+  - INFO-000001
+  - INFO-000002
+  origin:
+  - observed
+  evidence:
+  - EVD-000004
+- id: API-000002
+  type: API
+  name: Payment API
+  description: Externt API som används för betalningsverifiering.
+  abstraction_level: logical
+  provider: EXT-000001
+  consumers:
+  - CMP-000002
+  api_style: REST
+  protocol: HTTPS
+  exchanged_information:
+  - INFO-000003
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+- id: CMP-000001
+  type: Component
+  name: Order Management
+  description: Hanterar orderns livscykel och status.
+  abstraction_level: logical
+  origin:
+  - inferred
+  evidence:
+  - EVD-000002
+  - EVD-000003
+- id: CMP-000002
+  type: Component
+  name: Payment Integration
+  description: Isolerar kommunikationen med extern betalningstjänst.
+  abstraction_level: logical
+  origin:
+  - inferred
+  evidence:
+  - EVD-000001
+- id: CMP-000003
+  type: Component
+  name: Order Web
+  description: Webbgränssnitt för kundens orderflöden.
+  abstraction_level: logical
+  origin:
+  - inferred
+  evidence:
+  - EVD-000001
+- id: DS-000001
+  type: DataStore
+  name: Order Database
+  description: Logiskt datalager för orderinformation.
+  abstraction_level: logical
+  store_kind: relational_database
+  owner: CMP-000001
+  technology: PostgreSQL
+  authoritative_for:
+  - INFO-000001
+  origin:
+  - observed
+  evidence:
+  - EVD-000003
+- id: SUB-000001
+  type: Subsystem
+  name: Order Core
+  description: Logisk kärna för orderhantering.
+  abstraction_level: logical
+  origin:
+  - inferred
+  evidence:
+  - EVD-000002
+- id: SVC-000001
+  type: Service
+  name: Order Service
+  description: Erbjuder logiska orderoperationer.
+  abstraction_level: logical
+  origin:
+  - inferred
+  evidence:
+  - EVD-000002
+links:
+- id: REL-000022
+  type: accesses
+  source: CMP-000001
+  target: DS-000001
+  origin:
+  - observed
+  derived: false
+- id: REL-000018
+  type: consumes_interface
+  source: CMP-000002
+  target: API-000002
+  origin:
+  - declared
+  derived: false
+- id: REL-000011
+  type: contains
+  source: SUB-000001
+  target: CMP-000001
+  origin:
+  - inferred
+  derived: false
+- id: REL-000012
+  type: contains
+  source: SUB-000001
+  target: CMP-000002
+  origin:
+  - inferred
+  derived: false
+- id: REL-000013
+  type: provides
+  source: CMP-000001
+  target: SVC-000001
+  origin:
+  - inferred
+  derived: false
+- id: REL-000017
+  type: provides_interface
+  source: CMP-000001
+  target: API-000001
+  origin:
+  - observed
+  derived: false
+- id: REL-000015
+  type: uses
+  source: CMP-000001
+  target: CMP-000002
+  origin:
+  - inferred
+  derived: false
+summary:
+  element_count: 8
+  link_count: 7
+  derived_link_count: 0

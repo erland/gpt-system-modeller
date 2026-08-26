@@ -1,0 +1,74 @@
+metamodel:
+  id: system-modeller-data-stores
+  version: 0.1.0-dev.13
+  status: normative
+  purpose: DataStore-modell för Plan A steg A13. Definierar logiskt relevant lagring,
+    ägarskap, teknik, lagrad information och åtkomst.
+element_types:
+  DataStore:
+    id_prefix: DS
+    abstraction_level: logical
+    description: Ett arkitekturellt relevant logiskt datalager som beständigt eller
+      funktionellt lagrar information. Ett DataStore är inte automatiskt samma sak
+      som en enskild tabell, fil eller fysisk databasinstans.
+    required_fields:
+    - store_kind
+    optional_fields:
+    - owner
+    - technology
+    - authoritative_for
+store_kinds:
+- relational_database
+- document_store
+- object_storage
+- search_index
+- cache
+- file_storage
+- message_store
+- other
+relationship_types:
+  stores_information:
+    description: Ett DataStore lagrar ett konceptuellt InformationObject.
+    allowed_pairs:
+    - - DataStore
+      - InformationObject
+  accesses:
+    description: Ett arkitekturelement läser från eller skriver till ett DataStore
+      utan att A13 kräver mer detaljerad accessmekanism.
+    allowed_pairs:
+    - - System
+      - DataStore
+    - - ExternalSystem
+      - DataStore
+    - - Component
+      - DataStore
+    - - Service
+      - DataStore
+  owns_data_store:
+    description: Ett System eller en Component har arkitekturellt ägaransvar för ett
+      DataStore.
+    allowed_pairs:
+    - - System
+      - DataStore
+    - - Component
+      - DataStore
+rules:
+- id: DS-001
+  statement: DataStore ligger på logical-nivån i MVP:n och representerar arkitekturellt
+    relevant lagring, inte varje fysisk instans eller implementationstabell.
+- id: DS-002
+  statement: DatabaseTable, schema, collection, bucket eller fil blir inte automatiskt
+    ett DataStore; sådana detaljer hör normalt hemma på implementation-nivån.
+- id: DS-003
+  statement: stores_information ska peka på konceptuella InformationObject och beskriver
+    vad lagret bevarar, inte tabell- eller dokumentstruktur.
+- id: DS-004
+  statement: owner och owns_data_store beskriver arkitekturellt ägaransvar. owner
+    är en läsbar direktreferens; relationen används när traversering behövs och de
+    får inte motsäga varandra.
+- id: DS-005
+  statement: technology är i A13 ett enkelt textvärde. En separat teknikmetamodell
+    kan senare ersätta eller komplettera detta utan att ändra DataStore-identiteten.
+- id: DS-006
+  statement: accesses används endast när åtkomsten är relevant för systemförståelse;
+    detaljerade repository-, SQL- eller driverberoenden ska inte lyftas automatiskt.

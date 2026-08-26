@@ -1,0 +1,58 @@
+metamodel:
+  id: system-modeller-origin
+  version: 0.1.0-dev.22
+  status: normative
+  purpose: Definierar den separata origin-dimensionen declared/observed/inferred/user_confirmed/unresolved
+    för modellobjekt och relationer.
+origin_values:
+  declared:
+    meaning: Påståendet är explicit deklarerat i dokumentation, beslut, specifikation
+      eller annan avsedd arkitekturbeskrivning.
+    typical_sources:
+    - documentation
+    - api_specification
+    - user_statement
+  observed:
+    meaning: Påståendet är direkt observerbart i faktisk implementation eller teknisk
+      konfiguration.
+    typical_sources:
+    - source_code
+    - database_schema
+    - configuration
+    - api_specification
+  inferred:
+    meaning: Påståendet är en analytisk slutsats eller abstraktion som inte finns
+      direkt uttalad i underlaget.
+    requires_reason: true
+  user_confirmed:
+    meaning: Användaren har explicit bekräftat modellpåståendet.
+    typical_sources:
+    - user_statement
+  unresolved:
+    meaning: Det är ännu oklart om påståendet är deklarerat, observerat eller endast
+      infererat.
+    exclusive_recommended: true
+rules:
+- id: ORG-001
+  statement: origin och Evidence.status är två olika dimensioner. origin beskriver
+    hur modellpåståendet uppkom; Evidence.status beskriver hur starkt eller på vilket
+    sätt påståendet stöds.
+- id: ORG-002
+  statement: Ett modellobjekt eller en relation får ha flera origin-värden när samma
+    kanoniska påstående både är exempelvis declared och observed.
+- id: ORG-003
+  statement: declared + observed betyder att dokumenterad och faktiskt observerad
+    arkitektur överensstämmer för det aktuella påståendet; det är inte i sig en driftklassificering.
+- id: ORG-004
+  statement: inferred ska användas när den arkitekturella formuleringen skapats genom
+    analys eller abstraktion. Tillhörande Evidence bör då ange reason och relevanta
+    källreferenser.
+- id: ORG-005
+  statement: unresolved bör inte kombineras med andra origin-värden i den aktuella
+    kanoniska representationen; oklarheten ska lösas eller dokumenteras som issue
+    i senare steg.
+- id: ORG-006
+  statement: user_confirmed kan kombineras med declared, observed eller inferred och
+    visar att användaren explicit bekräftat påståendet.
+- id: ORG-007
+  statement: origin ska kunna användas både på modellobjekt och relationer.

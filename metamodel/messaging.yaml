@@ -1,0 +1,78 @@
+metamodel:
+  id: system-modeller-messaging
+  version: 0.1.0-dev.12
+  status: normative
+  purpose: Grundläggande Message/Event-modell för Plan A steg A12.
+
+element_types:
+  Message:
+    id_prefix: MSG
+    abstraction_level: logical
+    description: Ett arkitekturellt relevant meddelande som överförs mellan system eller logiska systemdelar.
+    required_fields:
+      - producer
+      - consumers
+      - communication_mode
+    optional_fields:
+      - exchanged_information
+      - channel
+      - topic
+      - protocol
+  Event:
+    id_prefix: EVT
+    abstraction_level: logical
+    description: En arkitekturellt relevant händelsenotis som publiceras av en producent och kan konsumeras av en eller flera prenumeranter.
+    required_fields:
+      - producer
+      - consumers
+    optional_fields:
+      - exchanged_information
+      - channel
+      - topic
+      - protocol
+
+relationship_types:
+  sends:
+    description: Ett arkitekturelement skickar ett Message.
+    allowed_pairs:
+      - [System, Message]
+      - [ExternalSystem, Message]
+      - [Component, Message]
+      - [Service, Message]
+  receives:
+    description: Ett arkitekturelement tar emot ett Message.
+    allowed_pairs:
+      - [System, Message]
+      - [ExternalSystem, Message]
+      - [Component, Message]
+      - [Service, Message]
+  publishes:
+    description: Ett arkitekturelement publicerar ett Event.
+    allowed_pairs:
+      - [System, Event]
+      - [ExternalSystem, Event]
+      - [Component, Event]
+      - [Service, Event]
+  subscribes:
+    description: Ett arkitekturelement prenumererar på eller konsumerar ett Event.
+    allowed_pairs:
+      - [System, Event]
+      - [ExternalSystem, Event]
+      - [Component, Event]
+      - [Service, Event]
+
+rules:
+  - id: MSG-001
+    statement: Message och Event ligger på logical-nivån och modelleras bara när kommunikationen är relevant för systemförståelsen.
+  - id: MSG-002
+    statement: Message används för ett namngivet informationsutbyte eller kommando; Event används när kommunikationen uttrycker att något har inträffat.
+  - id: MSG-003
+    statement: Event betraktas som asynkront i MVP:n. Message anger explicit synchronous eller asynchronous via communication_mode.
+  - id: MSG-004
+    statement: producer och consumers ska referera till System, ExternalSystem, Component eller Service; tekniska klientklasser och handlers hör hemma på implementation-nivån.
+  - id: MSG-005
+    statement: exchanged_information ska referera till konceptuella InformationObject och får inte reduceras till tekniska payload- eller DTO-fält.
+  - id: MSG-006
+    statement: channel och topic är frivilliga arkitekturella ledtrådar i A12 och är ännu inte egna modellobjekt.
+  - id: MSG-007
+    statement: Fält och relationer får båda användas för läsbarhet och traversering, men samma semantiska faktum ska hållas konsekvent och inte motsägas.

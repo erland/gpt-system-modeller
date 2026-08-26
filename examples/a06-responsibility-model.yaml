@@ -1,0 +1,55 @@
+elements:
+  - id: SYS-000001
+    type: System
+    name: Ordersystem
+    description: Hanterar kundorder från registrering till leverans.
+    abstraction_level: conceptual
+    purpose: Ge kunder och personal stöd för orderhantering.
+
+  - id: ACT-000001
+    type: Actor
+    name: Kund
+    description: Kund som använder ordersystemets funktioner.
+    abstraction_level: conceptual
+    actor_kind: role
+
+  - id: EXT-000001
+    type: ExternalSystem
+    name: Betaltjänst
+    description: Extern tjänst som genomför betalningar.
+    abstraction_level: conceptual
+    external_type: service
+
+  - id: RSP-000001
+    type: Responsibility
+    name: Orderhantering
+    description: Hanterar orderns livscykel från registrering till avslut.
+    abstraction_level: conceptual
+    purpose: Samla systemets ansvar för att skapa, ändra, följa och avsluta order.
+
+  - id: RSP-000002
+    type: Responsibility
+    name: Betalningshantering
+    description: Ansvarar för initiering och uppföljning av betalning.
+    abstraction_level: conceptual
+
+relationships:
+  - id: REL-000001
+    type: uses
+    source: ACT-000001
+    target: SYS-000001
+
+  - id: REL-000002
+    type: exchanges_information_with
+    source: SYS-000001
+    target: EXT-000001
+
+  - id: REL-000003
+    type: has_responsibility
+    source: SYS-000001
+    target: RSP-000001
+
+  - id: REL-000004
+    type: has_responsibility
+    source: SYS-000001
+    target: RSP-000002

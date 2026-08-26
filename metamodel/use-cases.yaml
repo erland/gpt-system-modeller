@@ -1,0 +1,64 @@
+metamodel:
+  id: system-modeller-use-cases
+  version: 0.1.0-dev.7
+  status: normative
+  purpose: >-
+    Use-case-modell för Plan A steg A7. UseCase beskriver ett mål- och
+    värdeorienterat systembeteende på konceptuell nivå och kopplar samman
+    aktörer med systemets funktionella ansvarsområden.
+
+element_types:
+  UseCase:
+    id_prefix: UC
+    abstraction_level: conceptual
+    description: >-
+      Ett sammanhängande beteende av värde för en aktör, uttryckt utifrån vad
+      aktören vill uppnå med systemet snarare än tekniska endpoints, skärmbilder
+      eller implementation.
+    required_fields:
+      - primary_actor
+      - responsibility
+      - outcome
+    optional_fields:
+      - supporting_actors
+      - trigger
+      - preconditions
+      - postconditions
+      - related_information
+      - realized_by
+
+relationship_types:
+  performs:
+    description: En aktör utför eller initierar ett use case som primär eller stödjande aktör.
+    allowed_pairs:
+      - [Actor, UseCase]
+  groups_use_case:
+    description: Ett funktionellt Responsibility grupperar ett use case.
+    allowed_pairs:
+      - [Responsibility, UseCase]
+  includes:
+    description: Ett use case inkluderar ett annat use case som obligatoriskt delbeteende.
+    allowed_pairs:
+      - [UseCase, UseCase]
+  extends:
+    description: Ett use case utökar ett annat use case med valfritt eller villkorat beteende.
+    allowed_pairs:
+      - [UseCase, UseCase]
+  specializes:
+    description: Ett use case är en specialisering av ett mer generellt use case.
+    allowed_pairs:
+      - [UseCase, UseCase]
+
+rules:
+  - id: UC-SEM-001
+    statement: UseCase ska beskriva ett begripligt mål eller resultat för en aktör, inte ett tekniskt API-anrop eller en enskild UI-händelse.
+  - id: UC-SEM-002
+    statement: Varje UseCase ska ha exakt en primary_actor och tillhöra ett Responsibility i MVP:n.
+  - id: UC-SEM-003
+    statement: Outcome ska beskriva det meningsfulla resultat som uppnåtts när use caset lyckas.
+  - id: UC-SEM-004
+    statement: Trigger, preconditions och postconditions är valfria och ska endast användas när de förbättrar systemförståelsen.
+  - id: UC-SEM-005
+    statement: related_information och realized_by får användas som framåtreferenser men deras måltyper valideras fullt först när InformationObject respektive Component/Service införts.
+  - id: UC-SEM-006
+    statement: Fälten primary_actor och responsibility är kanoniska referenser; motsvarande performs och groups_use_case-relationer ska hållas konsistenta när de materialiseras för vyer och frågor.

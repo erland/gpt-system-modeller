@@ -1,0 +1,29 @@
+flowchart LR
+    ACT_000001["Kund<br/><small>Actor</small>"]
+    CMP_000001["Order Management<br/><small>Component</small>"]
+    CMP_000002["Payment Integration<br/><small>Component</small>"]
+    CMP_000003["Order Web<br/><small>Component</small>"]
+    INFO_000001["Order<br/><small>InformationObject</small>"]
+    INFO_000002["Kund<br/><small>InformationObject</small>"]
+    INFO_000003["Betalning<br/><small>InformationObject</small>"]
+    RSP_000001["Orderhantering<br/><small>Responsibility</small>"]
+    SVC_000001["Order Service<br/><small>Service</small>"]
+    UC_000001["Registrera order<br/><small>UseCase</small>"]
+    UC_000002["Följ order<br/><small>UseCase</small>"]
+    UC_000001 -->|creates_information| INFO_000001
+    UC_000001 -->|creates_information| INFO_000003
+    RSP_000001 -->|groups_use_case| UC_000001
+    RSP_000001 -->|groups_use_case| UC_000002
+    ACT_000001 -->|performs| UC_000001
+    ACT_000001 -->|performs| UC_000002
+    UC_000001 -->|reads_information| INFO_000002
+    UC_000002 -->|reads_information| INFO_000001
+    RSP_000001 -->|realized_by| CMP_000001
+    RSP_000001 -->|realized_by| CMP_000003
+    UC_000001 -->|realized_by| CMP_000001
+    UC_000001 -->|realized_by| CMP_000002
+    UC_000002 -->|realized_by| CMP_000001
+    UC_000001 -->|related_information| INFO_000001
+    UC_000001 -->|related_information| INFO_000002
+    UC_000001 -->|related_information| INFO_000003
+    UC_000002 -->|related_information| INFO_000001

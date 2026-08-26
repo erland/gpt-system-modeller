@@ -1,0 +1,23 @@
+elements:
+  - id: DS-000001
+    type: DataStore
+    name: Order Database
+    description: Logiskt datalager för orderinformation.
+    abstraction_level: logical
+    store_kind: relational_database
+    owner: CMP-000001
+    technology: PostgreSQL
+    authoritative_for: [INFO-000001]
+    origin: [observed]
+    evidence: [EVD-000003]
+relationships:
+  - id: REL-000021
+    type: stores_information
+    source: DS-000001
+    target: INFO-000001
+    origin: [observed]
+  - id: REL-000022
+    type: accesses
+    source: CMP-000001
+    target: DS-000001
+    origin: [observed]

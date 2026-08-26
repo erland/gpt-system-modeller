@@ -1,0 +1,21 @@
+flowchart LR
+    CMP_000001["Order Management<br/><small>Component</small>"]
+    CMP_000002["Payment Integration<br/><small>Component</small>"]
+    CMP_000003["Order Web<br/><small>Component</small>"]
+    DS_000001["Order Database<br/><small>DataStore</small>"]
+    ENV_000001["Production<br/><small>Environment</small>"]
+    EXT_000001["Payment Gateway<br/><small>ExternalSystem</small>"]
+    EXT_000002["Delivery System<br/><small>ExternalSystem</small>"]
+    NODE_000001["User Browser<br/><small>DeploymentNode</small>"]
+    NODE_000002["Container Platform Production<br/><small>DeploymentNode</small>"]
+    RUN_000001["Order Web<br/><small>RuntimeUnit</small>"]
+    RUN_000002["Order API Runtime<br/><small>RuntimeUnit</small>"]
+    SVC_000001["Order Service<br/><small>Service</small>"]
+    NODE_000002 -->|belongs_to| ENV_000001
+    RUN_000001 -->|connects_to / HTTPS| RUN_000002
+    RUN_000002 -->|connects_to / JDBC| DS_000001
+    RUN_000002 -->|connects_to / HTTPS| EXT_000001
+    RUN_000001 -->|deployed_on| NODE_000001
+    RUN_000002 -->|deployed_on| NODE_000002
+    CMP_000001 -->|realized_as| RUN_000002
+    CMP_000003 -->|realized_as| RUN_000001

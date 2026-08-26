@@ -1,0 +1,25 @@
+elements:
+  - id: REF-000001
+    type: SourceReference
+    source: SRC-000001
+    file: README.md
+    section: Huvudflöde
+  - id: REF-000002
+    type: SourceReference
+    source: SRC-000002
+    file: src/main/java/example/order/OrderService.java
+    symbol: OrderService
+  - id: REF-000003
+    type: SourceReference
+    source: SRC-000003
+    file: db/schema.sql
+  - id: REF-000004
+    type: SourceReference
+    source: SRC-000004
+    file: openapi.yaml
+    section: /orders
+  - id: REF-000005
+    type: SourceReference
+    source: SRC-000005
+    file: deploy/docker-compose.yaml
+relationships: []

@@ -1,0 +1,11 @@
+id: VIEW-000007
+name: Use case-realisering
+type: use_case_realization
+purpose: Visa hur use cases realiseras av logiska delar och vilken information som
+  berörs.
+audience:
+- arkitekt
+- verksamhet
+- utvecklare
+detail_level: logical
+notation: uml

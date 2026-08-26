@@ -1,0 +1,10 @@
+id: VIEW-000008
+name: Integrationsvy
+type: integration
+purpose: Visa systemets viktigaste API:er, meddelanden, events och informationsutbyten.
+audience:
+- arkitekt
+- utvecklare
+- integration
+detail_level: logical
+notation: neutral

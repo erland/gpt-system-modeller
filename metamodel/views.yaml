@@ -1,0 +1,212 @@
+meta:
+  id: system-modeller-views
+  version: 0.1.0-dev.27
+  status: normative
+  purpose: Generellt vyformat och de tio kärnvyerna i Plan A steg A27. En vy är en projektion av den kanoniska modellen och
+    får aldrig bli en alternativ sanningskälla.
+view_definition:
+  required:
+  - id
+  - name
+  - type
+  properties:
+    id: stable view identifier, VIEW-xxxxxx
+    name: human readable name
+    purpose: why the view exists
+    audience: intended reader groups
+    type: one of the supported core view types
+    abstraction_level: optional preferred abstraction level
+    detail_level: overview | conceptual | logical | technical | implementation
+    include_element_types: optional override of default element types
+    include_relation_types: optional override of default relation types
+    filters: optional simple filtering criteria
+    layout_hints: optional non-semantic layout preferences
+    notation: neutral | uml | c4_like | custom
+principles:
+- A view contains references/projections of canonical model elements; it does not own them.
+- A view definition may filter model content but may not change model semantics.
+- Generated view output may be deleted and recreated without losing model information.
+- Default selections optimize for system understanding rather than maximal detail.
+- Derived view links may be created from canonical reference fields, but must be marked derived.
+- Dynamiska vyer får materialisera ordnade InteractionMessage från Interaction utan att skapa separata kanoniska relationer.
+- Diagramrendering är härledd output; Mermaid/PlantUML får aldrig bli sanningskälla.
+core_views:
+  system_context:
+    purpose: Show the system boundary, actors and external systems.
+    default_element_types:
+    - System
+    - ExternalSystem
+    - Actor
+    default_relation_types:
+    - uses
+    - interacts_with
+    - exchanges_information_with
+    default_detail_level: overview
+  functional_overview:
+    purpose: Show the system and its major functional responsibilities.
+    default_element_types:
+    - System
+    - Responsibility
+    default_relation_types:
+    - has_responsibility
+    default_detail_level: overview
+  use_case_overview:
+    purpose: Show actors, responsibilities and the system's important use cases.
+    default_element_types:
+    - Actor
+    - Responsibility
+    - UseCase
+    default_relation_types:
+    - performs
+    - groups_use_case
+    - includes
+    - extends
+    - specializes
+    derived_links:
+    - UseCase.primary_actor
+    - UseCase.supporting_actors
+    - UseCase.responsibility
+    default_detail_level: conceptual
+  information_overview:
+    purpose: Show central conceptual information and information relationships.
+    default_element_types:
+    - InformationObject
+    default_relation_types:
+    - contains_information
+    - references_information
+    - relates_to_information
+    - derived_from_information
+    default_detail_level: conceptual
+  functional_information:
+    purpose: Show how functions/use cases create, read, update, delete or otherwise use information.
+    default_element_types:
+    - Responsibility
+    - UseCase
+    - InformationObject
+    default_relation_types:
+    - groups_use_case
+    - creates_information
+    - reads_information
+    - updates_information
+    - deletes_information
+    - owns_information
+    - masters_information
+    - exchanges_information
+    derived_links:
+    - UseCase.responsibility
+    - UseCase.related_information
+    default_detail_level: conceptual
+  logical_component:
+    purpose: Show logical decomposition and the main dependencies/services/interfaces/data stores.
+    default_element_types:
+    - Subsystem
+    - Component
+    - Service
+    - Interface
+    - API
+    - DataStore
+    default_relation_types:
+    - contains
+    - part_of
+    - depends_on
+    - uses
+    - provides
+    - exposes
+    - provides_interface
+    - consumes_interface
+    - accesses
+    - owns_data_store
+    default_detail_level: logical
+  use_case_realization:
+    purpose: Visa hur ett use case binder samman aktör, funktionellt ansvar, realiserande komponenter/tjänster och information.
+    default_element_types:
+    - Actor
+    - UseCase
+    - Responsibility
+    - Component
+    - Service
+    - InformationObject
+    default_relation_types:
+    - performs
+    - groups_use_case
+    - realized_by
+    - realizes
+    - creates_information
+    - reads_information
+    - updates_information
+    - deletes_information
+    - exchanges_information
+    derived_links:
+    - UseCase.primary_actor
+    - UseCase.supporting_actors
+    - UseCase.responsibility
+    - UseCase.realized_by
+    - UseCase.related_information
+    default_detail_level: logical
+  integration:
+    purpose: Visa systemets viktigaste synkrona och asynkrona integrationer samt informationsutbyte.
+    default_element_types:
+    - System
+    - ExternalSystem
+    - Component
+    - Service
+    - Interface
+    - API
+    - Message
+    - Event
+    - InformationObject
+    default_relation_types:
+    - exchanges_information_with
+    - exposes
+    - provides_interface
+    - consumes_interface
+    - sends
+    - receives
+    - publishes
+    - subscribes
+    - exchanges_information
+    derived_links:
+    - Interface.provider
+    - Interface.consumers
+    - Interface.exchanged_information
+    - Message.producer
+    - Message.consumers
+    - Message.exchanged_information
+    - Event.producer
+    - Event.consumers
+    - Event.exchanged_information
+    default_detail_level: logical
+  sequence:
+    purpose: Visa den ordnade interaktionen mellan deltagare i ett eller flera viktiga scenarier.
+    default_element_types:
+    - Interaction
+    - Scenario
+    - Actor
+    - System
+    - ExternalSystem
+    - Component
+    - Service
+    - DataStore
+    default_relation_types:
+    - realizes_scenario
+    - has_participant
+    dynamic_content:
+    - Interaction.participants
+    - Interaction.messages
+    default_detail_level: logical
+  deployment:
+    purpose: Visa vad som körs, var det körs och de huvudsakliga kommunikationsvägarna.
+    default_element_types:
+    - Component
+    - Service
+    - DataStore
+    - ExternalSystem
+    - RuntimeUnit
+    - DeploymentNode
+    - Environment
+    default_relation_types:
+    - realized_as
+    - deployed_on
+    - belongs_to
+    - connects_to
+    default_detail_level: technical

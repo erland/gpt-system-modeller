@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://system-modeller.local/schemas/scenarios.schema.json",
+  "title": "System Modeller scenario model",
+  "description": "Model through Plan A step A14 including conceptual Scenario.",
+  "$defs": {
+    "system": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/system"
+    },
+    "externalSystem": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/externalSystem"
+    },
+    "actor": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/actor"
+    },
+    "responsibility": {
+      "$ref": "https://system-modeller.local/schemas/functions.schema.json#/$defs/responsibility"
+    },
+    "useCase": {
+      "$ref": "https://system-modeller.local/schemas/use-cases.schema.json#/$defs/useCase"
+    },
+    "informationObject": {
+      "$ref": "https://system-modeller.local/schemas/information.schema.json#/$defs/informationObject"
+    },
+    "component": {
+      "$ref": "https://system-modeller.local/schemas/logical-structure.schema.json#/$defs/component"
+    },
+    "scenario": {
+      "allOf": [
+        {
+          "$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/modelElement"
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^SCN-[0-9]{6}$"
+            },
+            "type": {
+              "const": "Scenario"
+            },
+            "abstraction_level": {
+              "const": "conceptual"
+            },
+            "use_case": {
+              "type": "string",
+              "pattern": "^UC-[0-9]{6}$"
+            },
+            "actors": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^ACT-[0-9]{6}$"
+              }
+            },
+            "information": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^INFO-[0-9]{6}$"
+              }
+            },
+            "components": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^CMP-[0-9]{6}$"
+              }
+            },
+            "external_systems": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^EXT-[0-9]{6}$"
+              }
+            },
+            "trigger": {
+              "type": "string",
+              "minLength": 1
+            },
+            "outcome": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "scenarioRelationship": {
+      "allOf": [
+        {
+          "$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/relationship"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "scenario_for",
+                "involves",
+                "involves_information"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "required": [
+    "elements",
+    "relationships"
+  ],
+  "properties": {
+    "elements": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/system"
+          },
+          {
+            "$ref": "#/$defs/externalSystem"
+          },
+          {
+            "$ref": "#/$defs/actor"
+          },
+          {
+            "$ref": "#/$defs/responsibility"
+          },
+          {
+            "$ref": "#/$defs/useCase"
+          },
+          {
+            "$ref": "#/$defs/informationObject"
+          },
+          {
+            "$ref": "#/$defs/component"
+          },
+          {
+            "$ref": "#/$defs/scenario"
+          }
+        ]
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/scenarioRelationship"
+      }
+    }
+  },
+  "additionalProperties": false
+}

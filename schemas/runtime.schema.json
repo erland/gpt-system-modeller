@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://system-modeller.local/schemas/runtime.schema.json",
+  "title": "System Modeller runtime model",
+  "description": "Model through Plan A step A17 including RuntimeUnit and logical-to-runtime realization.",
+  "$defs": {
+    "system": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/system"
+    },
+    "externalSystem": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/externalSystem"
+    },
+    "actor": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/actor"
+    },
+    "responsibility": {
+      "$ref": "https://system-modeller.local/schemas/functions.schema.json#/$defs/responsibility"
+    },
+    "useCase": {
+      "$ref": "https://system-modeller.local/schemas/use-cases.schema.json#/$defs/useCase"
+    },
+    "informationObject": {
+      "$ref": "https://system-modeller.local/schemas/information.schema.json#/$defs/informationObject"
+    },
+    "subsystem": {
+      "$ref": "https://system-modeller.local/schemas/logical-structure.schema.json#/$defs/subsystem"
+    },
+    "component": {
+      "$ref": "https://system-modeller.local/schemas/logical-structure.schema.json#/$defs/component"
+    },
+    "service": {
+      "$ref": "https://system-modeller.local/schemas/logical-structure.schema.json#/$defs/service"
+    },
+    "interface": {
+      "$ref": "https://system-modeller.local/schemas/interfaces.schema.json#/$defs/interface"
+    },
+    "api": {
+      "$ref": "https://system-modeller.local/schemas/interfaces.schema.json#/$defs/api"
+    },
+    "message": {
+      "$ref": "https://system-modeller.local/schemas/messaging.schema.json#/$defs/message"
+    },
+    "event": {
+      "$ref": "https://system-modeller.local/schemas/messaging.schema.json#/$defs/event"
+    },
+    "dataStore": {
+      "$ref": "https://system-modeller.local/schemas/data-stores.schema.json#/$defs/dataStore"
+    },
+    "scenario": {
+      "$ref": "https://system-modeller.local/schemas/scenarios.schema.json#/$defs/scenario"
+    },
+    "interaction": {
+      "$ref": "https://system-modeller.local/schemas/interactions.schema.json#/$defs/interaction"
+    },
+    "runtimeUnit": {
+      "allOf": [
+        {
+          "$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/modelElement"
+        },
+        {
+          "type": "object",
+          "required": [
+            "runtime_kind"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^RUN-[0-9]{6}$"
+            },
+            "type": {
+              "const": "RuntimeUnit"
+            },
+            "abstraction_level": {
+              "const": "runtime"
+            },
+            "runtime_kind": {
+              "type": "string",
+              "enum": [
+                "web_application",
+                "application_service",
+                "background_service",
+                "batch_job",
+                "database",
+                "message_broker",
+                "function"
+              ]
+            },
+            "purpose": {
+              "type": "string",
+              "minLength": 1
+            },
+            "technology": {
+              "type": "string",
+              "minLength": 1
+            },
+            "artifact": {
+              "type": "string",
+              "minLength": 1
+            },
+            "instance_scope": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "runtimeRelationship": {
+      "allOf": [
+        {
+          "$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/relationship"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "realized_as"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "required": [
+    "elements",
+    "relationships"
+  ],
+  "properties": {
+    "elements": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/system"
+          },
+          {
+            "$ref": "#/$defs/externalSystem"
+          },
+          {
+            "$ref": "#/$defs/actor"
+          },
+          {
+            "$ref": "#/$defs/responsibility"
+          },
+          {
+            "$ref": "#/$defs/useCase"
+          },
+          {
+            "$ref": "#/$defs/informationObject"
+          },
+          {
+            "$ref": "#/$defs/subsystem"
+          },
+          {
+            "$ref": "#/$defs/component"
+          },
+          {
+            "$ref": "#/$defs/service"
+          },
+          {
+            "$ref": "#/$defs/interface"
+          },
+          {
+            "$ref": "#/$defs/api"
+          },
+          {
+            "$ref": "#/$defs/message"
+          },
+          {
+            "$ref": "#/$defs/event"
+          },
+          {
+            "$ref": "#/$defs/dataStore"
+          },
+          {
+            "$ref": "#/$defs/scenario"
+          },
+          {
+            "$ref": "#/$defs/interaction"
+          },
+          {
+            "$ref": "#/$defs/runtimeUnit"
+          }
+        ]
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/runtimeRelationship"
+      }
+    }
+  },
+  "additionalProperties": false
+}

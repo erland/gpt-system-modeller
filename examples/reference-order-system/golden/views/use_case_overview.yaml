@@ -1,0 +1,102 @@
+view:
+  id: VIEW-000001
+  name: Use Case Overview
+  type: use_case_overview
+  purpose: Show actors, responsibilities and the system's important use cases.
+  detail_level: conceptual
+  notation: neutral
+elements:
+- id: ACT-000001
+  type: Actor
+  name: Kund
+  description: Registrerar och följer sina order.
+  abstraction_level: conceptual
+  actor_kind: role
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+- id: RSP-000001
+  type: Responsibility
+  name: Orderhantering
+  description: Ansvarar för att registrera, lagra och följa order.
+  abstraction_level: conceptual
+  origin:
+  - declared
+  - inferred
+  evidence:
+  - EVD-000001
+  - EVD-000002
+- id: UC-000001
+  type: UseCase
+  name: Registrera order
+  description: Kunden registrerar en ny order.
+  abstraction_level: conceptual
+  primary_actor: ACT-000001
+  responsibility: RSP-000001
+  trigger: Kunden väljer att genomföra en beställning.
+  outcome: En order är registrerad och redo för fortsatt hantering.
+  related_information:
+  - INFO-000001
+  - INFO-000002
+  - INFO-000003
+  realized_by:
+  - CMP-000001
+  - CMP-000002
+  origin:
+  - declared
+  - inferred
+  evidence:
+  - EVD-000001
+  - EVD-000002
+- id: UC-000002
+  type: UseCase
+  name: Följ order
+  description: Kunden hämtar aktuell status för en order.
+  abstraction_level: conceptual
+  primary_actor: ACT-000001
+  responsibility: RSP-000001
+  outcome: Kunden ser aktuell orderstatus.
+  related_information:
+  - INFO-000001
+  realized_by:
+  - CMP-000001
+  origin:
+  - declared
+  - inferred
+  evidence:
+  - EVD-000001
+  - EVD-000002
+links:
+- id: REL-000005
+  type: groups_use_case
+  source: RSP-000001
+  target: UC-000001
+  origin:
+  - declared
+  derived: false
+- id: REL-000006
+  type: groups_use_case
+  source: RSP-000001
+  target: UC-000002
+  origin:
+  - declared
+  derived: false
+- id: REL-000003
+  type: performs
+  source: ACT-000001
+  target: UC-000001
+  origin:
+  - declared
+  derived: false
+- id: REL-000004
+  type: performs
+  source: ACT-000001
+  target: UC-000002
+  origin:
+  - declared
+  derived: false
+summary:
+  element_count: 4
+  link_count: 4
+  derived_link_count: 0

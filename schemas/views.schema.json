@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://system-modeller.local/schemas/views.schema.json",
+  "title": "System Modeller view definition",
+  "$defs": {
+    "viewId": {
+      "type": "string",
+      "pattern": "^VIEW-[0-9]{6}$"
+    },
+    "viewType": {
+      "type": "string",
+      "enum": [
+        "system_context",
+        "functional_overview",
+        "use_case_overview",
+        "information_overview",
+        "functional_information",
+        "logical_component",
+        "use_case_realization",
+        "integration",
+        "sequence",
+        "deployment"
+      ]
+    },
+    "detailLevel": {
+      "type": "string",
+      "enum": [
+        "overview",
+        "conceptual",
+        "logical",
+        "technical",
+        "implementation"
+      ]
+    },
+    "notation": {
+      "type": "string",
+      "enum": [
+        "neutral",
+        "uml",
+        "c4_like",
+        "custom"
+      ]
+    },
+    "viewDefinition": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/viewId"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "audience": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "type": {
+          "$ref": "#/$defs/viewType"
+        },
+        "abstraction_level": {
+          "type": "string",
+          "enum": [
+            "conceptual",
+            "logical",
+            "runtime",
+            "implementation"
+          ]
+        },
+        "detail_level": {
+          "$ref": "#/$defs/detailLevel"
+        },
+        "include_element_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "include_relation_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "filters": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "layout_hints": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "notation": {
+          "$ref": "#/$defs/notation"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$ref": "#/$defs/viewDefinition"
+}

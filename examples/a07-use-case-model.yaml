@@ -1,0 +1,79 @@
+elements:
+  - id: SYS-000001
+    type: System
+    name: Ordersystem
+    description: Hanterar kundorder från registrering till leverans.
+    abstraction_level: conceptual
+
+  - id: ACT-000001
+    type: Actor
+    name: Kund
+    abstraction_level: conceptual
+    actor_kind: role
+
+  - id: ACT-000002
+    type: Actor
+    name: Kundservice
+    abstraction_level: conceptual
+    actor_kind: role
+
+  - id: RSP-000001
+    type: Responsibility
+    name: Orderhantering
+    abstraction_level: conceptual
+
+  - id: UC-000001
+    type: UseCase
+    name: Registrera order
+    description: Kunden registrerar en ny order som systemet kan behandla vidare.
+    abstraction_level: conceptual
+    primary_actor: ACT-000001
+    supporting_actors:
+      - ACT-000002
+    responsibility: RSP-000001
+    trigger: Kunden väljer att slutföra sin beställning.
+    outcome: En order har registrerats och fått ett ordernummer.
+    preconditions:
+      - Kunden kan identifieras.
+    postconditions:
+      - Ordern finns registrerad.
+
+  - id: UC-000002
+    type: UseCase
+    name: Visa orderstatus
+    abstraction_level: conceptual
+    primary_actor: ACT-000001
+    responsibility: RSP-000001
+    trigger: Kunden vill följa en befintlig order.
+    outcome: Kunden kan se orderns aktuella status.
+
+relationships:
+  - id: REL-000001
+    type: uses
+    source: ACT-000001
+    target: SYS-000001
+
+  - id: REL-000002
+    type: has_responsibility
+    source: SYS-000001
+    target: RSP-000001
+
+  - id: REL-000003
+    type: performs
+    source: ACT-000001
+    target: UC-000001
+
+  - id: REL-000004
+    type: groups_use_case
+    source: RSP-000001
+    target: UC-000001
+
+  - id: REL-000005
+    type: performs
+    source: ACT-000001
+    target: UC-000002
+
+  - id: REL-000006
+    type: groups_use_case
+    source: RSP-000001
+    target: UC-000002

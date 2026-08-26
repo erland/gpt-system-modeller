@@ -1,0 +1,131 @@
+elements:
+- id: SYS-000001
+  type: System
+  name: Order System
+  abstraction_level: conceptual
+  purpose: Hanterar kundorder från registrering till leverans.
+  evidence:
+  - EVD-000001
+  origin:
+  - declared
+  - user_confirmed
+- id: CMP-000001
+  type: Component
+  name: Order Management
+  abstraction_level: logical
+  purpose: Hanterar orderlivscykeln.
+  evidence:
+  - EVD-000002
+  origin:
+  - inferred
+- id: CMP-000002
+  type: Component
+  name: Payment Integration
+  abstraction_level: logical
+  purpose: Integrerar med extern betalningstjänst.
+  origin:
+  - observed
+- id: ADR-000001
+  type: ArchitectureDecision
+  name: Asynkrona orderhändelser
+  abstraction_level: conceptual
+  decision_status: accepted
+  context: Orderhantering och betalning behöver kunna utvecklas och återhämta sig
+    oberoende.
+  decision: Domänhändelser för order distribueras asynkront mellan berörda komponenter.
+  rationale: Minskar direkt runtime-koppling och gör mottagare oberoende av ordertransaktionens
+    svarstid.
+  alternatives:
+  - Synkrona REST-anrop mellan Order Management och Payment Integration.
+  consequences:
+  - Eventual consistency måste hanteras explicit.
+  - Händelsekontrakt behöver versionshanteras.
+  affected_elements:
+  - CMP-000001
+  - CMP-000002
+  evidence:
+  - EVD-000003
+  origin:
+  - declared
+- id: CON-000001
+  type: Constraint
+  name: Ingen direkt databasåtkomst mellan domäner
+  abstraction_level: conceptual
+  statement: En komponent får inte läsa eller skriva en annan domäns DataStore direkt.
+  rationale: Bevarar ägarskap, förändringsbarhet och tydliga integrationsgränser.
+  constraint_kind: technical
+  affected_elements:
+  - CMP-000001
+  - CMP-000002
+  origin:
+  - declared
+relationships:
+- id: REL-000001
+  type: affects
+  source: ADR-000001
+  target: CMP-000001
+  evidence:
+  - EVD-000003
+  origin:
+  - declared
+  - observed
+- id: REL-000002
+  type: affects
+  source: ADR-000001
+  target: CMP-000002
+  origin:
+  - declared
+- id: REL-000003
+  type: affects
+  source: CON-000001
+  target: CMP-000001
+  origin:
+  - declared
+sources:
+- id: SRC-000001
+  source_kind: documentation
+  name: Order System Architecture
+  location: docs/order-system-architecture.md
+  revision: v1.3
+- id: SRC-000002
+  source_kind: source_code
+  name: Order backend
+  location: backend/
+  revision: 7b83a9f
+- id: SRC-000003
+  source_kind: user_statement
+  name: Architecture review confirmation
+  description: Användaren bekräftade beslutet om asynkrona orderhändelser.
+source_references:
+- id: REF-000001
+  source: SRC-000001
+  file: docs/order-system-architecture.md
+  section: System purpose
+- id: REF-000002
+  source: SRC-000002
+  file: src/main/java/example/order/OrderService.java
+  symbol: OrderService.createOrder
+  start_line: 42
+  end_line: 71
+- id: REF-000003
+  source: SRC-000003
+  locator: Bekräftelse i modellgranskning
+evidence:
+- id: EVD-000001
+  status: source_confirmed
+  confidence: high
+  source_refs:
+  - REF-000001
+- id: EVD-000002
+  status: inferred
+  confidence: medium
+  source_refs:
+  - REF-000002
+  reason: OrderService och dess beroenden indikerar ett sammanhållet logiskt Order
+    Management-ansvar.
+- id: EVD-000003
+  status: user_confirmed
+  confidence: high
+  source_refs:
+  - REF-000003
+  reason: Arkitekturbeslutet bekräftades uttryckligen vid modellgranskning.

@@ -1,0 +1,27 @@
+elements:
+  - id: SRC-000001
+    type: Source
+    source_kind: documentation
+    name: README.md
+    location: ../input/README.md
+  - id: SRC-000002
+    type: Source
+    source_kind: source_code
+    name: Order Java sources
+    location: ../input/src/main/java/example/order
+  - id: SRC-000003
+    type: Source
+    source_kind: database_schema
+    name: schema.sql
+    location: ../input/db/schema.sql
+  - id: SRC-000004
+    type: Source
+    source_kind: api_specification
+    name: openapi.yaml
+    location: ../input/openapi.yaml
+  - id: SRC-000005
+    type: Source
+    source_kind: configuration
+    name: docker-compose.yaml
+    location: ../input/deploy/docker-compose.yaml
+relationships: []

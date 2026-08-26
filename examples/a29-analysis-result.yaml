@@ -1,0 +1,21 @@
+analysis_result:
+  summary: Orderrelaterade implementationselement tyder på en sammanhållen logisk orderkomponent.
+  observations:
+    - id: OBS-000001
+      type: Observation
+      observation_kind: dependency
+      statement: OrderService uses OrderRepository.
+      source_refs: [REF-000001]
+      confidence: high
+      subject: OrderService
+      predicate: uses
+      object: OrderRepository
+      candidate_concepts:
+        - type: Component
+          name: Order Management
+          abstraction_level: logical
+          rationale: Flera orderrelaterade implementationselement delar ansvar och beroenden.
+          confidence: medium
+          source_refs: [REF-000001]
+  open_questions:
+    - Är Order Management en uttryckligen dokumenterad komponent eller endast en infererad gruppering?

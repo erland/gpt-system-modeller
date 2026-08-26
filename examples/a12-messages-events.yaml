@@ -1,0 +1,68 @@
+elements:
+  - id: SYS-000001
+    type: System
+    name: Order System
+    abstraction_level: conceptual
+  - id: CMP-000001
+    type: Component
+    name: Order Management
+    abstraction_level: logical
+  - id: CMP-000002
+    type: Component
+    name: Fulfilment
+    abstraction_level: logical
+  - id: EXT-000001
+    type: ExternalSystem
+    name: Payment Provider
+    abstraction_level: conceptual
+  - id: INFO-000001
+    type: InformationObject
+    name: Order
+    abstraction_level: conceptual
+  - id: INFO-000002
+    type: InformationObject
+    name: Payment
+    abstraction_level: conceptual
+  - id: MSG-000001
+    type: Message
+    name: PaymentRequest
+    description: Begäran om att initiera betalning för en order.
+    abstraction_level: logical
+    producer: CMP-000001
+    consumers:
+      - EXT-000001
+    communication_mode: synchronous
+    protocol: HTTPS
+    exchanged_information:
+      - INFO-000001
+      - INFO-000002
+  - id: EVT-000001
+    type: Event
+    name: OrderCreated
+    description: Publiceras när en ny order har registrerats.
+    abstraction_level: logical
+    producer: CMP-000001
+    consumers:
+      - CMP-000002
+    communication_mode: asynchronous
+    channel: Kafka
+    topic: order-events
+    exchanged_information:
+      - INFO-000001
+relationships:
+  - id: REL-000001
+    type: sends
+    source: CMP-000001
+    target: MSG-000001
+  - id: REL-000002
+    type: receives
+    source: EXT-000001
+    target: MSG-000001
+  - id: REL-000003
+    type: publishes
+    source: CMP-000001
+    target: EVT-000001
+  - id: REL-000004
+    type: subscribes
+    source: CMP-000002
+    target: EVT-000001

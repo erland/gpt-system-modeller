@@ -1,0 +1,44 @@
+elements:
+- id: ADR-000001
+  type: ArchitectureDecision
+  name: Isolera betalningsintegration
+  abstraction_level: conceptual
+  context: Betalningsleverantören är extern och kan ändras oberoende av orderdomänen.
+  decision: Kommunikation med Payment Gateway kapslas bakom Payment Integration.
+  rationale: Minskar koppling mellan orderlogik och extern leverantör.
+  consequences:
+  - Ytterligare en logisk komponent behöver förvaltas.
+  affected_elements:
+  - CMP-000002
+  - API-000002
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+  decision_status: accepted
+- id: CON-000001
+  type: Constraint
+  name: TLS för extern trafik
+  abstraction_level: conceptual
+  statement: All extern trafik ska använda TLS.
+  rationale: Skydda information under överföring.
+  affected_elements:
+  - API-000001
+  - API-000002
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+relationships:
+- id: REL-000030
+  type: affects
+  source: ADR-000001
+  target: CMP-000002
+  origin:
+  - declared
+- id: REL-000031
+  type: affects
+  source: CON-000001
+  target: API-000001
+  origin:
+  - declared

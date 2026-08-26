@@ -1,0 +1,119 @@
+metamodel:
+  id: system-modeller-interactions
+  version: 0.1.0-dev.16
+  status: normative
+  purpose: >-
+    Dynamisk interaktionsmodell för Plan A steg A15-A16. Interaction beskriver den
+    logiska realiseringen av ett Scenario, vilka befintliga arkitekturelement som
+    deltar och den ordnade arkitekturellt relevanta kommunikationen mellan dem.
+
+element_types:
+  Interaction:
+    id_prefix: INT
+    abstraction_level: logical
+    description: >-
+      En ordnad dynamisk realisering av ett Scenario. Interaction håller deltagare
+      och en sekvens av InteractionMessage som beskriver huvudflödet på arkitekturnivå.
+    required_fields:
+      - scenario
+      - participants
+    optional_fields:
+      - purpose
+      - messages
+
+embedded_types:
+  Participant:
+    description: >-
+      En roll/referens till ett befintligt arkitekturelement som deltar i en Interaction.
+      Participant skapar inte en ny identitet för Actor/System/Component/etc.
+    required_fields:
+      - ref
+    optional_fields:
+      - role
+      - alias
+    allowed_element_types:
+      - Actor
+      - System
+      - ExternalSystem
+      - Component
+      - Service
+      - DataStore
+  InteractionMessage:
+    id_prefix: IM
+    description: >-
+      Ett ordnat kommunikationssteg i en Interaction. InteractionMessage har stabilt
+      IM-id inom modellen men är inte ett fristående top-level arkitekturelement.
+    required_fields:
+      - id
+      - order
+      - sender
+      - receiver
+      - label
+      - communication_mode
+    optional_fields:
+      - operation
+      - information
+      - condition
+      - message_ref
+    communication_modes:
+      - synchronous
+      - asynchronous
+
+relationship_types:
+  realizes_scenario:
+    description: Kopplar en Interaction till det Scenario som interaktionen realiserar dynamiskt.
+    allowed_pairs:
+      - [Interaction, Scenario]
+  has_participant:
+    description: >-
+      Materialiserbar relation från Interaction till ett befintligt element som deltar i interaktionen.
+    allowed_pairs:
+      - [Interaction, Actor]
+      - [Interaction, System]
+      - [Interaction, ExternalSystem]
+      - [Interaction, Component]
+      - [Interaction, Service]
+      - [Interaction, DataStore]
+
+rules:
+  - id: INT-001
+    statement: Interaction ska normalt realisera exakt ett Scenario i MVP:n.
+  - id: INT-002
+    statement: >-
+      Participant är en referens till ett befintligt modellobjekt och får inte användas för att
+      duplicera Actor, System, ExternalSystem, Component, Service eller DataStore.
+  - id: INT-003
+    statement: >-
+      En Interaction ska normalt ha minst två deltagare för att beskriva faktisk samverkan.
+  - id: INT-004
+    statement: >-
+      Deltagarnas ordning i participants-listan är presentationsordning/livslinjeordning och
+      beskriver inte meddelandeflödet; messages ordnas explicit med InteractionMessage.order.
+  - id: INT-005
+    statement: >-
+      Interaction ligger på logical-nivån och ska beskriva arkitekturellt relevant samverkan,
+      inte varje metodanrop eller ramverksinteraktion i implementationen.
+  - id: INT-006
+    statement: >-
+      scenario/participants-fälten och materialiserade realizes_scenario/has_participant-relationer
+      ska hållas semantiskt konsistenta när båda representationerna används.
+  - id: INT-007
+    statement: >-
+      sender och receiver i varje InteractionMessage ska referera till deltagare som finns i
+      samma Interactions participants-lista.
+  - id: INT-008
+    statement: >-
+      InteractionMessage.order ska vara unikt inom en Interaction och ange den kanoniska
+      sekvensordningen; listordningen ska inte användas som ersättning för order.
+  - id: INT-009
+    statement: >-
+      InteractionMessage ska beskriva ett arkitekturellt relevant utbyte. Interna metodanrop,
+      getters, ramverkscallbacks och liknande implementationsbrus ska normalt utelämnas.
+  - id: INT-010
+    statement: >-
+      information ska referera till konceptuella InformationObject. Tekniska payload-klasser
+      eller databastabeller ska inte ersätta informationsbegreppet.
+  - id: INT-011
+    statement: >-
+      message_ref får användas när kommunikationssteget realiserar ett redan modellerat
+      Message eller Event från integrationsmodellen, men är inte obligatoriskt.

@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://system-modeller.local/schemas/context.schema.json",
+  "title": "System Modeller context model",
+  "description": "System, ExternalSystem and Actor definitions introduced in Plan A step A5.",
+  "$defs": {
+    "commonElement": {
+      "$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/modelElement"
+    },
+    "system": {
+      "allOf": [
+        {"$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/modelElement"},
+        {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string", "pattern": "^SYS-[0-9]{6}$"},
+            "type": {"const": "System"},
+            "abstraction_level": {"const": "conceptual"},
+            "purpose": {"type": "string", "minLength": 1},
+            "scope": {"type": "string", "minLength": 1},
+            "ownership": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "externalSystem": {
+      "allOf": [
+        {"$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/modelElement"},
+        {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string", "pattern": "^EXT-[0-9]{6}$"},
+            "type": {"const": "ExternalSystem"},
+            "abstraction_level": {"const": "conceptual"},
+            "ownership": {"type": "string", "minLength": 1},
+            "external_type": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "actor": {
+      "allOf": [
+        {"$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/modelElement"},
+        {
+          "type": "object",
+          "required": ["actor_kind"],
+          "properties": {
+            "id": {"type": "string", "pattern": "^ACT-[0-9]{6}$"},
+            "type": {"const": "Actor"},
+            "abstraction_level": {"const": "conceptual"},
+            "actor_kind": {
+              "type": "string",
+              "enum": ["person", "role", "organization", "external_technical_actor"]
+            },
+            "organization": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "contextRelationship": {
+      "allOf": [
+        {"$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/relationship"},
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": ["interacts_with", "uses", "exchanges_information_with"]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "required": ["elements", "relationships"],
+  "properties": {
+    "elements": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {"$ref": "#/$defs/system"},
+          {"$ref": "#/$defs/externalSystem"},
+          {"$ref": "#/$defs/actor"}
+        ]
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/contextRelationship"}
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "elements": {
+          "contains": {"$ref": "#/$defs/system"},
+          "minContains": 1,
+          "maxContains": 1
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://system-modeller.local/schemas/use-cases.schema.json",
+  "title": "System Modeller use-case model",
+  "description": "System context, Responsibility and UseCase introduced through Plan A step A7.",
+  "$defs": {
+    "system": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/system"
+    },
+    "externalSystem": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/externalSystem"
+    },
+    "actor": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/actor"
+    },
+    "responsibility": {
+      "$ref": "https://system-modeller.local/schemas/functions.schema.json#/$defs/responsibility"
+    },
+    "stableRef": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*-[0-9]{6}$"
+    },
+    "useCase": {
+      "allOf": [
+        {
+          "$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/modelElement"
+        },
+        {
+          "type": "object",
+          "required": [
+            "primary_actor",
+            "responsibility",
+            "outcome"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^UC-[0-9]{6}$"
+            },
+            "type": {
+              "const": "UseCase"
+            },
+            "abstraction_level": {
+              "const": "conceptual"
+            },
+            "primary_actor": {
+              "type": "string",
+              "pattern": "^ACT-[0-9]{6}$"
+            },
+            "supporting_actors": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^ACT-[0-9]{6}$"
+              }
+            },
+            "responsibility": {
+              "type": "string",
+              "pattern": "^RSP-[0-9]{6}$"
+            },
+            "trigger": {
+              "type": "string",
+              "minLength": 1
+            },
+            "outcome": {
+              "type": "string",
+              "minLength": 1
+            },
+            "preconditions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "postconditions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "related_information": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^INFO-[0-9]{6}$"
+              }
+            },
+            "realized_by": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/stableRef"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "useCaseRelationship": {
+      "allOf": [
+        {
+          "$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/relationship"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "interacts_with",
+                "uses",
+                "exchanges_information_with",
+                "has_responsibility",
+                "performs",
+                "groups_use_case",
+                "includes",
+                "extends",
+                "specializes"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "required": [
+    "elements",
+    "relationships"
+  ],
+  "properties": {
+    "elements": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/system"
+          },
+          {
+            "$ref": "#/$defs/externalSystem"
+          },
+          {
+            "$ref": "#/$defs/actor"
+          },
+          {
+            "$ref": "#/$defs/responsibility"
+          },
+          {
+            "$ref": "#/$defs/useCase"
+          }
+        ]
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/useCaseRelationship"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "elements": {
+          "contains": {
+            "$ref": "#/$defs/system"
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

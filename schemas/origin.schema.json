@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://system-modeller.local/schemas/origin.schema.json",
+  "title": "System Modeller model with origin semantics",
+  "description": "Model through Plan A step A22. Uses A21 provenance and constrains model element/relation origin through common.schema.json.",
+  "allOf": [
+    {
+      "$ref": "https://system-modeller.local/schemas/provenance.schema.json"
+    }
+  ]
+}
