@@ -191,7 +191,7 @@ def main() -> int:
     ap.add_argument("--json", action="store_true", help="Emit JSON")
     ap.add_argument("--expected-version", help="Expected distribution version; tag-derived in release CI")
     ns = ap.parse_args()
-    expected = versioning.normalize_release(ns.expected_version) if ns.expected_version else versioning.resolve().distribution_version
+    expected = versioning.normalize_distribution_version(ns.expected_version) if ns.expected_version else versioning.resolve().distribution_version
     findings, summary = validate(ns.custom, ns.chat, expected)
     if ns.json:
         print(json.dumps({"summary": summary, "findings": findings}, ensure_ascii=False, indent=2))

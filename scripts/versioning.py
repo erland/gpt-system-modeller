@@ -16,6 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SEMVER = re.compile(r"^(?:v)?(?P<version>0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
+DISTRIBUTION_VERSION = re.compile(r"^(?P<base>(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*))(?:-dev\.(?:0|[1-9]\d*))?$")
 
 
 @dataclass(frozen=True)
@@ -33,6 +34,22 @@ def normalize_release(value: str) -> str:
     if not match:
         raise ValueError(f"release version/tag must match vX.Y.Z or X.Y.Z, got {value!r}")
     return value[1:] if value.startswith("v") else value
+
+
+def normalize_distribution_version(value: str) -> str:
+    """Validate an already-resolved distribution version.
+
+    Development builds may carry the repository suffix ``-dev.N`` while
+    release builds remain plain ``X.Y.Z``. Git/tag inputs must still go
+    through :func:`normalize_release` and therefore cannot use dev suffixes.
+    """
+    value = value.strip()
+    if not DISTRIBUTION_VERSION.fullmatch(value):
+        raise ValueError(
+            "distribution version must match X.Y.Z or X.Y.Z-dev.N, "
+            f"got {value!r}"
+        )
+    return value
 
 
 def repository_version(root: Path = ROOT) -> str:

@@ -2,10 +2,10 @@
 
 - Current plan: Plan A+ – Custom GPT distribution and release automation
 - Plan A completion marker: A1–A30 / A30
-- Completed: A1–A37 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37
-- Current version: 0.1.0-dev.37
-- Milestone: **Plan A complete; PR/main verification and release.published publishing implemented**
-- Next: publish a GitHub Release to verify the hosted release job and uploaded release assets.
+- Completed: A1–A38 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38
+- Current version: 0.1.0-dev.38
+- Milestone: **Plan A complete; PR/main and release validation use compatible version semantics**
+- Next: run the hosted PR/main workflow and then publish a GitHub Release to verify release assets.
 
 ## A36 result
 
@@ -22,3 +22,8 @@ A conservative cleanup removed superseded duplicate/generated artifacts while pr
 ## A37 result
 
 Pull requests run the full regression suite, pushes to `main` and manual runs additionally build/validate both distributions, and `release.published` builds and attaches Chat, Custom GPT and the build manifest to the GitHub Release. Only the release job receives `contents: write`.
+
+
+## A38 result
+
+Development distribution versions (`X.Y.Z-dev.N`) are now valid inputs to ZIP parity validation, while release/tag parsing remains strict (`vX.Y.Z` or `X.Y.Z`). This fixes the A36 hosted main-build failure without weakening release validation.
