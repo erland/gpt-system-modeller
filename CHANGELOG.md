@@ -1,4 +1,10 @@
 # Changelog
+## 0.1.0-dev.39
+
+- A39: isolate regression tests from outer GitHub release/tag environment.
+- Prevent historical fallback-version tests such as A32/A34/A35 from being reinterpreted during `release.published` jobs.
+- Preserve explicit release/tag coverage in A36-A38 through test-local environment injection.
+
 
 ## 0.1.0-dev.35 – A35
 
