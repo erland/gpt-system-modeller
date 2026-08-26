@@ -1,0 +1,9 @@
+format: system-modeller-project
+project:
+  id: reference-order-system
+  name: Reference Order System
+  description: Referenssystem för System Modeller MVP med order, betalning och leverans.
+  schema_version: 0.1.0
+  model_version: 0.1.0
+  language: sv
+  default_view_profile: system_overview

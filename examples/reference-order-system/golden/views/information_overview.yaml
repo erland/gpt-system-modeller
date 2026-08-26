@@ -1,0 +1,46 @@
+view:
+  id: VIEW-000001
+  name: Information Overview
+  type: information_overview
+  purpose: Show central conceptual information and information relationships.
+  detail_level: conceptual
+  notation: neutral
+elements:
+- id: INFO-000001
+  type: InformationObject
+  name: Order
+  description: Kundens beställning och dess aktuella status.
+  abstraction_level: conceptual
+  lifecycle:
+  - registrerad
+  - behandlas
+  - levererad
+  origin:
+  - declared
+  - inferred
+  evidence:
+  - EVD-000001
+  - EVD-000003
+- id: INFO-000002
+  type: InformationObject
+  name: Kund
+  description: Information som identifierar kunden som gör beställningen.
+  abstraction_level: conceptual
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+- id: INFO-000003
+  type: InformationObject
+  name: Betalning
+  description: Information om verifieringen av betalningen.
+  abstraction_level: conceptual
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+links: []
+summary:
+  element_count: 3
+  link_count: 0
+  derived_link_count: 0

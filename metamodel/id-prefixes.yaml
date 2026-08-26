@@ -1,0 +1,57 @@
+registry:
+  status: provisional
+  rule: Prefixer är typindikatorer, inte identiteten i sig. Ett tilldelat ID är stabilt
+    och ändras inte när objektets namn ändras. Registret får utökas i senare steg.
+  numeric_width: 6
+  reserved:
+    SYS: System
+    EXT: ExternalSystem
+    ACT: Actor
+    RSP: Responsibility
+    UC: UseCase
+    INFO: InformationObject
+    SUB: Subsystem
+    CMP: Component
+    SVC: Service
+    IF: Interface
+    API: API
+    MSG: Message
+    EVT: Event
+    DS: DataStore
+    SCN: Scenario
+    INT: Interaction
+    IM: InteractionMessage
+    RUN: RuntimeUnit
+    NODE: DeploymentNode
+    ENV: Environment
+    ADR: ArchitectureDecision
+    CON: Constraint
+    SRC: Source
+    REF: SourceReference
+    EVD: Evidence
+    REP: Repository
+    MOD: Module
+    PKG: Package
+    CLS: Class
+    END: Endpoint
+    TBL: DatabaseTable
+    FILE: SourceFile
+    OBS: Observation
+    REL: Relationship
+prefixes:
+  Interface: IF
+  API: API
+  Message: MSG
+  Event: EVT
+  DataStore: DS
+  Scenario: SCN
+  Interaction: INT
+  InteractionMessage: IM
+  RuntimeUnit: RUN
+  DeploymentNode: NODE
+  Environment: ENV
+  ArchitectureDecision: ADR
+  Constraint: CON
+  Source: SRC
+  SourceReference: REF
+  Evidence: EVD

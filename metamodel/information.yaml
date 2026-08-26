@@ -1,0 +1,63 @@
+metamodel:
+  id: system-modeller-information
+  version: 0.1.0-dev.8
+  status: normative
+  purpose: Informationsmodell för Plan A steg A8. InformationObject beskriver verksamhetsmässigt
+    betydelsefull information på konceptuell nivå, frikopplad från databastabeller,
+    klasser och andra implementationselement.
+element_types:
+  InformationObject:
+    id_prefix: INFO
+    abstraction_level: conceptual
+    description: Ett verksamhetsmässigt betydelsefullt informationsbegrepp som systemet
+      skapar, använder, förändrar eller utbyter.
+    required_fields: []
+    optional_fields:
+    - owner
+    - master
+    - lifecycle
+    - classification
+    - authoritative_source
+    - related_stores
+relationship_types:
+  contains_information:
+    description: Ett informationsobjekt innehåller eller består av ett annat informationsobjekt.
+    allowed_pairs:
+    - - InformationObject
+      - InformationObject
+  references_information:
+    description: Ett informationsobjekt refererar till ett annat utan att innebära
+      ägarskap eller komposition.
+    allowed_pairs:
+    - - InformationObject
+      - InformationObject
+  relates_to_information:
+    description: Två informationsobjekt har en relevant semantisk relation som inte
+      uttrycks bättre av en mer specifik relation.
+    allowed_pairs:
+    - - InformationObject
+      - InformationObject
+  derived_from_information:
+    description: Ett informationsobjekt härleds helt eller delvis från ett annat informationsobjekt.
+    allowed_pairs:
+    - - InformationObject
+      - InformationObject
+rules:
+- id: INFO-SEM-001
+  statement: InformationObject ska beskriva verksamhetsmässigt betydelsefull information,
+    inte en databastabell, klass, DTO eller fil som sådan.
+- id: INFO-SEM-002
+  statement: Namnet ska normalt vara ett stabilt verksamhetsbegrepp, exempelvis Order,
+    Kund eller Betalning.
+- id: INFO-SEM-003
+  statement: owner och master ska endast anges när ansvar eller auktoritativ källa
+    är tillräckligt känd; osäkerhet hanteras senare genom evidensmodellen.
+- id: INFO-SEM-004
+  statement: lifecycle beskriver relevanta verksamhetstillstånd eller livscykelfaser
+    och ska inte användas för tekniska persistensstatusar utan verksamhetsbetydelse.
+- id: INFO-SEM-005
+  statement: classification är en fri MVP-egenskap och får senare kopplas till en
+    formell säkerhets- eller informationsklassificeringsmodell.
+- id: INFO-SEM-006
+  statement: related_stores är en framåtreferens till DataStore och valideras fullt
+    först när DataStore införs i A13.

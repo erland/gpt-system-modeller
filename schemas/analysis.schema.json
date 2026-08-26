@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://system-modeller.local/schemas/analysis.schema.json",
+  "title": "System Modeller A29 analysis records",
+  "$defs": {
+    "candidateConcept": {
+      "type": "object",
+      "required": ["type", "name", "abstraction_level", "rationale", "confidence"],
+      "properties": {
+        "type": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "abstraction_level": {"enum": ["conceptual", "logical", "runtime", "implementation"]},
+        "rationale": {"type": "string", "minLength": 1},
+        "confidence": {"enum": ["high", "medium", "low", "unknown"]},
+        "fields": {"type": "object"},
+        "relationship_hints": {"type": "array", "items": {"type": "object"}},
+        "source_refs": {"type": "array", "items": {"type": "string", "pattern": "^REF-[0-9]{6}$"}, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "observation": {
+      "type": "object",
+      "required": ["id", "type", "observation_kind", "statement", "source_refs", "confidence"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^OBS-[0-9]{6}$"},
+        "type": {"const": "Observation"},
+        "observation_kind": {"enum": ["documentation_statement", "source_symbol", "dependency", "api_endpoint", "data_structure", "configuration", "deployment", "behavior", "technology", "other"]},
+        "statement": {"type": "string", "minLength": 1},
+        "source_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^REF-[0-9]{6}$"}, "uniqueItems": true},
+        "confidence": {"enum": ["high", "medium", "low", "unknown"]},
+        "subject": {"type": "string"},
+        "predicate": {"type": "string"},
+        "object": {"type": ["string", "number", "boolean", "null"]},
+        "raw_facts": {"type": "array", "items": {"type": "string"}},
+        "candidate_concepts": {"type": "array", "items": {"$ref": "#/$defs/candidateConcept"}},
+        "metadata": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "analysisResult": {
+      "type": "object",
+      "required": ["analysis_result"],
+      "properties": {
+        "analysis_result": {
+          "type": "object",
+          "required": ["observations"],
+          "properties": {
+            "summary": {"type": "string"},
+            "observations": {"type": "array", "items": {"$ref": "#/$defs/observation"}},
+            "open_questions": {"type": "array", "items": {"type": "string"}}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

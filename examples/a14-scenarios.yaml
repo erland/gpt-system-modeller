@@ -1,0 +1,69 @@
+elements:
+- id: SYS-000001
+  type: System
+  name: Order System
+  abstraction_level: conceptual
+- id: ACT-000001
+  type: Actor
+  name: Customer
+  abstraction_level: conceptual
+  actor_kind: role
+- id: EXT-000001
+  type: ExternalSystem
+  name: Payment Provider
+  abstraction_level: conceptual
+- id: RSP-000001
+  type: Responsibility
+  name: Order Management
+  abstraction_level: conceptual
+- id: UC-000001
+  type: UseCase
+  name: Place order
+  abstraction_level: conceptual
+  primary_actor: ACT-000001
+  responsibility: RSP-000001
+  outcome: An order is registered.
+- id: INFO-000001
+  type: InformationObject
+  name: Order
+  abstraction_level: conceptual
+- id: CMP-000001
+  type: Component
+  name: Order Management
+  abstraction_level: logical
+- id: SCN-000001
+  type: Scenario
+  name: Customer places and pays for order
+  abstraction_level: conceptual
+  use_case: UC-000001
+  actors:
+  - ACT-000001
+  information:
+  - INFO-000001
+  components:
+  - CMP-000001
+  external_systems:
+  - EXT-000001
+  trigger: Customer confirms checkout.
+  outcome: The order is registered and payment has been requested.
+relationships:
+- id: REL-000001
+  type: scenario_for
+  source: SCN-000001
+  target: UC-000001
+- id: REL-000002
+  type: involves
+  source: SCN-000001
+  target: ACT-000001
+- id: REL-000003
+  type: involves
+  source: SCN-000001
+  target: CMP-000001
+- id: REL-000004
+  type: involves
+  source: SCN-000001
+  target: EXT-000001
+- id: REL-000005
+  type: involves_information
+  source: SCN-000001
+  target: INFO-000001

@@ -1,0 +1,18 @@
+elements:
+- id: OBS-000001
+  type: Observation
+  observation_kind: dependency
+  statement: OrderResource, OrderService och OrderRepository samverkar kring orderhantering.
+  source_refs:
+  - REF-000002
+  confidence: high
+  raw_facts:
+  - OrderResource depends on OrderService.
+  - OrderService depends on OrderRepository.
+  candidate_concepts:
+  - name: Order Management
+    abstraction_level: logical
+    confidence: high
+    rationale: Flera kodobjekt har ett sammanhållet ansvar för orderns livscykel.
+    type: Component
+relationships: []

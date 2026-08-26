@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://system-modeller.local/schemas/functions.schema.json",
+  "title": "System Modeller functional responsibility model",
+  "description": "System context plus Responsibility introduced in Plan A step A6.",
+  "$defs": {
+    "system": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/system"
+    },
+    "externalSystem": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/externalSystem"
+    },
+    "actor": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/actor"
+    },
+    "responsibility": {
+      "allOf": [
+        {
+          "$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/modelElement"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^RSP-[0-9]{6}$"
+            },
+            "type": {
+              "const": "Responsibility"
+            },
+            "abstraction_level": {
+              "const": "conceptual"
+            },
+            "purpose": {
+              "type": "string",
+              "minLength": 1
+            },
+            "scope": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "functionalRelationship": {
+      "allOf": [
+        {
+          "$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/relationship"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "interacts_with",
+                "uses",
+                "exchanges_information_with",
+                "has_responsibility"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "required": [
+    "elements",
+    "relationships"
+  ],
+  "properties": {
+    "elements": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/system"
+          },
+          {
+            "$ref": "#/$defs/externalSystem"
+          },
+          {
+            "$ref": "#/$defs/actor"
+          },
+          {
+            "$ref": "#/$defs/responsibility"
+          }
+        ]
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/functionalRelationship"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "elements": {
+          "contains": {
+            "$ref": "#/$defs/system"
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

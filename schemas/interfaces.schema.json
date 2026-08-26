@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://system-modeller.local/schemas/interfaces.schema.json",
+  "title": "System Modeller interface and API model",
+  "description": "Model through Plan A step A11 including Interface and API.",
+  "$defs": {
+    "system": {"$ref":"https://system-modeller.local/schemas/context.schema.json#/$defs/system"},
+    "externalSystem": {"$ref":"https://system-modeller.local/schemas/context.schema.json#/$defs/externalSystem"},
+    "actor": {"$ref":"https://system-modeller.local/schemas/context.schema.json#/$defs/actor"},
+    "responsibility": {"$ref":"https://system-modeller.local/schemas/functions.schema.json#/$defs/responsibility"},
+    "useCase": {"$ref":"https://system-modeller.local/schemas/use-cases.schema.json#/$defs/useCase"},
+    "informationObject": {"$ref":"https://system-modeller.local/schemas/information.schema.json#/$defs/informationObject"},
+    "subsystem": {"$ref":"https://system-modeller.local/schemas/logical-structure.schema.json#/$defs/subsystem"},
+    "component": {"$ref":"https://system-modeller.local/schemas/logical-structure.schema.json#/$defs/component"},
+    "service": {"$ref":"https://system-modeller.local/schemas/logical-structure.schema.json#/$defs/service"},
+    "interface": {
+      "allOf": [
+        {"$ref":"https://system-modeller.local/schemas/common.schema.json#/$defs/modelElement"},
+        {"type":"object","required":["provider"],"properties":{
+          "id":{"type":"string","pattern":"^IF-[0-9]{6}$"},
+          "type":{"const":"Interface"},
+          "abstraction_level":{"const":"logical"},
+          "provider":{"type":"string","pattern":"^(SYS|EXT|CMP|SVC)-[0-9]{6}$"},
+          "consumers":{"type":"array","items":{"type":"string","pattern":"^(SYS|EXT|CMP|SVC)-[0-9]{6}$"},"uniqueItems":true},
+          "protocol":{"type":"string","minLength":1},
+          "version":{"type":"string","minLength":1},
+          "authentication":{"type":"string","minLength":1},
+          "exchanged_information":{"type":"array","items":{"type":"string","pattern":"^INFO-[0-9]{6}$"},"uniqueItems":true}
+        }}
+      ]
+    },
+    "api": {
+      "allOf": [
+        {"$ref":"https://system-modeller.local/schemas/common.schema.json#/$defs/modelElement"},
+        {"type":"object","required":["provider","api_style"],"properties":{
+          "id":{"type":"string","pattern":"^API-[0-9]{6}$"},
+          "type":{"const":"API"},
+          "abstraction_level":{"const":"logical"},
+          "provider":{"type":"string","pattern":"^(SYS|EXT|CMP|SVC)-[0-9]{6}$"},
+          "consumers":{"type":"array","items":{"type":"string","pattern":"^(SYS|EXT|CMP|SVC)-[0-9]{6}$"},"uniqueItems":true},
+          "api_style":{"enum":["REST","GraphQL","SOAP","gRPC","other"]},
+          "protocol":{"type":"string","minLength":1},
+          "version":{"type":"string","minLength":1},
+          "authentication":{"type":"string","minLength":1},
+          "exchanged_information":{"type":"array","items":{"type":"string","pattern":"^INFO-[0-9]{6}$"},"uniqueItems":true}
+        }}
+      ]
+    },
+    "interfaceRelationship": {
+      "allOf": [
+        {"$ref":"https://system-modeller.local/schemas/common.schema.json#/$defs/relationship"},
+        {"type":"object","properties":{"type":{"enum":["interacts_with","uses","exchanges_information_with","has_responsibility","performs","groups_use_case","includes","extends","specializes","contains_information","references_information","relates_to_information","derived_from_information","creates_information","reads_information","updates_information","deletes_information","owns_information","masters_information","stores_information","exchanges_information","contains","part_of","depends_on","provides","realized_by","realizes","exposes","consumes_interface","provides_interface"]}}}
+      ]
+    }
+  },
+  "type":"object",
+  "required":["elements","relationships"],
+  "properties":{
+    "elements":{"type":"array","items":{"oneOf":[
+      {"$ref":"#/$defs/system"},{"$ref":"#/$defs/externalSystem"},{"$ref":"#/$defs/actor"},{"$ref":"#/$defs/responsibility"},{"$ref":"#/$defs/useCase"},{"$ref":"#/$defs/informationObject"},{"$ref":"#/$defs/subsystem"},{"$ref":"#/$defs/component"},{"$ref":"#/$defs/service"},{"$ref":"#/$defs/interface"},{"$ref":"#/$defs/api"}
+    ]}},
+    "relationships":{"type":"array","items":{"$ref":"#/$defs/interfaceRelationship"}}
+  },
+  "allOf":[{"properties":{"elements":{"contains":{"$ref":"#/$defs/system"},"minContains":1,"maxContains":1}}}],
+  "additionalProperties":false
+}

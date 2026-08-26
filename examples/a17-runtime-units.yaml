@@ -1,0 +1,45 @@
+elements:
+- id: SYS-000001
+  type: System
+  name: Order System
+  abstraction_level: conceptual
+- id: CMP-000001
+  type: Component
+  name: Order Management
+  abstraction_level: logical
+- id: SVC-000001
+  type: Service
+  name: Order Application Service
+  abstraction_level: logical
+- id: DS-000001
+  type: DataStore
+  name: Order Store
+  abstraction_level: logical
+  store_kind: relational_database
+- id: RUN-000001
+  type: RuntimeUnit
+  name: Order API
+  abstraction_level: runtime
+  runtime_kind: application_service
+  purpose: Runs the order management application API.
+  technology: Java/Quarkus
+- id: RUN-000002
+  type: RuntimeUnit
+  name: Order Database
+  abstraction_level: runtime
+  runtime_kind: database
+  purpose: Runtime database for persisted order information.
+  technology: PostgreSQL
+relationships:
+- id: REL-000001
+  type: realized_as
+  source: CMP-000001
+  target: RUN-000001
+- id: REL-000002
+  type: realized_as
+  source: SVC-000001
+  target: RUN-000001
+- id: REL-000003
+  type: realized_as
+  source: DS-000001
+  target: RUN-000002

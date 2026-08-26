@@ -1,0 +1,83 @@
+metamodel:
+  id: system-modeller-provenance
+  version: 0.1.0-dev.21
+  status: normative
+  purpose: >-
+    Provenance- och evidensmodell för System Modeller. Lagret beskriver var
+    modellpåståenden kommer ifrån utan att göra källmaterial till arkitekturelement.
+
+record_types:
+  Source:
+    id_prefix: SRC
+    description: Ett identifierbart underlag som kan styrka eller motsäga modellpåståenden.
+    required_fields:
+      - source_kind
+      - name
+    optional_fields:
+      - location
+      - revision
+      - description
+      - metadata
+    source_kind_values:
+      - source_code
+      - documentation
+      - user_statement
+      - api_specification
+      - database_schema
+      - configuration
+      - other
+
+  SourceReference:
+    id_prefix: REF
+    description: En exakt eller så specifik som möjligt locator inuti en Source.
+    required_fields:
+      - source
+    optional_fields:
+      - file
+      - symbol
+      - start_line
+      - end_line
+      - page
+      - section
+      - paragraph
+      - locator
+      - excerpt_hash
+      - metadata
+
+  Evidence:
+    id_prefix: EVD
+    description: Ett spårbart stöd för ett modellobjekt eller en relation.
+    required_fields:
+      - status
+      - confidence
+    optional_fields:
+      - source_refs
+      - reason
+      - metadata
+    status_values:
+      - source_confirmed
+      - user_confirmed
+      - inferred
+      - assumed
+      - unresolved
+    confidence_values:
+      - high
+      - medium
+      - low
+      - unknown
+
+rules:
+  - id: PROV-001
+    statement: Source, SourceReference och Evidence är provenance-poster och inte arkitekturelement; de ska därför inte ges conceptual/logical/runtime/implementation-nivå.
+  - id: PROV-002
+    statement: Modellobjekt och relationer refererar Evidence med stabila EVD-ID:n genom det gemensamma evidence-fältet.
+  - id: PROV-003
+    statement: Evidence refererar SourceReference, och SourceReference refererar exakt en Source.
+  - id: PROV-004
+    statement: source_confirmed ska normalt ha minst en SourceReference. user_confirmed kan sakna extern källa om användarens uppgift i sig är källan, men en user_statement Source rekommenderas när spårbarhet behövs.
+  - id: PROV-005
+    statement: inferred och assumed måste ha reason. inferred bör referera de källor som slutsatsen bygger på när sådana finns.
+  - id: PROV-006
+    statement: SourceReference ska vara så exakt som underlaget tillåter. För kod används i första hand revision, fil, symbol och radintervall; för dokument fil, sida och sektion.
+  - id: PROV-007
+    statement: Evidence uttrycker styrkan och typen av stöd, inte om arkitekturen är declared eller observed. Den dimensionen införs separat i A22.

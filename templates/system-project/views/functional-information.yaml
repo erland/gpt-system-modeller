@@ -1,0 +1,7 @@
+id: VIEW-000006
+name: Funktion och information
+type: functional_information
+purpose: Visa hur funktioner och use cases använder central information.
+audience: [arkitekt, verksamhet, utvecklare]
+detail_level: conceptual
+notation: neutral

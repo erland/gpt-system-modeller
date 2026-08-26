@@ -1,0 +1,79 @@
+metamodel:
+  id: system-modeller-common
+  version: 0.1.0-dev.22
+  status: normative
+  purpose: Gemensam baskonstruktion för modellobjekt och relationer i System Modeller.
+    Domänspecifika elementtyper och relationsregler läggs till i senare steg.
+abstraction_levels:
+- conceptual
+- logical
+- runtime
+- implementation
+common_element_fields:
+  required:
+  - id
+  - type
+  - name
+  - abstraction_level
+  optional:
+  - description
+  - status
+  - aliases
+  - tags
+  - origin
+  - evidence
+  - metadata
+relationship_fields:
+  required:
+  - id
+  - type
+  - source
+  - target
+  optional:
+  - name
+  - description
+  - abstraction_level
+  - status
+  - tags
+  - origin
+  - evidence
+  - metadata
+conventions:
+  ids:
+    stable: true
+    rename_preserves_id: true
+    case: upper
+    numeric_width: 6
+    relationship_prefix: REL
+  type_names:
+    format: PascalCase
+    open_until_defined: true
+  relationship_type_names:
+    format: snake_case
+    open_until_defined: true
+  references:
+    use_ids_not_names: true
+  metadata:
+    extension_point: true
+    domain_semantics_forbidden: true
+origin_semantics:
+  description: Separat dimension för hur ett modellpåstående har uppkommit; ska inte
+    blandas ihop med Evidence.status.
+  values:
+    declared: Explicit beskrivet som avsedd/dokumenterad arkitektur i ett underlag.
+    observed: Direkt observerbart i implementation, konfiguration, API, schema eller
+      annan teknisk källa.
+    inferred: Härlett genom analys eller abstraktion och inte direkt uttalat/observerat
+      i samma form.
+    user_confirmed: Explicit bekräftat av användaren som giltigt modellpåstående.
+    unresolved: Ursprunget eller den arkitekturella statusen är ännu inte tillräckligt
+      klarlagd.
+  multiple_allowed: true
+  examples:
+  - - declared
+  - - observed
+  - - inferred
+  - - declared
+    - observed
+  - - declared
+    - user_confirmed

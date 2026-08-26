@@ -1,0 +1,9 @@
+id: VIEW-000009
+name: Sekvensvy
+type: sequence
+purpose: Visa ett viktigt scenarios ordnade interaktion mellan deltagare.
+audience:
+- arkitekt
+- utvecklare
+detail_level: logical
+notation: uml

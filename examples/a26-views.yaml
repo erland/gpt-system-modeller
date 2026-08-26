@@ -1,0 +1,31 @@
+views:
+  - id: VIEW-000001
+    name: Systemkontext
+    type: system_context
+    detail_level: overview
+    notation: neutral
+  - id: VIEW-000002
+    name: Funktionell översikt
+    type: functional_overview
+    detail_level: overview
+    notation: neutral
+  - id: VIEW-000003
+    name: Use case-översikt
+    type: use_case_overview
+    detail_level: conceptual
+    notation: uml
+  - id: VIEW-000004
+    name: Informationsöversikt
+    type: information_overview
+    detail_level: conceptual
+    notation: neutral
+  - id: VIEW-000005
+    name: Funktion och information
+    type: functional_information
+    detail_level: conceptual
+    notation: neutral
+  - id: VIEW-000006
+    name: Logisk komponentvy
+    type: logical_component
+    detail_level: logical
+    notation: c4_like

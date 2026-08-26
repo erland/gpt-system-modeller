@@ -1,0 +1,7 @@
+id: VIEW-000002
+name: Use case-översikt
+type: use_case_overview
+purpose: Visa aktörer, funktionella ansvar och viktigaste use cases.
+audience: [arkitekt, verksamhet, utvecklare]
+detail_level: conceptual
+notation: uml

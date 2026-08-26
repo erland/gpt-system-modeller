@@ -1,0 +1,16 @@
+flowchart LR
+    API_000001["Order API<br/><small>API</small>"]
+    API_000002["Payment API<br/><small>API</small>"]
+    CMP_000001["Order Management<br/><small>Component</small>"]
+    CMP_000002["Payment Integration<br/><small>Component</small>"]
+    CMP_000003["Order Web<br/><small>Component</small>"]
+    DS_000001["Order Database<br/><small>DataStore</small>"]
+    SUB_000001["Order Core<br/><small>Subsystem</small>"]
+    SVC_000001["Order Service<br/><small>Service</small>"]
+    CMP_000001 -->|accesses| DS_000001
+    CMP_000002 -->|consumes_interface| API_000002
+    SUB_000001 -->|contains| CMP_000001
+    SUB_000001 -->|contains| CMP_000002
+    CMP_000001 -->|provides| SVC_000001
+    CMP_000001 -->|provides_interface| API_000001
+    CMP_000001 -->|uses| CMP_000002

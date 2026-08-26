@@ -1,0 +1,35 @@
+elements:
+  - id: SYS-000001
+    type: System
+    name: Order System
+    description: System för att lägga och följa kundorder.
+    abstraction_level: conceptual
+    purpose: Hantera order från registrering till leverans.
+    scope: Webbgränssnitt och orderhantering ingår; extern betalning ligger utanför systemgränsen.
+
+  - id: ACT-000001
+    type: Actor
+    name: Customer
+    description: Kund som lägger och följer sina order.
+    abstraction_level: conceptual
+    actor_kind: role
+
+  - id: EXT-000001
+    type: ExternalSystem
+    name: Payment Provider
+    description: Extern tjänst för betalningsauktorisering.
+    abstraction_level: conceptual
+    external_type: payment_service
+
+relationships:
+  - id: REL-000001
+    type: uses
+    source: ACT-000001
+    target: SYS-000001
+    description: Kunden använder ordersystemet.
+
+  - id: REL-000002
+    type: exchanges_information_with
+    source: SYS-000001
+    target: EXT-000001
+    description: Ordersystemet utbyter betalningsinformation med betalningsleverantören.

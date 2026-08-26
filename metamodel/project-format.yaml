@@ -1,0 +1,70 @@
+version: 0.1.0
+step: A23
+name: System Modeller system project format
+purpose: >
+  Defines the portable ZIP/project structure for a concrete modeled system.
+  The System Modeller GPT package and the system project are separate artifacts.
+
+manifest:
+  path: project.yaml
+  required: true
+  fields:
+    format:
+      required: true
+      const: system-modeller-project
+    project:
+      required: true
+      fields:
+        id: {required: true, format: slug}
+        name: {required: true}
+        description: {required: false}
+        schema_version: {required: true, format: semver}
+        model_version: {required: true, format: semver}
+        language: {required: true, format: bcp47-like}
+        default_view_profile: {required: false}
+
+required_paths:
+  - project.yaml
+  - model/
+
+canonical_model_shards:
+  model/context.yaml: [System, ExternalSystem, Actor]
+  model/functions.yaml: [Responsibility]
+  model/use-cases.yaml: [UseCase]
+  model/information.yaml: [InformationObject]
+  model/structure.yaml: [Subsystem, Component, Service]
+  model/integrations.yaml: [Interface, API, Message, Event]
+  model/data-stores.yaml: [DataStore]
+  model/deployment.yaml: [RuntimeUnit, Environment, DeploymentNode]
+  model/decisions.yaml: [ArchitectureDecision, Constraint]
+  model/relationships.yaml: [Relationship]
+
+optional_paths:
+  interactions/: dynamic scenario and interaction shards
+  implementation/: implementation/evidence-level objects
+  sources/: Source, SourceReference, Evidence and later observations
+  views/: reusable view definitions
+  reports/: report definitions and generated markdown sources
+  issues/: unresolved questions and findings
+  exports/: generated output only; never canonical source
+
+shard_rules:
+  - A shard is a YAML document containing zero or more model collections.
+  - Empty collections are allowed.
+  - Stable IDs are globally unique across the complete project, not only within a shard.
+  - References may point to IDs in another shard.
+  - Splitting a model across files must not change model semantics.
+  - Generated files in exports/ must never be treated as canonical model input.
+  - Unknown additional YAML shards are allowed only in documented extension locations.
+
+zip_rules:
+  root_directory: system-project
+  portable: true
+  path_separator: '/'
+  forbidden:
+    - absolute paths
+    - parent traversal '..'
+    - temporary editor files
+    - .DS_Store
+    - __pycache__
+    - generated caches

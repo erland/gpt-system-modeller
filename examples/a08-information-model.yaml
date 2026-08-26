@@ -1,0 +1,36 @@
+elements:
+  - id: SYS-000001
+    type: System
+    name: Order System
+    abstraction_level: conceptual
+
+  - id: INFO-000001
+    type: InformationObject
+    name: Order
+    description: Information om en kunds beställning och dess övergripande status.
+    abstraction_level: conceptual
+    lifecycle: [skapad, bekräftad, behandlas, levererad, avslutad]
+    classification: internal
+
+  - id: INFO-000002
+    type: InformationObject
+    name: Orderrad
+    description: En beställd produkt och kvantitet inom en order.
+    abstraction_level: conceptual
+
+  - id: INFO-000003
+    type: InformationObject
+    name: Leveransunderlag
+    description: Information som härleds från ordern för att genomföra leverans.
+    abstraction_level: conceptual
+
+relationships:
+  - id: REL-000001
+    type: contains_information
+    source: INFO-000001
+    target: INFO-000002
+
+  - id: REL-000002
+    type: derived_from_information
+    source: INFO-000003
+    target: INFO-000001

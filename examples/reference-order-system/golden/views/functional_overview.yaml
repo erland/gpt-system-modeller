@@ -1,0 +1,41 @@
+view:
+  id: VIEW-000001
+  name: Functional Overview
+  type: functional_overview
+  purpose: Show the system and its major functional responsibilities.
+  detail_level: overview
+  notation: neutral
+elements:
+- id: RSP-000001
+  type: Responsibility
+  name: Orderhantering
+  description: Ansvarar för att registrera, lagra och följa order.
+  abstraction_level: conceptual
+  origin:
+  - declared
+  - inferred
+  evidence:
+  - EVD-000001
+  - EVD-000002
+- id: SYS-000001
+  type: System
+  name: Order System
+  description: Hanterar kundorder från registrering till publicerad orderhändelse.
+  abstraction_level: conceptual
+  origin:
+  - declared
+  - observed
+  evidence:
+  - EVD-000001
+links:
+- id: REL-000002
+  type: has_responsibility
+  source: SYS-000001
+  target: RSP-000001
+  origin:
+  - declared
+  derived: false
+summary:
+  element_count: 2
+  link_count: 1
+  derived_link_count: 0

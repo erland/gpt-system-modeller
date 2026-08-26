@@ -1,0 +1,219 @@
+view:
+  id: VIEW-000001
+  name: Integration View
+  type: integration
+  purpose: Visa systemets viktigaste synkrona och asynkrona integrationer samt informationsutbyte.
+  detail_level: logical
+  notation: neutral
+elements:
+- id: API-000001
+  type: API
+  name: Order API
+  description: HTTP API för att registrera och läsa order.
+  abstraction_level: logical
+  provider: CMP-000001
+  consumers:
+  - CMP-000003
+  api_style: REST
+  protocol: HTTPS
+  version: v1
+  exchanged_information:
+  - INFO-000001
+  - INFO-000002
+  origin:
+  - observed
+  evidence:
+  - EVD-000004
+- id: API-000002
+  type: API
+  name: Payment API
+  description: Externt API som används för betalningsverifiering.
+  abstraction_level: logical
+  provider: EXT-000001
+  consumers:
+  - CMP-000002
+  api_style: REST
+  protocol: HTTPS
+  exchanged_information:
+  - INFO-000003
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+- id: CMP-000001
+  type: Component
+  name: Order Management
+  description: Hanterar orderns livscykel och status.
+  abstraction_level: logical
+  origin:
+  - inferred
+  evidence:
+  - EVD-000002
+  - EVD-000003
+- id: CMP-000002
+  type: Component
+  name: Payment Integration
+  description: Isolerar kommunikationen med extern betalningstjänst.
+  abstraction_level: logical
+  origin:
+  - inferred
+  evidence:
+  - EVD-000001
+- id: CMP-000003
+  type: Component
+  name: Order Web
+  description: Webbgränssnitt för kundens orderflöden.
+  abstraction_level: logical
+  origin:
+  - inferred
+  evidence:
+  - EVD-000001
+- id: EVT-000001
+  type: Event
+  name: OrderCreated
+  description: Händelse som signalerar att en order har registrerats.
+  abstraction_level: logical
+  producer: CMP-000001
+  consumers:
+  - EXT-000002
+  communication_mode: asynchronous
+  exchanged_information:
+  - INFO-000001
+  topic: order.created
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+- id: EXT-000001
+  type: ExternalSystem
+  name: Payment Gateway
+  description: Extern tjänst som verifierar betalning.
+  abstraction_level: conceptual
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+- id: EXT-000002
+  type: ExternalSystem
+  name: Delivery System
+  description: Externt system som tar emot skapade order för leverans.
+  abstraction_level: conceptual
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+- id: INFO-000001
+  type: InformationObject
+  name: Order
+  description: Kundens beställning och dess aktuella status.
+  abstraction_level: conceptual
+  lifecycle:
+  - registrerad
+  - behandlas
+  - levererad
+  origin:
+  - declared
+  - inferred
+  evidence:
+  - EVD-000001
+  - EVD-000003
+- id: INFO-000002
+  type: InformationObject
+  name: Kund
+  description: Information som identifierar kunden som gör beställningen.
+  abstraction_level: conceptual
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+- id: INFO-000003
+  type: InformationObject
+  name: Betalning
+  description: Information om verifieringen av betalningen.
+  abstraction_level: conceptual
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+- id: SVC-000001
+  type: Service
+  name: Order Service
+  description: Erbjuder logiska orderoperationer.
+  abstraction_level: logical
+  origin:
+  - inferred
+  evidence:
+  - EVD-000002
+- id: SYS-000001
+  type: System
+  name: Order System
+  description: Hanterar kundorder från registrering till publicerad orderhändelse.
+  abstraction_level: conceptual
+  origin:
+  - declared
+  - observed
+  evidence:
+  - EVD-000001
+links:
+- id: REL-000018
+  type: consumes_interface
+  source: CMP-000002
+  target: API-000002
+  origin:
+  - declared
+  derived: false
+- id: DERIVED-000001
+  type: consumes_interface
+  source: CMP-000003
+  target: API-000001
+  derived: true
+- id: DERIVED-000002
+  type: exchanges_information
+  source: API-000001
+  target: INFO-000001
+  derived: true
+- id: DERIVED-000003
+  type: exchanges_information
+  source: API-000001
+  target: INFO-000002
+  derived: true
+- id: DERIVED-000005
+  type: exchanges_information
+  source: API-000002
+  target: INFO-000003
+  derived: true
+- id: DERIVED-000006
+  type: exchanges_information
+  source: EVT-000001
+  target: INFO-000001
+  derived: true
+- id: REL-000017
+  type: provides_interface
+  source: CMP-000001
+  target: API-000001
+  origin:
+  - observed
+  derived: false
+- id: DERIVED-000004
+  type: provides_interface
+  source: EXT-000001
+  target: API-000002
+  derived: true
+- id: REL-000019
+  type: publishes
+  source: CMP-000001
+  target: EVT-000001
+  origin:
+  - declared
+  derived: false
+- id: REL-000020
+  type: subscribes
+  source: EXT-000002
+  target: EVT-000001
+  origin:
+  - declared
+  derived: false
+summary:
+  element_count: 13
+  link_count: 10
+  derived_link_count: 6

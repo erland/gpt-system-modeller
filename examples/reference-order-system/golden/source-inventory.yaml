@@ -1,0 +1,59 @@
+analysis_packet:
+  format: system-modeller-analysis-inventory
+  root_name: input
+  file_count: 8
+  category_counts:
+    documentation: 1
+    database: 1
+    deployment: 1
+    api: 1
+    source_code: 4
+  files:
+  - path: README.md
+    size: 625
+    sha256: 158fdb60bdfaf64df94f4612d026ff5a74c88a8edf9bd4c41e1b49a14e7a100b
+    category: documentation
+    priority: high
+    language: Markdown
+  - path: db/schema.sql
+    size: 160
+    sha256: 2c255050459b25eb9bb96a3b2ffdf65cde352ed2a1449e61a4ed08c1e5b13765
+    category: database
+    priority: medium
+    language: SQL
+  - path: deploy/docker-compose.yaml
+    size: 140
+    sha256: 10340f60a549ed6754edb42419a2462037fa5ac29fb4eee0b3d783da668df71e
+    category: deployment
+    priority: high
+    language: YAML
+  - path: openapi.yaml
+    size: 467
+    sha256: 9d00e4341973c64a2014ce7dac9613fd14ba1611d0a3bcee4f85e05d385dfcd5
+    category: api
+    priority: high
+    language: YAML
+  - path: src/main/java/example/order/OrderRepository.java
+    size: 84
+    sha256: e32ea0ad7abe4014c3bea9b844d0aa8dcba67cd7e4c7f6a1d9d7e8f623bd253e
+    category: source_code
+    priority: medium
+    language: Java
+  - path: src/main/java/example/order/OrderResource.java
+    size: 226
+    sha256: 988995dcb801c156cd82aad82401274cb4053b72c805af61f60401965ef2c42a
+    category: source_code
+    priority: medium
+    language: Java
+  - path: src/main/java/example/order/OrderService.java
+    size: 238
+    sha256: fe511b9d7740434830a852a2eba8de1dc98a4edf667fdb865c657d87eceac167
+    category: source_code
+    priority: medium
+    language: Java
+  - path: web/OrderPage.tsx
+    size: 70
+    sha256: 7c5c5b9b5abbcf45835c3bf3ccc89542abb75c6cb95f4f33b5cd33a4ae58cc2c
+    category: source_code
+    priority: medium
+    language: TypeScript

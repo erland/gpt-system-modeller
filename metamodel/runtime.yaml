@@ -1,0 +1,58 @@
+metamodel:
+  id: system-modeller-runtime
+  version: 0.1.0-dev.17
+  status: normative
+  purpose: Runtimemodell för Plan A steg A17. Definierar RuntimeUnit som en körbar/deploybar
+    enhet som realiserar logiska komponenter, tjänster eller datalager utan att blanda
+    ihop runtime med implementation eller deploymentnod.
+element_types:
+  RuntimeUnit:
+    id_prefix: RUN
+    abstraction_level: runtime
+    description: En exekverande eller deploybar enhet som representerar vad som faktiskt
+      körs. RuntimeUnit är skild från både logisk Component/Service och den DeploymentNode
+      där enheten senare placeras.
+    required_fields:
+    - runtime_kind
+    optional_fields:
+    - purpose
+    - technology
+    - artifact
+    - instance_scope
+    runtime_kinds:
+    - web_application
+    - application_service
+    - background_service
+    - batch_job
+    - database
+    - message_broker
+    - function
+relationship_types:
+  realized_as:
+    description: Ett logiskt arkitekturelement realiseras som en eller flera RuntimeUnit.
+      Kanonisk riktning går från logiskt element till runtime-enhet.
+    allowed_pairs:
+    - - Component
+      - RuntimeUnit
+    - - Service
+      - RuntimeUnit
+    - - DataStore
+      - RuntimeUnit
+rules:
+- id: RUN-001
+  statement: RuntimeUnit ligger på runtime-nivån och ska beskriva vad som faktiskt
+    körs, inte vad systemet logiskt ansvarar för eller var enheten deployas.
+- id: RUN-002
+  statement: En Component, Service eller DataStore får realiseras av flera RuntimeUnit
+    när det behövs för systemförståelse, men fysisk replikeringsdetalj ska normalt
+    utelämnas i MVP:n.
+- id: RUN-003
+  statement: En RuntimeUnit ska inte skapas enbart för varje klass, processdetalj,
+    pod eller containerinstans; välj den högsta runtime-abstraktion som behövs för
+    en begriplig deploymentvy.
+- id: RUN-004
+  statement: DeploymentNode och Environment införs först i A18. RuntimeUnit får därför
+    ännu inte användas för att representera själva körmiljön.
+- id: RUN-005
+  statement: Relationen realized_as är den kanoniska kopplingen från logisk arkitektur
+    till runtime och ska inte dupliceras med en motsatt relation för samma faktum.

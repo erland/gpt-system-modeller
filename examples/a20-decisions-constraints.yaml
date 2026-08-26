@@ -1,0 +1,55 @@
+elements:
+  - id: SYS-000001
+    type: System
+    name: Order System
+    abstraction_level: conceptual
+    purpose: Hanterar kundorder från registrering till leverans.
+  - id: CMP-000001
+    type: Component
+    name: Order Management
+    abstraction_level: logical
+    purpose: Hanterar orderlivscykeln.
+  - id: CMP-000002
+    type: Component
+    name: Payment Integration
+    abstraction_level: logical
+    purpose: Integrerar med extern betalningstjänst.
+  - id: ADR-000001
+    type: ArchitectureDecision
+    name: Asynkrona orderhändelser
+    abstraction_level: conceptual
+    decision_status: accepted
+    context: Orderhantering och betalning behöver kunna utvecklas och återhämta sig oberoende.
+    decision: Domänhändelser för order distribueras asynkront mellan berörda komponenter.
+    rationale: Minskar direkt runtime-koppling och gör mottagare oberoende av ordertransaktionens svarstid.
+    alternatives:
+      - Synkrona REST-anrop mellan Order Management och Payment Integration.
+    consequences:
+      - Eventual consistency måste hanteras explicit.
+      - Händelsekontrakt behöver versionshanteras.
+    affected_elements:
+      - CMP-000001
+      - CMP-000002
+  - id: CON-000001
+    type: Constraint
+    name: Ingen direkt databasåtkomst mellan domäner
+    abstraction_level: conceptual
+    statement: En komponent får inte läsa eller skriva en annan domäns DataStore direkt.
+    rationale: Bevarar ägarskap, förändringsbarhet och tydliga integrationsgränser.
+    constraint_kind: technical
+    affected_elements:
+      - CMP-000001
+      - CMP-000002
+relationships:
+  - id: REL-000001
+    type: affects
+    source: ADR-000001
+    target: CMP-000001
+  - id: REL-000002
+    type: affects
+    source: ADR-000001
+    target: CMP-000002
+  - id: REL-000003
+    type: affects
+    source: CON-000001
+    target: CMP-000001

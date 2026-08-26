@@ -1,0 +1,76 @@
+elements:
+- id: API-000001
+  type: API
+  name: Order API
+  description: HTTP API för att registrera och läsa order.
+  abstraction_level: logical
+  provider: CMP-000001
+  consumers:
+  - CMP-000003
+  api_style: REST
+  protocol: HTTPS
+  version: v1
+  exchanged_information:
+  - INFO-000001
+  - INFO-000002
+  origin:
+  - observed
+  evidence:
+  - EVD-000004
+- id: API-000002
+  type: API
+  name: Payment API
+  description: Externt API som används för betalningsverifiering.
+  abstraction_level: logical
+  provider: EXT-000001
+  consumers:
+  - CMP-000002
+  api_style: REST
+  protocol: HTTPS
+  exchanged_information:
+  - INFO-000003
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+- id: EVT-000001
+  type: Event
+  name: OrderCreated
+  description: Händelse som signalerar att en order har registrerats.
+  abstraction_level: logical
+  producer: CMP-000001
+  consumers:
+  - EXT-000002
+  communication_mode: asynchronous
+  exchanged_information:
+  - INFO-000001
+  topic: order.created
+  origin:
+  - declared
+  evidence:
+  - EVD-000001
+relationships:
+- id: REL-000017
+  type: provides_interface
+  source: CMP-000001
+  target: API-000001
+  origin:
+  - observed
+- id: REL-000018
+  type: consumes_interface
+  source: CMP-000002
+  target: API-000002
+  origin:
+  - declared
+- id: REL-000019
+  type: publishes
+  source: CMP-000001
+  target: EVT-000001
+  origin:
+  - declared
+- id: REL-000020
+  type: subscribes
+  source: EXT-000002
+  target: EVT-000001
+  origin:
+  - declared

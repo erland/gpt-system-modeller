@@ -1,0 +1,123 @@
+# Plan A step A19 – deployment and runtime communication
+elements:
+  - id: ENV-000001
+    type: Environment
+    name: Production
+    description: Produktionsmiljön för Order System.
+    abstraction_level: runtime
+    environment_kind: production
+
+  - id: NODE-000001
+    type: DeploymentNode
+    name: Customer browser
+    description: Klientmiljö där webbapplikationen körs.
+    abstraction_level: runtime
+    node_kind: client_device
+    platform: Web browser
+
+  - id: NODE-000002
+    type: DeploymentNode
+    name: OpenShift Production
+    description: Övergripande containerplattform för backendens runtime-enheter.
+    abstraction_level: runtime
+    node_kind: container_platform
+    platform: OpenShift
+
+  - id: RUN-000001
+    type: RuntimeUnit
+    name: Order Web
+    description: Körbar webbapplikation.
+    abstraction_level: runtime
+    runtime_kind: web_application
+
+  - id: RUN-000002
+    type: RuntimeUnit
+    name: Order API
+    description: Körbar backendtjänst.
+    abstraction_level: runtime
+    runtime_kind: application_service
+
+  - id: DS-000001
+    type: DataStore
+    name: Order Database
+    description: Logiskt datalager för orderinformation.
+    abstraction_level: logical
+    store_kind: relational_database
+
+  - id: EXT-000001
+    type: ExternalSystem
+    name: Payment Provider
+    description: Extern betalningstjänst.
+    abstraction_level: conceptual
+
+  - id: INFO-000001
+    type: InformationObject
+    name: Order
+    description: Information om en kundorder.
+    abstraction_level: conceptual
+
+  - id: INFO-000002
+    type: InformationObject
+    name: Payment
+    description: Information om betalning för en order.
+    abstraction_level: conceptual
+
+relationships:
+  - id: REL-000001
+    type: deployed_on
+    source: RUN-000001
+    target: NODE-000001
+    abstraction_level: runtime
+
+  - id: REL-000002
+    type: deployed_on
+    source: RUN-000002
+    target: NODE-000002
+    abstraction_level: runtime
+
+  - id: REL-000003
+    type: belongs_to
+    source: NODE-000001
+    target: ENV-000001
+    abstraction_level: runtime
+
+  - id: REL-000004
+    type: belongs_to
+    source: NODE-000002
+    target: ENV-000001
+    abstraction_level: runtime
+
+  - id: REL-000005
+    type: connects_to
+    source: RUN-000001
+    target: RUN-000002
+    abstraction_level: runtime
+    protocol: HTTPS
+    direction: source_to_target
+    encryption: TLS
+    purpose: Skicka användarens orderkommandon och hämta orderinformation.
+    exchanged_information:
+      - INFO-000001
+
+  - id: REL-000006
+    type: connects_to
+    source: RUN-000002
+    target: DS-000001
+    abstraction_level: runtime
+    protocol: JDBC
+    direction: source_to_target
+    purpose: Läsa och lagra orderinformation.
+    exchanged_information:
+      - INFO-000001
+
+  - id: REL-000007
+    type: connects_to
+    source: RUN-000002
+    target: EXT-000001
+    abstraction_level: runtime
+    protocol: HTTPS
+    direction: source_to_target
+    encryption: TLS
+    purpose: Initiera och verifiera betalning.
+    exchanged_information:
+      - INFO-000002

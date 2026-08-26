@@ -1,0 +1,57 @@
+elements:
+- id: SYS-000001
+  type: System
+  name: Order System
+  description: Handles customer orders.
+  abstraction_level: conceptual
+- id: INFO-000001
+  type: InformationObject
+  name: Order
+  description: A customer order.
+  abstraction_level: conceptual
+- id: INFO-000002
+  type: InformationObject
+  name: Customer
+  description: Customer information.
+  abstraction_level: conceptual
+- id: CMP-000001
+  type: Component
+  name: Order Management
+  description: Handles order lifecycle.
+  abstraction_level: logical
+- id: SVC-000001
+  type: Service
+  name: Order Service
+  description: Provides order operations.
+  abstraction_level: logical
+- id: DS-000001
+  type: DataStore
+  name: Order Store
+  description: Persistent logical store for orders.
+  abstraction_level: logical
+  store_kind: relational_database
+  owner: CMP-000001
+  technology: PostgreSQL
+  authoritative_for:
+  - INFO-000001
+relationships:
+- id: REL-000001
+  type: stores_information
+  source: DS-000001
+  target: INFO-000001
+- id: REL-000002
+  type: stores_information
+  source: DS-000001
+  target: INFO-000002
+- id: REL-000003
+  type: accesses
+  source: CMP-000001
+  target: DS-000001
+- id: REL-000004
+  type: accesses
+  source: SVC-000001
+  target: DS-000001
+- id: REL-000005
+  type: owns_data_store
+  source: CMP-000001
+  target: DS-000001

@@ -1,0 +1,76 @@
+metamodel:
+  id: system-modeller-context
+  version: 0.1.0-dev.5
+  status: normative
+  purpose: >-
+    Kontextmetamodell för System, ExternalSystem och Actor i Plan A steg A5.
+    Den bygger på den gemensamma basen från A4.
+
+element_types:
+  System:
+    id_prefix: SYS
+    abstraction_level: conceptual
+    description: >-
+      Det system som är föremål för modellering och vars gräns, ansvar och
+      relation till omvärlden ska beskrivas.
+    required_fields: []
+    optional_fields:
+      - purpose
+      - scope
+      - ownership
+
+  ExternalSystem:
+    id_prefix: EXT
+    abstraction_level: conceptual
+    description: >-
+      Ett system eller en extern teknisk tjänst utanför det modellerade
+      systemets gräns som systemet samverkar med.
+    required_fields: []
+    optional_fields:
+      - ownership
+      - external_type
+
+  Actor:
+    id_prefix: ACT
+    abstraction_level: conceptual
+    description: >-
+      En människa, roll, organisation eller vid behov extern teknisk aktör som
+      har ett mål eller en meningsfull interaktion med systemet.
+    required_fields:
+      - actor_kind
+    optional_fields:
+      - organization
+    actor_kinds:
+      - person
+      - role
+      - organization
+      - external_technical_actor
+
+relationship_types:
+  interacts_with:
+    description: En aktör eller ett externt system interagerar med systemet.
+    allowed_pairs:
+      - [Actor, System]
+      - [System, ExternalSystem]
+      - [ExternalSystem, System]
+
+  uses:
+    description: En aktör använder systemet för att uppnå ett mål.
+    allowed_pairs:
+      - [Actor, System]
+
+  exchanges_information_with:
+    description: Två system utbyter information över systemgränsen.
+    allowed_pairs:
+      - [System, ExternalSystem]
+      - [ExternalSystem, System]
+
+rules:
+  - id: CTX-001
+    statement: Ett systemprojekt ska ha exakt ett primärt System-element i MVP:n.
+  - id: CTX-002
+    statement: ExternalSystem ska endast användas för något utanför det modellerade systemets gräns.
+  - id: CTX-003
+    statement: Actor ska representera en meningsfull användare eller extern aktör, inte intern kodstruktur.
+  - id: CTX-004
+    statement: Ett externt system ska inte dupliceras som Actor enbart för att det anropar ett API.

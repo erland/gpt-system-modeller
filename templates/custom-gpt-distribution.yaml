@@ -1,0 +1,95 @@
+schema_version: 1
+id: system-modeller-custom-gpt
+display_name: System Modeller
+distribution_type: custom_gpt
+version_source: VERSION
+source_of_truth:
+  metamodel: metamodel/
+  schemas: schemas/
+  documentation: docs/
+  shared_runtime:
+    - instructions/chat-runtime.md
+    - instructions/source-analysis.md
+output:
+  root: system-modeller-custom-gpt
+  manifest: manifest.yaml
+  instructions: instructions.md
+  knowledge_dir: knowledge
+instructions:
+  mode: generated_compact_runtime
+  canonical_sources:
+    - instructions/chat-runtime.md
+    - instructions/source-analysis.md
+    - docs/modeling-principles.md
+    - docs/provenance-and-evidence.md
+    - docs/origin-declared-observed-inferred.md
+  required_topics:
+    - role
+    - system_understanding_goal
+    - yaml_source_of_truth
+    - project_vs_distribution
+    - modeling_workflow
+    - source_analysis_workflow
+    - abstraction_rules
+    - evidence_and_origin
+    - uncertainty
+    - validation
+    - views_and_reports
+knowledge:
+  - output: 01-modeling-core.md
+    purpose: Core modeling principles, scope and abstraction rules.
+    sources:
+      - docs/design-principles.md
+      - docs/modeling-principles.md
+      - docs/mvp-scope.md
+  - output: 02-metamodel-reference.md
+    purpose: Compact reference for model element and relationship semantics.
+    source_globs:
+      - metamodel/*.yaml
+  - output: 03-project-format-and-validation.md
+    purpose: System project layout, model operations and validation.
+    sources:
+      - docs/system-project-format.md
+      - docs/model-format.md
+      - docs/model-operations.md
+      - docs/validation.md
+      - schemas/project.schema.json
+  - output: 04-views-and-architecture-description.md
+    purpose: MVP views and architecture description generation.
+    sources:
+      - docs/views.md
+      - docs/architecture-description.md
+  - output: 05-source-analysis-and-evidence.md
+    purpose: Source analysis, observations, evidence and origin rules.
+    sources:
+      - instructions/source-analysis.md
+      - docs/source-analysis.md
+      - docs/provenance-and-evidence.md
+      - docs/origin-declared-observed-inferred.md
+  - output: 06-reference-example.md
+    purpose: Minimal end-to-end reference example.
+    sources:
+      - docs/mvp-reference-test.md
+    generated_inputs:
+      - examples/reference-order-system/project
+      - examples/reference-order-system/golden/architecture-description.md
+exclude_from_custom_gpt:
+  - tests/
+  - scripts/
+  - distributions/
+  - examples/reference-order-system/golden/views/
+  - '**/__pycache__/**'
+  - '**/*.pyc'
+parity_contract:
+  shared_capabilities:
+    - canonical_yaml_model
+    - stable_ids
+    - evidence_and_origin
+    - system_project_zip
+    - source_analysis
+    - validation_semantics
+    - ten_mvp_views
+    - architecture_description
+  shared_model_sources:
+    - metamodel/
+    - schemas/

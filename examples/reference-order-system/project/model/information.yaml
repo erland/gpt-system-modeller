@@ -1,0 +1,44 @@
+elements:
+  - id: INFO-000001
+    type: InformationObject
+    name: Order
+    description: Kundens beställning och dess aktuella status.
+    abstraction_level: conceptual
+    lifecycle: [registrerad, behandlas, levererad]
+    origin: [declared, inferred]
+    evidence: [EVD-000001, EVD-000003]
+  - id: INFO-000002
+    type: InformationObject
+    name: Kund
+    description: Information som identifierar kunden som gör beställningen.
+    abstraction_level: conceptual
+    origin: [declared]
+    evidence: [EVD-000001]
+  - id: INFO-000003
+    type: InformationObject
+    name: Betalning
+    description: Information om verifieringen av betalningen.
+    abstraction_level: conceptual
+    origin: [declared]
+    evidence: [EVD-000001]
+relationships:
+  - id: REL-000007
+    type: creates_information
+    source: UC-000001
+    target: INFO-000001
+    origin: [declared]
+  - id: REL-000008
+    type: reads_information
+    source: UC-000001
+    target: INFO-000002
+    origin: [declared]
+  - id: REL-000009
+    type: creates_information
+    source: UC-000001
+    target: INFO-000003
+    origin: [declared]
+  - id: REL-000010
+    type: reads_information
+    source: UC-000002
+    target: INFO-000001
+    origin: [declared]

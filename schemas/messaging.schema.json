@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://system-modeller.local/schemas/messaging.schema.json",
+  "title": "System Modeller messaging model",
+  "description": "Model through Plan A step A12 including Message and Event.",
+  "$defs": {
+    "system": {"$ref":"https://system-modeller.local/schemas/context.schema.json#/$defs/system"},
+    "externalSystem": {"$ref":"https://system-modeller.local/schemas/context.schema.json#/$defs/externalSystem"},
+    "actor": {"$ref":"https://system-modeller.local/schemas/context.schema.json#/$defs/actor"},
+    "responsibility": {"$ref":"https://system-modeller.local/schemas/functions.schema.json#/$defs/responsibility"},
+    "useCase": {"$ref":"https://system-modeller.local/schemas/use-cases.schema.json#/$defs/useCase"},
+    "informationObject": {"$ref":"https://system-modeller.local/schemas/information.schema.json#/$defs/informationObject"},
+    "subsystem": {"$ref":"https://system-modeller.local/schemas/logical-structure.schema.json#/$defs/subsystem"},
+    "component": {"$ref":"https://system-modeller.local/schemas/logical-structure.schema.json#/$defs/component"},
+    "service": {"$ref":"https://system-modeller.local/schemas/logical-structure.schema.json#/$defs/service"},
+    "interface": {"$ref":"https://system-modeller.local/schemas/interfaces.schema.json#/$defs/interface"},
+    "api": {"$ref":"https://system-modeller.local/schemas/interfaces.schema.json#/$defs/api"},
+    "message": {
+      "allOf": [
+        {"$ref":"https://system-modeller.local/schemas/common.schema.json#/$defs/modelElement"},
+        {"type":"object","required":["producer","consumers","communication_mode"],"properties":{
+          "id":{"type":"string","pattern":"^MSG-[0-9]{6}$"},
+          "type":{"const":"Message"},
+          "abstraction_level":{"const":"logical"},
+          "producer":{"type":"string","pattern":"^(SYS|EXT|CMP|SVC)-[0-9]{6}$"},
+          "consumers":{"type":"array","minItems":1,"items":{"type":"string","pattern":"^(SYS|EXT|CMP|SVC)-[0-9]{6}$"},"uniqueItems":true},
+          "communication_mode":{"enum":["synchronous","asynchronous"]},
+          "exchanged_information":{"type":"array","items":{"type":"string","pattern":"^INFO-[0-9]{6}$"},"uniqueItems":true},
+          "channel":{"type":"string","minLength":1},
+          "topic":{"type":"string","minLength":1},
+          "protocol":{"type":"string","minLength":1}
+        }}
+      ]
+    },
+    "event": {
+      "allOf": [
+        {"$ref":"https://system-modeller.local/schemas/common.schema.json#/$defs/modelElement"},
+        {"type":"object","required":["producer","consumers"],"properties":{
+          "id":{"type":"string","pattern":"^EVT-[0-9]{6}$"},
+          "type":{"const":"Event"},
+          "abstraction_level":{"const":"logical"},
+          "producer":{"type":"string","pattern":"^(SYS|EXT|CMP|SVC)-[0-9]{6}$"},
+          "consumers":{"type":"array","minItems":1,"items":{"type":"string","pattern":"^(SYS|EXT|CMP|SVC)-[0-9]{6}$"},"uniqueItems":true},
+          "communication_mode":{"const":"asynchronous"},
+          "exchanged_information":{"type":"array","items":{"type":"string","pattern":"^INFO-[0-9]{6}$"},"uniqueItems":true},
+          "channel":{"type":"string","minLength":1},
+          "topic":{"type":"string","minLength":1},
+          "protocol":{"type":"string","minLength":1}
+        }}
+      ]
+    },
+    "messagingRelationship": {
+      "allOf": [
+        {"$ref":"https://system-modeller.local/schemas/common.schema.json#/$defs/relationship"},
+        {"type":"object","properties":{"type":{"enum":["interacts_with","uses","exchanges_information_with","has_responsibility","performs","groups_use_case","includes","extends","specializes","contains_information","references_information","relates_to_information","derived_from_information","creates_information","reads_information","updates_information","deletes_information","owns_information","masters_information","stores_information","exchanges_information","contains","part_of","depends_on","provides","realized_by","realizes","exposes","consumes_interface","provides_interface","sends","receives","publishes","subscribes"]}}}
+      ]
+    }
+  },
+  "type":"object",
+  "required":["elements","relationships"],
+  "properties":{
+    "elements":{"type":"array","items":{"oneOf":[
+      {"$ref":"#/$defs/system"},{"$ref":"#/$defs/externalSystem"},{"$ref":"#/$defs/actor"},{"$ref":"#/$defs/responsibility"},{"$ref":"#/$defs/useCase"},{"$ref":"#/$defs/informationObject"},{"$ref":"#/$defs/subsystem"},{"$ref":"#/$defs/component"},{"$ref":"#/$defs/service"},{"$ref":"#/$defs/interface"},{"$ref":"#/$defs/api"},{"$ref":"#/$defs/message"},{"$ref":"#/$defs/event"}
+    ]}},
+    "relationships":{"type":"array","items":{"$ref":"#/$defs/messagingRelationship"}}
+  },
+  "allOf":[{"properties":{"elements":{"contains":{"$ref":"#/$defs/system"},"minContains":1,"maxContains":1}}}],
+  "additionalProperties":false
+}

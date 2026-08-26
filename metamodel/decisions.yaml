@@ -1,0 +1,63 @@
+metamodel:
+  id: system-modeller-decisions
+  version: 0.1.0-dev.20
+  status: normative
+  purpose: ArchitectureDecision and Constraint through Plan A step A20. Captures why the architecture looks as it does and which model elements are affected.
+element_types:
+  ArchitectureDecision:
+    id_prefix: ADR
+    abstraction_level: conceptual
+    description: A significant architecture decision that records context, chosen direction, rationale and consequences.
+    required_fields:
+      - decision_status
+      - context
+      - decision
+      - rationale
+    optional_fields:
+      - alternatives
+      - consequences
+      - affected_elements
+    decision_status_values:
+      - proposed
+      - accepted
+      - deprecated
+      - superseded
+      - rejected
+  Constraint:
+    id_prefix: CON
+    abstraction_level: conceptual
+    description: A rule or limitation that the architecture must respect, independent of whether it was freely chosen as a design decision.
+    required_fields:
+      - statement
+    optional_fields:
+      - rationale
+      - affected_elements
+      - constraint_kind
+    constraint_kind_values:
+      - business
+      - regulatory
+      - organizational
+      - technical
+      - security
+      - operational
+      - other
+relationship_types:
+  affects:
+    description: Connects an ArchitectureDecision or Constraint to a model element that it materially influences or restricts.
+    allowed_source_types:
+      - ArchitectureDecision
+      - Constraint
+    allowed_target_rule: Any canonical model element except ArchitectureDecision or Constraint itself unless a later step explicitly permits decision-to-decision traceability.
+rules:
+  - id: DEC-001
+    statement: ArchitectureDecision records why a significant architecture choice was made; do not use it for every minor implementation choice.
+  - id: DEC-002
+    statement: Constraint records a condition the architecture must obey. Use ArchitectureDecision when the architecture chose among alternatives; use Constraint when freedom is externally or contextually limited.
+  - id: DEC-003
+    statement: ArchitectureDecision and Constraint are cross-cutting architecture knowledge and use the conceptual abstraction level in the MVP even when they affect logical or runtime elements.
+  - id: DEC-004
+    statement: affected_elements is a convenience reference list for reporting. The canonical graph relationship for impact is affects when relationship-level provenance or queries matter.
+  - id: DEC-005
+    statement: Decision rationale must explain why the chosen direction is appropriate. Consequences should capture meaningful positive or negative trade-offs rather than restating the decision.
+  - id: DEC-006
+    statement: A Constraint statement should be testable or interpretable as an architectural rule, for example no direct database access between domains or production must run on OpenShift.

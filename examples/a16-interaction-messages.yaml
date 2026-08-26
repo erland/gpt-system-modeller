@@ -1,0 +1,125 @@
+elements:
+- id: SYS-000001
+  type: System
+  name: Order System
+  abstraction_level: conceptual
+- id: ACT-000001
+  type: Actor
+  name: Customer
+  abstraction_level: conceptual
+  actor_kind: role
+- id: EXT-000001
+  type: ExternalSystem
+  name: Payment Provider
+  abstraction_level: conceptual
+- id: RSP-000001
+  type: Responsibility
+  name: Order Management
+  abstraction_level: conceptual
+- id: UC-000001
+  type: UseCase
+  name: Place order
+  abstraction_level: conceptual
+  primary_actor: ACT-000001
+  responsibility: RSP-000001
+  outcome: An order is registered.
+- id: INFO-000001
+  type: InformationObject
+  name: Order
+  abstraction_level: conceptual
+- id: INFO-000002
+  type: InformationObject
+  name: Payment
+  abstraction_level: conceptual
+- id: CMP-000001
+  type: Component
+  name: Order Management
+  abstraction_level: logical
+- id: SVC-000001
+  type: Service
+  name: Order Application Service
+  abstraction_level: logical
+- id: DS-000001
+  type: DataStore
+  name: Order Store
+  abstraction_level: logical
+  store_kind: relational_database
+- id: SCN-000001
+  type: Scenario
+  name: Customer places and pays for order
+  abstraction_level: conceptual
+  use_case: UC-000001
+  actors: [ACT-000001]
+  information: [INFO-000001, INFO-000002]
+  components: [CMP-000001]
+  external_systems: [EXT-000001]
+  outcome: The order is registered and payment has been requested.
+- id: INT-000001
+  type: Interaction
+  name: Place order interaction
+  abstraction_level: logical
+  scenario: SCN-000001
+  purpose: Show the main sequence for registering an order and requesting payment.
+  participants:
+    - ref: ACT-000001
+      role: initiator
+    - ref: CMP-000001
+    - ref: SVC-000001
+    - ref: EXT-000001
+    - ref: DS-000001
+  messages:
+    - id: IM-000001
+      order: 1
+      sender: ACT-000001
+      receiver: CMP-000001
+      label: Submit order
+      operation: placeOrder
+      communication_mode: synchronous
+      information: [INFO-000001]
+    - id: IM-000002
+      order: 2
+      sender: CMP-000001
+      receiver: SVC-000001
+      label: Register order
+      communication_mode: synchronous
+      information: [INFO-000001]
+    - id: IM-000003
+      order: 3
+      sender: SVC-000001
+      receiver: DS-000001
+      label: Persist order
+      communication_mode: synchronous
+      information: [INFO-000001]
+    - id: IM-000004
+      order: 4
+      sender: SVC-000001
+      receiver: EXT-000001
+      label: Request payment
+      communication_mode: asynchronous
+      information: [INFO-000002]
+      condition: Payment is required
+relationships:
+- id: REL-000001
+  type: realizes_scenario
+  source: INT-000001
+  target: SCN-000001
+- id: REL-000002
+  type: has_participant
+  source: INT-000001
+  target: ACT-000001
+- id: REL-000003
+  type: has_participant
+  source: INT-000001
+  target: CMP-000001
+- id: REL-000004
+  type: has_participant
+  source: INT-000001
+  target: SVC-000001
+- id: REL-000005
+  type: has_participant
+  source: INT-000001
+  target: EXT-000001
+- id: REL-000006
+  type: has_participant
+  source: INT-000001
+  target: DS-000001

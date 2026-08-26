@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://system-modeller.local/schemas/information-usage.schema.json",
+  "title": "System Modeller information usage model",
+  "description": "Model through Plan A step A9 including explicit information usage relations.",
+  "$defs": {
+    "system": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/system"
+    },
+    "externalSystem": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/externalSystem"
+    },
+    "actor": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/actor"
+    },
+    "responsibility": {
+      "$ref": "https://system-modeller.local/schemas/functions.schema.json#/$defs/responsibility"
+    },
+    "useCase": {
+      "$ref": "https://system-modeller.local/schemas/use-cases.schema.json#/$defs/useCase"
+    },
+    "informationObject": {
+      "$ref": "https://system-modeller.local/schemas/information.schema.json#/$defs/informationObject"
+    },
+    "informationUsageRelationship": {
+      "allOf": [
+        {
+          "$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/relationship"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "interacts_with",
+                "uses",
+                "exchanges_information_with",
+                "has_responsibility",
+                "performs",
+                "groups_use_case",
+                "includes",
+                "extends",
+                "specializes",
+                "contains_information",
+                "references_information",
+                "relates_to_information",
+                "derived_from_information",
+                "creates_information",
+                "reads_information",
+                "updates_information",
+                "deletes_information",
+                "owns_information",
+                "masters_information",
+                "stores_information",
+                "exchanges_information"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "required": [
+    "elements",
+    "relationships"
+  ],
+  "properties": {
+    "elements": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/system"
+          },
+          {
+            "$ref": "#/$defs/externalSystem"
+          },
+          {
+            "$ref": "#/$defs/actor"
+          },
+          {
+            "$ref": "#/$defs/responsibility"
+          },
+          {
+            "$ref": "#/$defs/useCase"
+          },
+          {
+            "$ref": "#/$defs/informationObject"
+          }
+        ]
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/informationUsageRelationship"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "elements": {
+          "contains": {
+            "$ref": "#/$defs/system"
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,186 @@
+metamodel:
+  id: system-modeller-information-usage
+  version: 0.1.0-dev.13
+  status: normative
+  purpose: Informationsanvändningsmodell för Plan A steg A9. Beskriver hur arkitekturelement
+    skapar, läser, uppdaterar, tar bort, äger, mastrar, lagrar och utbyter konceptuella
+    informationsobjekt.
+relationship_types:
+  creates_information:
+    description: Skapar ett nytt verksamhetsmässigt informationsobjekt eller en ny
+      förekomst av informationen.
+    allowed_pairs:
+    - - System
+      - InformationObject
+    - - ExternalSystem
+      - InformationObject
+    - - Actor
+      - InformationObject
+    - - Responsibility
+      - InformationObject
+    - - UseCase
+      - InformationObject
+    - - Component
+      - InformationObject
+    - - Service
+      - InformationObject
+    - - API
+      - InformationObject
+    - - DataStore
+      - InformationObject
+  reads_information:
+    description: Läser eller konsumerar information utan att uttrycka förändring.
+    allowed_pairs:
+    - - System
+      - InformationObject
+    - - ExternalSystem
+      - InformationObject
+    - - Actor
+      - InformationObject
+    - - Responsibility
+      - InformationObject
+    - - UseCase
+      - InformationObject
+    - - Component
+      - InformationObject
+    - - Service
+      - InformationObject
+    - - API
+      - InformationObject
+    - - DataStore
+      - InformationObject
+  updates_information:
+    description: Förändrar informationens verksamhetsmässiga innehåll eller status.
+    allowed_pairs:
+    - - System
+      - InformationObject
+    - - ExternalSystem
+      - InformationObject
+    - - Actor
+      - InformationObject
+    - - Responsibility
+      - InformationObject
+    - - UseCase
+      - InformationObject
+    - - Component
+      - InformationObject
+    - - Service
+      - InformationObject
+    - - API
+      - InformationObject
+    - - DataStore
+      - InformationObject
+  deletes_information:
+    description: Tar bort eller avslutar information på ett sätt som är relevant för
+      systemförståelsen.
+    allowed_pairs:
+    - - System
+      - InformationObject
+    - - ExternalSystem
+      - InformationObject
+    - - Actor
+      - InformationObject
+    - - Responsibility
+      - InformationObject
+    - - UseCase
+      - InformationObject
+    - - Component
+      - InformationObject
+    - - Service
+      - InformationObject
+    - - API
+      - InformationObject
+    - - DataStore
+      - InformationObject
+  owns_information:
+    description: Har övergripande ansvar för informationsobjektet.
+    allowed_pairs:
+    - - System
+      - InformationObject
+    - - ExternalSystem
+      - InformationObject
+    - - Actor
+      - InformationObject
+    - - Responsibility
+      - InformationObject
+    - - UseCase
+      - InformationObject
+    - - Component
+      - InformationObject
+    - - Service
+      - InformationObject
+    - - API
+      - InformationObject
+    - - DataStore
+      - InformationObject
+  masters_information:
+    description: Är master/auktoritativ för informationsobjektet.
+    allowed_pairs:
+    - - System
+      - InformationObject
+    - - ExternalSystem
+      - InformationObject
+    - - Actor
+      - InformationObject
+    - - Responsibility
+      - InformationObject
+    - - UseCase
+      - InformationObject
+    - - Component
+      - InformationObject
+    - - Service
+      - InformationObject
+    - - API
+      - InformationObject
+    - - DataStore
+      - InformationObject
+  stores_information:
+    description: Lagrar informationsobjektet.
+    allowed_pairs:
+    - - System
+      - InformationObject
+    - - ExternalSystem
+      - InformationObject
+    - - Component
+      - InformationObject
+    - - Service
+      - InformationObject
+    - - DataStore
+      - InformationObject
+  exchanges_information:
+    description: Deltar i utbyte av informationsobjektet med annan part eller systemdel.
+    allowed_pairs:
+    - - System
+      - InformationObject
+    - - ExternalSystem
+      - InformationObject
+    - - Actor
+      - InformationObject
+    - - Responsibility
+      - InformationObject
+    - - UseCase
+      - InformationObject
+    - - Component
+      - InformationObject
+    - - Service
+      - InformationObject
+    - - API
+      - InformationObject
+    - - DataStore
+      - InformationObject
+rules:
+- id: INFOUSE-SEM-001
+  statement: Informationsanvändning modelleras som explicit relation till InformationObject
+    när accessens eller ansvarets semantik är känd.
+- id: INFOUSE-SEM-002
+  statement: UseCase.related_information får användas som enkel relevanslista, men
+    specifik create/read/update/delete-semantik uttrycks med informationsanvändningsrelationer.
+- id: INFOUSE-SEM-003
+  statement: Source är det arkitekturelement som utför handlingen eller bär ansvaret;
+    target är InformationObject.
+- id: INFOUSE-SEM-004
+  statement: Relationerna ska avse konceptuell information och får inte användas som
+    ersättning för kod- eller databasberoenden.
+- id: INFOUSE-SEM-005
+  statement: Par till Component och Service är aktiva från A10, API från A11 och DataStore
+    från A13.

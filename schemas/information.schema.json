@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://system-modeller.local/schemas/information.schema.json",
+  "title": "System Modeller information model",
+  "description": "System context, Responsibility, UseCase and InformationObject introduced through Plan A step A8.",
+  "$defs": {
+    "system": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/system"
+    },
+    "externalSystem": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/externalSystem"
+    },
+    "actor": {
+      "$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/actor"
+    },
+    "responsibility": {
+      "$ref": "https://system-modeller.local/schemas/functions.schema.json#/$defs/responsibility"
+    },
+    "useCase": {
+      "$ref": "https://system-modeller.local/schemas/use-cases.schema.json#/$defs/useCase"
+    },
+    "stableRef": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*-[0-9]{6}$"
+    },
+    "informationObject": {
+      "allOf": [
+        {
+          "$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/modelElement"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^INFO-[0-9]{6}$"
+            },
+            "type": {
+              "const": "InformationObject"
+            },
+            "abstraction_level": {
+              "const": "conceptual"
+            },
+            "owner": {
+              "$ref": "#/$defs/stableRef"
+            },
+            "master": {
+              "$ref": "#/$defs/stableRef"
+            },
+            "lifecycle": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "classification": {
+              "type": "string",
+              "minLength": 1
+            },
+            "authoritative_source": {
+              "$ref": "#/$defs/stableRef"
+            },
+            "related_stores": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/stableRef"
+              },
+              "uniqueItems": true
+            }
+          }
+        }
+      ]
+    },
+    "informationRelationship": {
+      "allOf": [
+        {
+          "$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/relationship"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "interacts_with",
+                "uses",
+                "exchanges_information_with",
+                "has_responsibility",
+                "performs",
+                "groups_use_case",
+                "includes",
+                "extends",
+                "specializes",
+                "contains_information",
+                "references_information",
+                "relates_to_information",
+                "derived_from_information"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "required": [
+    "elements",
+    "relationships"
+  ],
+  "properties": {
+    "elements": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/system"
+          },
+          {
+            "$ref": "#/$defs/externalSystem"
+          },
+          {
+            "$ref": "#/$defs/actor"
+          },
+          {
+            "$ref": "#/$defs/responsibility"
+          },
+          {
+            "$ref": "#/$defs/useCase"
+          },
+          {
+            "$ref": "#/$defs/informationObject"
+          }
+        ]
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/informationRelationship"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "elements": {
+          "contains": {
+            "$ref": "#/$defs/system"
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

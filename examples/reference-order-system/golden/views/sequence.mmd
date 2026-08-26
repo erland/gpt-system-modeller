@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant ACT_000001 as Kund
+    participant CMP_000001 as Order Management
+    participant CMP_000002 as Payment Integration
+    participant EXT_000001 as Payment Gateway
+    participant DS_000001 as Order Database
+    participant EXT_000002 as Delivery System
+    ACT_000001->>CMP_000001: Registrera order
+    CMP_000001->>CMP_000002: Verifiera betalning
+    CMP_000002->>EXT_000001: Kontrollera betalning
+    CMP_000001->>DS_000001: Spara order
+    CMP_000001-->>EXT_000002: Publicera OrderCreated

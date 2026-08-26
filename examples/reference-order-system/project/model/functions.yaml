@@ -1,0 +1,14 @@
+elements:
+  - id: RSP-000001
+    type: Responsibility
+    name: Orderhantering
+    description: Ansvarar för att registrera, lagra och följa order.
+    abstraction_level: conceptual
+    origin: [declared, inferred]
+    evidence: [EVD-000001, EVD-000002]
+relationships:
+  - id: REL-000002
+    type: has_responsibility
+    source: SYS-000001
+    target: RSP-000001
+    origin: [declared]

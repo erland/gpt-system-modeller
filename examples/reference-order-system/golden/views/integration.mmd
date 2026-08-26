@@ -1,0 +1,24 @@
+flowchart LR
+    API_000001["Order API<br/><small>API</small>"]
+    API_000002["Payment API<br/><small>API</small>"]
+    CMP_000001["Order Management<br/><small>Component</small>"]
+    CMP_000002["Payment Integration<br/><small>Component</small>"]
+    CMP_000003["Order Web<br/><small>Component</small>"]
+    EVT_000001["OrderCreated<br/><small>Event</small>"]
+    EXT_000001["Payment Gateway<br/><small>ExternalSystem</small>"]
+    EXT_000002["Delivery System<br/><small>ExternalSystem</small>"]
+    INFO_000001["Order<br/><small>InformationObject</small>"]
+    INFO_000002["Kund<br/><small>InformationObject</small>"]
+    INFO_000003["Betalning<br/><small>InformationObject</small>"]
+    SVC_000001["Order Service<br/><small>Service</small>"]
+    SYS_000001["Order System<br/><small>System</small>"]
+    CMP_000002 -->|consumes_interface| API_000002
+    CMP_000003 -->|consumes_interface| API_000001
+    API_000001 -->|exchanges_information| INFO_000001
+    API_000001 -->|exchanges_information| INFO_000002
+    API_000002 -->|exchanges_information| INFO_000003
+    EVT_000001 -->|exchanges_information| INFO_000001
+    CMP_000001 -->|provides_interface| API_000001
+    EXT_000001 -->|provides_interface| API_000002
+    CMP_000001 -->|publishes| EVT_000001
+    EXT_000002 -->|subscribes| EVT_000001

@@ -1,0 +1,8 @@
+services:
+  web:
+    image: example/order-web:1.0
+  api:
+    image: example/order-api:1.0
+    depends_on: [db]
+  db:
+    image: postgres:17

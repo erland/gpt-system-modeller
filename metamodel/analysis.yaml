@@ -1,0 +1,66 @@
+metamodel:
+  id: system-modeller-analysis
+  version: 0.1.0-dev.29
+  status: normative
+  purpose: >-
+    Arbetsmodell för enkel LLM-baserad analys i MVP. Observationer bevarar
+    tekniska eller dokumentära fakta innan de abstraheras till kanoniska
+    arkitekturelement.
+
+record_types:
+  Observation:
+    id_prefix: OBS
+    description: Ett spårbart observerat eller tolkat faktum från ett eller flera underlag.
+    required_fields:
+      - observation_kind
+      - statement
+      - source_refs
+      - confidence
+    optional_fields:
+      - subject
+      - predicate
+      - object
+      - raw_facts
+      - candidate_concepts
+      - metadata
+
+observation_kind_values:
+  - documentation_statement
+  - source_symbol
+  - dependency
+  - api_endpoint
+  - data_structure
+  - configuration
+  - deployment
+  - behavior
+  - technology
+  - other
+
+candidate_concept:
+  description: >-
+    Ett icke-kanoniskt förslag som LLM:n kan härleda ur observationer. Förslaget
+    måste granskas/dedupliceras innan det blir ett riktigt modellobjekt.
+  required_fields:
+    - type
+    - name
+    - abstraction_level
+    - rationale
+    - confidence
+  optional_fields:
+    - fields
+    - relationship_hints
+    - source_refs
+
+rules:
+  - id: ANA-001
+    statement: En Observation är arbetsdata/evidens och får inte automatiskt behandlas som ett arkitekturelement i vyer eller rapporter.
+  - id: ANA-002
+    statement: LLM:n ska i första hand registrera vad underlaget faktiskt visar och först därefter föreslå högre abstraktioner som candidate_concepts.
+  - id: ANA-003
+    statement: Candidate concepts ska dedupliceras mot befintlig kanonisk modell innan nya ID:n tilldelas.
+  - id: ANA-004
+    statement: Class, Endpoint och DatabaseTable får vara observation/implementation evidence men får inte automatiskt bli Component, UseCase eller InformationObject.
+  - id: ANA-005
+    statement: Varje infererad kanonisk arkitekturabstraktion ska bära Evidence och origin=inferred; observerade tekniska fakta använder origin=observed när de förs in som implementationsobjekt.
+  - id: ANA-006
+    statement: Analysen ska välja högsta abstraktionsnivå som bevarar nödvändig systemförståelse och undvika implementationstekniskt brus.

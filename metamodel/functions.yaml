@@ -1,0 +1,56 @@
+metamodel:
+  id: system-modeller-functions
+  version: 0.1.0-dev.6
+  status: normative
+  purpose: Funktionell ansvarsnivå för Plan A steg A6. Responsibility används som
+    konceptuell gruppering av vad systemet ansvarar för, ovanför enskilda use cases
+    och oberoende av hur ansvaret realiseras tekniskt.
+element_types:
+  Responsibility:
+    aliases:
+    - SystemFunction
+    id_prefix: RSP
+    abstraction_level: conceptual
+    description: Ett stabilt, begripligt funktionellt ansvarsområde hos det modellerade
+      systemet. Responsibility beskriver vad systemet ansvarar för, inte en implementation,
+      komponent, kodmodul eller enskild användarinteraktion.
+    required_fields: []
+    optional_fields:
+    - purpose
+    - scope
+relationship_types:
+  has_responsibility:
+    description: Systemet har och omfattar ett funktionellt ansvarsområde.
+    allowed_pairs:
+    - - System
+      - Responsibility
+planned_relationships:
+  groups_use_case:
+    introduced_in: A7
+    direction:
+    - Responsibility
+    - UseCase
+    purpose: Grupperar use cases under ett funktionellt ansvarsområde.
+rules:
+- id: FUN-001
+  statement: Responsibility ska beskriva vad systemet ansvarar för, inte hur ansvaret
+    implementeras.
+- id: FUN-002
+  statement: Responsibility ska vara grövre än ett enskilt UseCase och får gruppera
+    flera närliggande use cases.
+- id: FUN-003
+  statement: Responsibility ska inte användas som synonym för Component, Service,
+    Module eller Package.
+- id: FUN-004
+  statement: Namn bör uttrycka ett stabilt ansvar eller funktionsområde, exempelvis
+    Orderhantering eller Rapportering.
+- id: FUN-005
+  statement: I MVP:n ska Responsibility vara konceptuell och tillhöra det primära
+    System-elementet via has_responsibility.
+active_relationships_from_later_steps:
+  realized_by:
+    introduced_in: A10
+    direction:
+    - Responsibility
+    - Component
+    purpose: Visar vilken logisk komponent som realiserar ansvarsområdet.

@@ -1,0 +1,7 @@
+id: VIEW-000004
+name: Logisk komponentvy
+type: logical_component
+purpose: Visa systemets logiska delar och centrala beroenden.
+audience: [arkitekt, utvecklare]
+detail_level: logical
+notation: c4_like

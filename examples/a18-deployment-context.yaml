@@ -1,0 +1,48 @@
+# Plan A step A18 – Environment and DeploymentNode
+elements:
+  - id: ENV-000001
+    type: Environment
+    name: Production
+    description: Produktionsmiljön för Order System.
+    abstraction_level: runtime
+    environment_kind: production
+
+  - id: NODE-000001
+    type: DeploymentNode
+    name: Customer browser
+    description: Klientmiljö där webbapplikationen körs.
+    abstraction_level: runtime
+    node_kind: client_device
+    platform: Web browser
+
+  - id: NODE-000002
+    type: DeploymentNode
+    name: OpenShift Production
+    description: Övergripande containerplattform för backendens runtime-enheter.
+    abstraction_level: runtime
+    node_kind: container_platform
+    platform: OpenShift
+
+  - id: NODE-000003
+    type: DeploymentNode
+    name: PostgreSQL Production
+    description: Databasplattform för systemets produktionsdata.
+    abstraction_level: runtime
+    node_kind: database_platform
+    technology: PostgreSQL
+
+  - id: RUN-000001
+    type: RuntimeUnit
+    name: Order Web
+    description: Körbar webbapplikation.
+    abstraction_level: runtime
+    runtime_kind: web_application
+
+  - id: RUN-000002
+    type: RuntimeUnit
+    name: Order API
+    description: Körbar backendtjänst.
+    abstraction_level: runtime
+    runtime_kind: application_service
+
+relationships: []

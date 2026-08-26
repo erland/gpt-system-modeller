@@ -1,0 +1,9 @@
+format: system-modeller-project
+project:
+  id: example-system
+  name: Example System
+  description: Replace with a short description of the modeled system.
+  schema_version: 0.1.0
+  model_version: 0.1.0
+  language: sv
+  default_view_profile: system_overview

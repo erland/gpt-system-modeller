@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://system-modeller.local/schemas/interactions.schema.json",
+  "title": "System Modeller interaction model",
+  "description": "Model through Plan A step A16 including Interaction, Participant and ordered InteractionMessage communication.",
+  "$defs": {
+    "system": {"$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/system"},
+    "externalSystem": {"$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/externalSystem"},
+    "actor": {"$ref": "https://system-modeller.local/schemas/context.schema.json#/$defs/actor"},
+    "responsibility": {"$ref": "https://system-modeller.local/schemas/functions.schema.json#/$defs/responsibility"},
+    "useCase": {"$ref": "https://system-modeller.local/schemas/use-cases.schema.json#/$defs/useCase"},
+    "informationObject": {"$ref": "https://system-modeller.local/schemas/information.schema.json#/$defs/informationObject"},
+    "subsystem": {"$ref": "https://system-modeller.local/schemas/logical-structure.schema.json#/$defs/subsystem"},
+    "component": {"$ref": "https://system-modeller.local/schemas/logical-structure.schema.json#/$defs/component"},
+    "service": {"$ref": "https://system-modeller.local/schemas/logical-structure.schema.json#/$defs/service"},
+    "dataStore": {"$ref": "https://system-modeller.local/schemas/data-stores.schema.json#/$defs/dataStore"},
+    "scenario": {"$ref": "https://system-modeller.local/schemas/scenarios.schema.json#/$defs/scenario"},
+    "participant": {
+      "type": "object",
+      "required": ["ref"],
+      "properties": {
+        "ref": {"type": "string", "pattern": "^(ACT|SYS|EXT|CMP|SVC|DS)-[0-9]{6}$"},
+        "role": {"type": "string", "minLength": 1},
+        "alias": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "interactionMessage": {
+      "type": "object",
+      "required": ["id", "order", "sender", "receiver", "label", "communication_mode"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^IM-[0-9]{6}$"},
+        "order": {"type": "integer", "minimum": 1},
+        "sender": {"type": "string", "pattern": "^(ACT|SYS|EXT|CMP|SVC|DS)-[0-9]{6}$"},
+        "receiver": {"type": "string", "pattern": "^(ACT|SYS|EXT|CMP|SVC|DS)-[0-9]{6}$"},
+        "label": {"type": "string", "minLength": 1},
+        "operation": {"type": "string", "minLength": 1},
+        "communication_mode": {"type": "string", "enum": ["synchronous", "asynchronous"]},
+        "information": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^INFO-[0-9]{6}$"},
+          "uniqueItems": true
+        },
+        "condition": {"type": "string", "minLength": 1},
+        "message_ref": {"type": "string", "pattern": "^(MSG|EVT)-[0-9]{6}$"}
+      },
+      "additionalProperties": false
+    },
+    "interaction": {
+      "allOf": [
+        {"$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/modelElement"},
+        {
+          "type": "object",
+          "required": ["scenario", "participants"],
+          "properties": {
+            "id": {"type": "string", "pattern": "^INT-[0-9]{6}$"},
+            "type": {"const": "Interaction"},
+            "abstraction_level": {"const": "logical"},
+            "scenario": {"type": "string", "pattern": "^SCN-[0-9]{6}$"},
+            "participants": {
+              "type": "array",
+              "minItems": 2,
+              "items": {"$ref": "#/$defs/participant"}
+            },
+            "purpose": {"type": "string", "minLength": 1},
+            "messages": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/interactionMessage"}
+            }
+          }
+        }
+      ]
+    },
+    "interactionRelationship": {
+      "allOf": [
+        {"$ref": "https://system-modeller.local/schemas/common.schema.json#/$defs/relationship"},
+        {"type": "object", "properties": {"type": {"enum": ["realizes_scenario", "has_participant"]}}}
+      ]
+    }
+  },
+  "type": "object",
+  "required": ["elements", "relationships"],
+  "properties": {
+    "elements": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {"$ref": "#/$defs/system"},
+          {"$ref": "#/$defs/externalSystem"},
+          {"$ref": "#/$defs/actor"},
+          {"$ref": "#/$defs/responsibility"},
+          {"$ref": "#/$defs/useCase"},
+          {"$ref": "#/$defs/informationObject"},
+          {"$ref": "#/$defs/subsystem"},
+          {"$ref": "#/$defs/component"},
+          {"$ref": "#/$defs/service"},
+          {"$ref": "#/$defs/dataStore"},
+          {"$ref": "#/$defs/scenario"},
+          {"$ref": "#/$defs/interaction"}
+        ]
+      }
+    },
+    "relationships": {"type": "array", "items": {"$ref": "#/$defs/interactionRelationship"}}
+  },
+  "additionalProperties": false
+}

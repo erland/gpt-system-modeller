@@ -1,0 +1,31 @@
+elements:
+  - id: CMP-000017
+    type: Component
+    name: Order Management
+    description: Hanterar orderlivscykeln.
+    abstraction_level: logical
+    status: candidate
+    aliases:
+      - Order Service
+    tags:
+      - order
+    origin:
+      - inferred
+    evidence:
+      - EVD-000041
+    metadata:
+      example_only: true
+
+  - id: RSP-000004
+    type: Responsibility
+    name: Order Management
+    abstraction_level: conceptual
+
+relationships:
+  - id: REL-000102
+    type: realizes
+    source: CMP-000017
+    target: RSP-000004
+    description: Komponenten realiserar det funktionella ansvaret.
+    evidence:
+      - EVD-000041

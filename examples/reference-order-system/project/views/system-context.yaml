@@ -1,0 +1,7 @@
+id: VIEW-000001
+name: Systemkontext
+type: system_context
+purpose: Visa systemgräns, aktörer och externa system.
+audience: [arkitekt, utvecklare]
+detail_level: overview
+notation: neutral
