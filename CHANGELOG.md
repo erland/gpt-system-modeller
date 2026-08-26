@@ -322,3 +322,12 @@ Alla väsentliga ändringar i **System Modeller** dokumenteras här.
 - Lagt till uppladdning av Chat-ZIP, Custom GPT-ZIP och `build-manifest.yaml` som riktiga GitHub Release-assets via `gh release upload`.
 - Utökat `scripts/versioning.py` med `github_release` som explicit versionskälla.
 - Lagt till A37-regressionstest och uppdaterad CI/releasedokumentation.
+
+
+## 0.1.0-dev.38 – A38
+
+- Rättat CI-eftervalideringen så utvecklingsversioner som `0.1.0-dev.38` accepteras som distributionsversioner vid push till `main` och manuell build.
+- Behållit strikt `vX.Y.Z`/`X.Y.Z`-validering för faktiska release-taggar.
+- Infört `normalize_distribution_version()` som skiljer redan resolverade distributionsversioner från release-taggar.
+- Uppdaterat `validate_custom_gpt.py` att använda distributionsvalidering för `--expected-version`.
+- Lagt till regressionstest som reproducerar A36-felet och verifierar både dev- och releaseväg.
