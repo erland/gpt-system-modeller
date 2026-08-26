@@ -312,3 +312,13 @@ Alla väsentliga ändringar i **System Modeller** dokumenteras här.
 - Removed the generated binary `examples/reference-order-system/golden/reference-order-system.zip`; A30 now verifies deterministic project packaging by comparing two independently generated ZIPs.
 - Removed transient Python/macOS/editor artifacts where present.
 - Retained step-labelled regression tests and focused YAML examples because they are still actively referenced by the regression suite and document isolated metamodel features.
+
+## 0.1.0-dev.37 – A37
+
+- Ändrat GitHub Actions-trigger från tagg-push till `release: types: [published]` för normala releaser.
+- Behållit verifiering vid `pull_request`, push till `main` och manuell `workflow_dispatch`.
+- Delat workflowen i read-only `verify`, read-only `build-check` och ett separat release-jobb med `contents: write`.
+- Låtit release-jobbet checka ut exakt release-taggen och använda den som auktoritativ versionskälla.
+- Lagt till uppladdning av Chat-ZIP, Custom GPT-ZIP och `build-manifest.yaml` som riktiga GitHub Release-assets via `gh release upload`.
+- Utökat `scripts/versioning.py` med `github_release` som explicit versionskälla.
+- Lagt till A37-regressionstest och uppdaterad CI/releasedokumentation.

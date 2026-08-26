@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Resolve System Modeller repository and distribution versions.
 
-A36 policy:
-- A GitHub release/tag named vX.Y.Z is authoritative for release builds.
+A37 policy:
+- A published GitHub Release tag named vX.Y.Z is authoritative for release builds.
+- A Git tag named vX.Y.Z is authoritative for tag-context builds.
 - SYSTEM_MODELLER_RELEASE_VERSION may explicitly provide X.Y.Z or vX.Y.Z.
-- Outside a tag/release build, VERSION remains the fallback source.
+- Outside release/tag builds, VERSION remains the fallback source.
 """
 from __future__ import annotations
 
@@ -48,9 +49,21 @@ def github_tag(env: dict[str, str] | None = None) -> str | None:
     return None
 
 
+
+def github_release_tag(env: dict[str, str] | None = None) -> str | None:
+    env = env or os.environ
+    if env.get("GITHUB_EVENT_NAME") == "release" and env.get("GITHUB_EVENT_RELEASE_TAG_NAME"):
+        return env["GITHUB_EVENT_RELEASE_TAG_NAME"].strip()
+    return None
+
 def resolve(root: Path = ROOT, env: dict[str, str] | None = None, explicit: str | None = None) -> VersionInfo:
     env = env or os.environ
     repo = repository_version(root)
+
+    release_tag = github_release_tag(env)
+    if release_tag:
+        release = normalize_release(release_tag)
+        return VersionInfo(repo, release, release, "github_release", release_tag)
 
     requested = explicit or env.get("SYSTEM_MODELLER_RELEASE_VERSION")
     if requested:
