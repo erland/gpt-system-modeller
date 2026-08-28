@@ -426,4 +426,4 @@ Följande räknas efter A2 som etablerade MVP-beslut, om de inte senare ändras 
 8. Evidens och ursprung ska kunna spåras.
 9. Declared, observed och inferred ska kunna särskiljas.
 10. En samlad arkitekturbeskrivning är en huvudleverans från modellen.
-11. Chat-ZIP är den distributionsform som ska testas först; Custom GPT kommer senare.
+11. Chat-ZIP och Custom GPT är båda distributionsmål; Chat-ZIP är den portabla runtime som först användes i MVP-testningen.

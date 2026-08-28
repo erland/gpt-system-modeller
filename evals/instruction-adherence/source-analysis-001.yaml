@@ -1,0 +1,18 @@
+id: source-analysis-001
+title: Source analysis separates observation from architecture inference
+criticality: critical
+input:
+  scenario: Analyze source code containing classes, endpoints and database tables
+    and propose model updates.
+expected:
+  required:
+  - apply `instructions/source-analysis.md`
+  - separate observed facts from inferred architecture concepts
+  - mark inferred concepts as inferred and retain evidence
+  - record unresolved ambiguity instead of inventing precision
+  forbidden:
+  - infer Class=Component solely from structure
+  - infer Endpoint=UseCase solely from structure
+  - infer Table=InformationObject solely from structure
+scoring:
+  pass_threshold: 1.0

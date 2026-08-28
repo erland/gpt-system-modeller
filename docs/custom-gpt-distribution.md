@@ -148,7 +148,7 @@ Funktionell paritet betyder för v0.1.0 att båda distributionerna ska förstå 
 - arkitekturbeskrivningsstruktur,
 - source-analysis-principer.
 
-Paritet betyder **inte** att ZIP-paketen behöver innehålla samma filer. Chat-ZIP kan bära scripts/tests/repositorystruktur; Custom GPT ska bära en optimerad instruktion och Knowledge-projektion.
+Paritet betyder **inte** att ZIP-paketen behöver innehålla samma filer. Chat-ZIP kan bära runtime-scripts, schemas, mallar och referensmaterial; Custom GPT ska bära en optimerad instruktion och Knowledge-projektion. Utvecklingsmaterial som tester och releaseverktyg behöver inte följa med i Chat-runtime:n.
 
 ## 8. Versionering
 

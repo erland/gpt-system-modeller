@@ -4,12 +4,18 @@ Detta paket är avsett att bifogas i en vanlig ChatGPT-konversation och använda
 
 ## Startinstruktion för LLM
 
-1. Läs först `instructions/chat-runtime.md`.
-2. Behandla `metamodel/`, `schemas/` och `docs/` som normativa för modellformatet.
-3. Använd scripts för deterministiska operationer när det är möjligt.
-4. Ett konkret systems projekt-ZIP är separat från detta GPT-paket.
-5. Bevara stabila ID:n, evidens och origin vid alla uppdateringar.
-6. Modellera för systemförståelse; abstrahera bort koddetaljer om de inte behövs som evidens.
+Använd följande precedence:
+
+1. `instructions/chat-runtime.md` är det obligatoriska beteendekontraktet och ska läsas först.
+2. `instructions/source-analysis.md` är obligatorisk när källkod eller dokumentation analyseras.
+3. `metamodel/` och `schemas/` är normativa för modellens struktur och semantik.
+4. Runtime-relevanta filer i `docs/` används som fördjupning när uppgiften kräver dem.
+5. `examples/` visar modell- och outputexempel; de är inte beteendeinstruktioner och inte faktakällor för det aktuella systemet.
+6. Använd runtime-scripts för deterministiska operationer när det är möjligt.
+
+Kärnflödet ska fungera från runtime-instruktionerna utan att modellen först behöver läsa alla docs, schemas eller examples.
+
+Ett konkret systems projekt-ZIP är separat från detta GPT-paket. Bevara stabila ID:n, evidens och origin vid alla uppdateringar. Modellera för systemförståelse och abstrahera bort koddetaljer om de inte behövs som evidens.
 
 Typisk användning:
 

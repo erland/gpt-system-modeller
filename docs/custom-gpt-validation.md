@@ -39,7 +39,7 @@ Validatorn kontrollerar minst:
 
 ## Paritetsprincip
 
-Paritet betyder inte filidentitet mellan Chat och Custom GPT. Chat-paketet innehåller scripts och repositorystruktur medan Custom GPT innehåller optimerad instruktion och Knowledge.
+Paritet betyder inte filidentitet mellan Chat och Custom GPT. Chat-paketet innehåller den portabla runtime som behövs för modellering, inklusive relevanta runtime-scripts och kanoniska modellkällor, medan Custom GPT innehåller optimerad instruktion och Knowledge.
 
 Pariteten bevisas i stället genom att:
 

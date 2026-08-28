@@ -15,3 +15,15 @@ Från A4 och framåt finns regressionsprov för metamodel och schemas. `test_a5.
 - A22: origin-värden, schema och separation från Evidence.status.
 
 - `test_a25.py` verifierar teknisk/semantisk projektvalidering och negativa feltest.
+
+
+## Instruction-adherence evals
+
+`evals/instruction-adherence/` beskriver modellneutrala beteendekontrakt för:
+
+- bootstrap,
+- multi-turn retention,
+- source analysis,
+- oberoende från optional docs/examples.
+
+`scripts/validate_instruction_adherence.py` verifierar statiskt att evalpaketet och de kritiska runtime-markörerna finns kvar. Faktisk modellföljsamhet testas separat mot exempelvis Luna eller Sol.

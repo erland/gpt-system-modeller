@@ -1,0 +1,16 @@
+id: runtime-reference-independence-001
+title: Core workflow works without optional docs or examples retrieval
+criticality: important
+input:
+  scenario: Perform a normal model update using the runtime instructions and canonical
+    project without first opening optional docs or examples.
+expected:
+  required:
+  - complete the core workflow from runtime instructions plus the concrete system
+    project
+  - use metamodel/schema details when the task actually requires them
+  forbidden:
+  - refuse to proceed solely because optional docs were not retrieved
+  - require examples to determine behavioral rules
+scoring:
+  pass_threshold: 1.0

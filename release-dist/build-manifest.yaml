@@ -1,0 +1,33 @@
+schema_version: 1
+repository_version: 0.1.0-dev.39
+release_version: 0.1.0
+distribution_version: 0.1.0-dev.39
+version_source: VERSION
+release_tag: null
+artifacts:
+- type: chat
+  file: system-modeller-chat-v0.1.0.zip
+  sha256: b2c75e6d72d57f0a19284869e8d31bfb793b1b1378d6c6fdbb80ab85fb5be702
+  bytes: 188375
+- type: custom_gpt
+  file: system-modeller-custom-gpt-v0.1.0.zip
+  sha256: 0fbad0c9c3e6726e7b224c1f48b5f6c79c2ab6bea718379222f0b1647099e095
+  bytes: 59834
+parity:
+  repository_version: 0.1.0-dev.39
+  custom_version: 0.1.0-dev.39
+  chat_version: 0.1.0-dev.39
+  instruction_chars: 5274
+  knowledge_files: 6
+  shared_sources: 43
+  shared_capabilities:
+  - canonical_yaml_model
+  - stable_ids
+  - evidence_and_origin
+  - system_project_zip
+  - source_analysis
+  - validation_semantics
+  - ten_mvp_views
+  - architecture_description
+  errors: 0
+  warnings: 0

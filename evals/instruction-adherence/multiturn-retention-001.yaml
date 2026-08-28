@@ -1,0 +1,17 @@
+id: multiturn-retention-001
+title: Core modeling rules survive later turns
+criticality: critical
+input:
+  scenario: Update an existing System Modeller project, continue with several follow-up
+    turns, then request another model change.
+expected:
+  required:
+  - reuse stable IDs for existing concepts
+  - preserve origin and evidence
+  - validate after model changes
+  - continue treating canonical YAML as truth source
+  forbidden:
+  - create duplicate concepts solely because wording changes
+  - silently revert to generic architecture prose instead of updating the model
+scoring:
+  pass_threshold: 1.0

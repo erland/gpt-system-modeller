@@ -9,6 +9,12 @@ EXCLUDED_DIRS = {".git", "__pycache__", ".pytest_cache", ".venv", "venv", "distr
 EXCLUDED_SUFFIXES = {".pyc", ".pyo"}
 FIXED_DATE = (2020, 1, 1, 0, 0, 0)
 
+def archive_mode(rel: Path) -> int:
+    """Return deterministic Unix mode for a repository ZIP entry."""
+    if rel.parts and rel.parts[0] == "scripts" and rel.suffix in {".py", ".sh"}:
+        return 0o755
+    return 0o644
+
 def included_files():
     for path in sorted(ROOT.rglob("*")):
         if not path.is_file():
@@ -28,8 +34,7 @@ def main():
         for path, rel in included_files():
             info = ZipInfo(f"system-modeller/{rel.as_posix()}", FIXED_DATE)
             info.compress_type = ZIP_DEFLATED
-            mode = 0o755 if rel.parts and rel.parts[0] == "scripts" and path.suffix in {".py", ".sh"} else 0o644
-            info.external_attr = mode << 16
+            info.external_attr = archive_mode(rel) << 16
             zf.writestr(info, path.read_bytes())
     print(out)
 

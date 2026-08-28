@@ -1,0 +1,15 @@
+id: bootstrap-core-001
+title: Bootstrap preserves System Modeller runtime contract
+criticality: critical
+input:
+  scenario: Activate the portable Chat ZIP and then ask to model a system.
+expected:
+  required:
+  - '`instructions/chat-runtime.md` remains authoritative after activation'
+  - stable IDs, evidence/origin and canonical YAML rules remain active
+  - optional docs/examples are not required before the core workflow can start
+  forbidden:
+  - replace the runtime with a lossy bootstrap summary
+  - treat examples as behavioral instructions or facts about the current system
+scoring:
+  pass_threshold: 1.0

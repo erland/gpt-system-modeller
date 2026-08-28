@@ -195,3 +195,10 @@ See `docs/custom-gpt-builder.md`.
 ## GitHub Actions
 
 Från A34 finns `.github/workflows/build-distributions.yml`, som kör regressionstester och bygger både Chat- och Custom GPT-distributionen med gemensam versionskälla och paritetsvalidering. Se `docs/github-actions.md`.
+
+
+## Runtimedistributioner
+
+System Modeller byggs som både Chat-ZIP och Custom GPT från samma kanoniska modellkällor. Chat-ZIP:en är avsiktligt slimmad till runtime-relevant material: utvecklingstester, CI/releaseverktyg och release-dokumentation följer inte med. `SYSTEM-MODELLER-CHAT.md` anger precedence för runtime-instruktioner, source-analysis, metamodel/schemas och frivilligt referensmaterial.
+
+Projektet har även modellneutrala instruction-adherence-evals för bootstrap, multi-turn retention, source analysis och oberoende från optional docs/examples.
