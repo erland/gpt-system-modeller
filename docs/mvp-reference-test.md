@@ -53,7 +53,7 @@ Följande vyer finns både som neutral YAML och Mermaid:
 
 `scripts/package_chat.py` bygger `system-modeller-chat-v0.1.0.zip`.
 
-Chat-ZIP:en innehåller runtime-instruktioner, metamodell, schemas, scripts, mallar, exempel, tester och dokumentation. `SYSTEM-MODELLER-CHAT.md` är startpunkten när paketet bifogas i en vanlig chat.
+Chat-ZIP:en innehåller runtime-instruktioner, metamodell, schemas, relevanta runtime-scripts, mallar, exempel och runtime-relevant dokumentation. Utvecklingstester, CI/releaseverktyg och release-dokumentation exkluderas. `SYSTEM-MODELLER-CHAT.md` är startpunkten när paketet bifogas i en vanlig chat.
 
 Chat-ZIP och systemprojekt-ZIP är olika artefakter och får inte blandas ihop.
 
