@@ -3,10 +3,10 @@
 - Current plan: Plan B – Runtime robustness and architecture reporting
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
-- Plan B progress: B11 / B12
-- Current version: 0.1.0-dev.49
-- Milestone: **Report-profile registry supports future variants while standard remains the only implemented profile**
-- Next: B12 – finalize Chat/Custom GPT distribution packaging, regression and release readiness for Plan B.
+- Plan B progress: B12 / B12 — Plan B complete
+- Current version: 0.1.0-dev.50
+- Milestone: **Plan B complete: robust Chat runtime and deterministic architecture reporting are packaged and regression-gated in both distributions**
+- Next: merge PR #6 when desired, then use the normal tag/release flow for an actual release.
 
 ## Plan B
 
@@ -98,6 +98,14 @@ The regression verifies stable twelve-section report structure, B7 split behavio
 `scripts/report_profile.py` now resolves profiles through the catalog while preserving `report_profile.load()` as the standard default. Explicit `profile="standard"` resolves identically; `overview` and `detailed` fail deterministically as planned-but-not-implemented rather than silently aliasing the standard report. Unknown profiles also fail explicitly.
 
 `docs/report-profile-groundwork.md` documents the lifecycle boundary and `tests/test_b11.py` locks the registry, default resolution and non-selectability contract. The catalog is included through the metamodel and the documentation follows the portable Chat ZIP. B11 does not create alternate report output or expose a user-facing profile switch.
+
+### B12 result
+
+Chat and Custom GPT now package the same Plan B reporting semantics from canonical sources. The Custom GPT report Knowledge includes the report profile, complexity/splitting rules, scenario sequence rules, PDF presentation contract and profile groundwork while retaining six Knowledge files.
+
+`templates/custom-gpt-distribution.yaml` declares the Plan B capabilities in its parity contract. PR CI now builds and validates both distribution ZIPs after the full regression suite, then uploads Chat, Custom GPT and build manifest as Actions artifacts. `tests/test_b12.py` runs deterministic release-readiness checks and inspects generated ZIP content/source hashes so missing Plan B runtime or Knowledge becomes a regression failure.
+
+`docs/plan-b-release-readiness.md` defines the final distribution gate. Plan B is complete at development version `0.1.0-dev.50`; an actual release remains a separate tag/GitHub Release action.
 
 ## A36 result
 
