@@ -3,10 +3,10 @@
 - Current plan: Plan B – Runtime robustness and architecture reporting
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
-- Plan B progress: B8 / B12
-- Current version: 0.1.0-dev.46
-- Milestone: **Scenario-specific sequence diagrams render one relevant Interaction per diagram**
-- Next: B9 – define the PDF presentation contract from the canonical report profile.
+- Plan B progress: B9 / B12
+- Current version: 0.1.0-dev.47
+- Milestone: **PDF presentation contract is canonical, declarative and machine-readable**
+- Next: B10 – add end-to-end report regression for small, medium and large/dense systems.
 
 ## Plan B
 
@@ -74,6 +74,14 @@ Each split produces overview part(s) first and then deterministic detail parts. 
 `scripts/report.py` renders each relevant Interaction as its own Mermaid block under a stable `Scenario – Interaction` heading. Participants and messages are therefore isolated to the current interaction and unrelated scenarios are never merged into one sequence diagram.
 
 `docs/scenario-sequence-diagrams.md` documents the contract, `tests/test_b8.py` verifies ordering, isolation and one-Interaction-per-diagram behavior, and the helper plus documentation are included in the portable Chat ZIP.
+
+### B9 result
+
+The standard report profile now contains a canonical `presentation.pdf` contract covering A4 page geometry, margins, heading hierarchy, major-section page breaks, diagram width/height and captions, table wrapping/header behavior, body/table typography, code wrapping and widow/orphan/page-number rules.
+
+`scripts/report_profile.py` validates the PDF contract and `scripts/pdf_contract.py` exposes it deterministically as `system-modeller-pdf-presentation-v1` together with section order and the B6–B8 diagram policy. This keeps PDF layout derived from the same report profile as Markdown instead of creating a second presentation source of truth.
+
+`docs/pdf-presentation-contract.md` documents the contract and `tests/test_b9.py` locks the key values plus invalid-profile rejection. The PDF contract helper and documentation are included in the portable Chat ZIP. B9 defines presentation requirements; B10 adds end-to-end report regression over representative system sizes.
 
 ## A36 result
 
