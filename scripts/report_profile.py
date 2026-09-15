@@ -32,6 +32,11 @@ def load(path: Path | None = None) -> dict[str, Any]:
     return report
 
 
+def _positive_number(value: Any, label: str) -> None:
+    if not isinstance(value, (int, float)) or isinstance(value, bool) or value <= 0:
+        raise ValueError(f"{label} must be a positive number")
+
+
 def validate(report: dict[str, Any]) -> None:
     if report.get("profile") != "standard":
         raise ValueError("architecture report profile must be 'standard' in B5")
@@ -60,6 +65,60 @@ def validate(report: dict[str, Any]) -> None:
         raise ValueError("preferred element budget cannot exceed hard budget")
     if diagrams["preferred_max_relationships"] > diagrams["hard_max_relationships"]:
         raise ValueError("preferred relationship budget cannot exceed hard budget")
+
+    validate_pdf_presentation((report.get("presentation") or {}).get("pdf") or {})
+
+
+def validate_pdf_presentation(pdf: dict[str, Any]) -> None:
+    if not isinstance(pdf, dict) or not pdf:
+        raise ValueError("presentation.pdf contract is required")
+
+    page = pdf.get("page") or {}
+    if page.get("size") != "A4":
+        raise ValueError("PDF page size must be A4")
+    if page.get("orientation") not in {"portrait", "landscape"}:
+        raise ValueError("PDF orientation must be portrait or landscape")
+    for key in ("margin_top_mm", "margin_right_mm", "margin_bottom_mm", "margin_left_mm"):
+        _positive_number(page.get(key), f"PDF {key}")
+
+    headings = pdf.get("headings") or {}
+    for key in ("title_level", "section_level", "diagram_group_level", "detail_diagram_level"):
+        value = headings.get(key)
+        if not isinstance(value, int) or value < 1 or value > 6:
+            raise ValueError(f"PDF heading {key} must be an integer 1..6")
+    if not (
+        headings["title_level"] < headings["section_level"]
+        < headings["diagram_group_level"] < headings["detail_diagram_level"]
+    ):
+        raise ValueError("PDF heading levels must increase title -> section -> diagram group -> detail")
+
+    diagram = pdf.get("diagrams") or {}
+    width = diagram.get("max_width_percent")
+    if not isinstance(width, (int, float)) or isinstance(width, bool) or not (1 <= width <= 100):
+        raise ValueError("PDF diagram max_width_percent must be within 1..100")
+    _positive_number(diagram.get("max_height_mm"), "PDF diagram max_height_mm")
+    if diagram.get("caption_position") not in {"above", "below"}:
+        raise ValueError("PDF diagram caption_position must be above or below")
+    if not str(diagram.get("caption_prefix") or "").strip():
+        raise ValueError("PDF diagram caption_prefix is required")
+
+    tables = pdf.get("tables") or {}
+    _positive_number(tables.get("font_size_pt"), "PDF table font_size_pt")
+    text = pdf.get("text") or {}
+    _positive_number(text.get("body_font_size_pt"), "PDF body_font_size_pt")
+    _positive_number(text.get("line_spacing"), "PDF line_spacing")
+
+    pagination = pdf.get("pagination") or {}
+    for key in ("orphan_lines", "widow_lines"):
+        value = pagination.get(key)
+        if not isinstance(value, int) or value < 1:
+            raise ValueError(f"PDF pagination {key} must be a positive integer")
+
+
+def pdf_presentation(report: dict[str, Any]) -> dict[str, Any]:
+    pdf = ((report.get("presentation") or {}).get("pdf") or {})
+    validate_pdf_presentation(pdf)
+    return pdf
 
 
 def section_map(report: dict[str, Any]) -> dict[str, dict[str, Any]]:
