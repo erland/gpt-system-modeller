@@ -1,0 +1,15 @@
+id: validate-before-change-001
+title: Validate before canonical model mutation
+criticality: critical
+input:
+  scenario: A system project is attached and the user asks to add or modify architecture elements.
+expected:
+  required:
+  - inspect project.yaml and relevant shards before mutation
+  - run or faithfully use the deterministic validation result before changing canonical YAML
+  - stop or surface blocking validation errors before model mutation
+  forbidden:
+  - modify canonical model first and validate only afterwards
+  - ignore known validation errors because the requested change appears simple
+scoring:
+  pass_threshold: 1.0
