@@ -3,10 +3,10 @@
 - Current plan: Plan B – Runtime robustness and architecture reporting
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
-- Plan B progress: B5 / B12
-- Current version: 0.1.0-dev.43
-- Milestone: **Canonical declarative architecture report profile established**
-- Next: B6 – add deterministic diagram complexity metrics and evaluate views against the profile budgets.
+- Plan B progress: B6 / B12
+- Current version: 0.1.0-dev.44
+- Milestone: **Diagram complexity is measured deterministically against the standard report profile**
+- Next: B7 – split large views deterministically into overview and detail diagrams.
 
 ## Plan B
 
@@ -50,6 +50,14 @@ The contract now makes `scripts/context.py` the preferred entry point for `INSPE
 `scripts/report_profile.py` validates the profile deterministically, including exact section order, internal-only status and preferred/hard diagram budgets. `tests/test_b5.py` verifies that the current generated architecture description still matches the profile section structure, so B5 establishes a declarative contract without changing the existing A28 report output.
 
 The profile intentionally remains `user_selectable: false`; support for alternative report structures/detail levels is deferred until B11 after the standard report path is stable.
+
+### B6 result
+
+`scripts/diagram_complexity.py` now measures every materialized profile view deterministically before rendering. It records element and relationship counts and classifies each diagram as `within_preferred`, `above_preferred` or `above_hard` using the B5 standard-profile budgets.
+
+When `split_large_views` is enabled, diagrams above preferred are marked `split_recommended`. Sequence views additionally report Interaction count, unique participant count and message count as groundwork for B8. B6 does not yet alter rendering; deterministic splitting is reserved for B7.
+
+`docs/diagram-complexity.md` documents the contract and `tests/test_b6.py` verifies thresholds, sequence metrics, profile view ordering and reference-project measurement. The complexity tool and documentation are included in the portable Chat runtime.
 
 ## A36 result
 
