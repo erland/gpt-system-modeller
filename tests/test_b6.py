@@ -28,7 +28,7 @@ def synthetic(view_type, elements, links, sequences=None):
 
 
 def main():
-    profile = report_profile.load_standard_profile()
+    profile = report_profile.load()
     policy = diagram_complexity.diagram_policy(profile)
 
     expected = {
