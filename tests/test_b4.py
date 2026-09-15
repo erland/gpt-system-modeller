@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
+import re
 import subprocess, yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -61,11 +62,13 @@ def main():
             return fail(f'B4 documentation missing {phrase}')
 
     version = (ROOT / 'VERSION').read_text(encoding='utf-8').strip()
-    if version != '0.1.0-dev.42':
-        return fail(f'expected B4 version 0.1.0-dev.42, got {version}')
+    match = re.fullmatch(r'0\.1\.0-dev\.(\d+)', version)
+    if not match or int(match.group(1)) < 42:
+        return fail(f'expected B4 version >= dev.42, got {version}')
     status = (ROOT / 'STATUS.md').read_text(encoding='utf-8')
-    if 'Plan B progress: B4 / B12' not in status or 'Next: B5' not in status:
-        return fail('STATUS not advanced to B4/B5')
+    progress = re.search(r'Plan B progress: B(\d+) / B12', status)
+    if not progress or int(progress.group(1)) < 4:
+        return fail('STATUS not advanced to B4 or later')
 
     print('B4 small-model regression tests passed')
     return 0
