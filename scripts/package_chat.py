@@ -38,6 +38,7 @@ INCLUDE_SCRIPTS = {
     "report_profile.py",
     "validate.py",
     "view.py",
+    "view_split.py",
 }
 
 # Documentation that defines or explains the modeling/runtime semantics.
@@ -52,6 +53,7 @@ INCLUDE_DOCS = {
     "deployment-relations.md",
     "design-principles.md",
     "diagram-complexity.md",
+    "diagram-splitting.md",
     "functional-model.md",
     "information-model.md",
     "information-usage.md",
