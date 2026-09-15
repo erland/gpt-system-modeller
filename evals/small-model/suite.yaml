@@ -1,0 +1,45 @@
+format: system-modeller-small-model-suite-v1
+name: Plan B small-model regression suite
+description: >-
+  Model-neutral regression suite for evaluating whether a model can safely follow
+  the System Modeller Chat runtime. The suite separates instruction adherence,
+  model quality, provenance/uncertainty and deterministic tool use.
+dimensions:
+  instruction_adherence:
+    description: Follows runtime order, validation gates and scoped context rules.
+  model_quality:
+    description: Preserves semantic identity, stable IDs and avoids duplicate model concepts.
+  provenance_uncertainty:
+    description: Preserves origin/evidence and does not convert uncertainty into unsupported fact.
+  deterministic_tools:
+    description: Uses deterministic project tools instead of reconstructing machine-checkable state by free-form reasoning.
+cases:
+  - id: runtime-order-001
+    file: runtime-order-001.yaml
+    dimension: instruction_adherence
+  - id: validate-before-change-001
+    file: validate-before-change-001.yaml
+    dimension: instruction_adherence
+  - id: minimal-context-001
+    file: minimal-context-001.yaml
+    dimension: instruction_adherence
+  - id: reuse-stable-id-001
+    file: reuse-stable-id-001.yaml
+    dimension: model_quality
+  - id: origin-evidence-001
+    file: origin-evidence-001.yaml
+    dimension: provenance_uncertainty
+  - id: deterministic-tools-001
+    file: deterministic-tools-001.yaml
+    dimension: deterministic_tools
+model_classes:
+  - id: small_local
+    description: Smaller/local models with limited planning or context capacity.
+  - id: general_chat
+    description: General chat models without assumptions about advanced reasoning.
+  - id: strong_reasoning
+    description: Stronger reasoning models used as a comparison/control class.
+policy:
+  critical_case_failure_blocks_canonical_mutation: true
+  dimension_pass_threshold: 1.0
+  overall_pass_threshold: 1.0
