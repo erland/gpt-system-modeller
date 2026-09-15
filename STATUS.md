@@ -3,10 +3,10 @@
 - Current plan: Plan B – Runtime robustness and architecture reporting
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
-- Plan B progress: B7 / B12
-- Current version: 0.1.0-dev.45
-- Milestone: **Large architecture views split deterministically into overview and detail diagrams**
-- Next: B8 – generate scenario-specific sequence diagrams, one relevant Interaction per diagram.
+- Plan B progress: B8 / B12
+- Current version: 0.1.0-dev.46
+- Milestone: **Scenario-specific sequence diagrams render one relevant Interaction per diagram**
+- Next: B9 – define the PDF presentation contract from the canonical report profile.
 
 ## Plan B
 
@@ -66,6 +66,14 @@ When `split_large_views` is enabled, diagrams above preferred are marked `split_
 Each split produces overview part(s) first and then deterministic detail parts. Detail parts cover all original elements and are chunked against the preferred element and relationship budgets. `scripts/report.py` now renders those parts as separate Mermaid diagrams while keeping small views byte-compatible with the earlier report path.
 
 `docs/diagram-splitting.md` documents the strategy, `tests/test_b7.py` locks semantic splitting, fallback behavior, coverage and determinism, and the split runtime follows the portable Chat ZIP.
+
+### B8 result
+
+`scripts/sequence_diagrams.py` now materializes sequence views with exactly one canonical `Interaction` per diagram when the standard profile declares `one_interaction_per_diagram: true`. Interactions are ordered deterministically by Scenario name/ID and then Interaction name/ID.
+
+`scripts/report.py` renders each relevant Interaction as its own Mermaid block under a stable `Scenario – Interaction` heading. Participants and messages are therefore isolated to the current interaction and unrelated scenarios are never merged into one sequence diagram.
+
+`docs/scenario-sequence-diagrams.md` documents the contract, `tests/test_b8.py` verifies ordering, isolation and one-Interaction-per-diagram behavior, and the helper plus documentation are included in the portable Chat ZIP.
 
 ## A36 result
 
