@@ -3,10 +3,10 @@
 - Current plan: Plan B – Runtime robustness and architecture reporting
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
-- Plan B progress: B9 / B12
-- Current version: 0.1.0-dev.47
-- Milestone: **PDF presentation contract is canonical, declarative and machine-readable**
-- Next: B10 – add end-to-end report regression for small, medium and large/dense systems.
+- Plan B progress: B10 / B12
+- Current version: 0.1.0-dev.48
+- Milestone: **End-to-end architecture report regression covers small, medium and dense systems**
+- Next: B11 – prepare report-profile groundwork for future overview/standard/detailed variants without exposing unstable user choices.
 
 ## Plan B
 
@@ -82,6 +82,14 @@ The standard report profile now contains a canonical `presentation.pdf` contract
 `scripts/report_profile.py` validates the PDF contract and `scripts/pdf_contract.py` exposes it deterministically as `system-modeller-pdf-presentation-v1` together with section order and the B6–B8 diagram policy. This keeps PDF layout derived from the same report profile as Markdown instead of creating a second presentation source of truth.
 
 `docs/pdf-presentation-contract.md` documents the contract and `tests/test_b9.py` locks the key values plus invalid-profile rejection. The PDF contract helper and documentation are included in the portable Chat ZIP. B9 defines presentation requirements; B10 adds end-to-end report regression over representative system sizes.
+
+### B10 result
+
+`evals/report-regression/cases.yaml` now defines deterministic `small`, `medium` and `dense` architecture-report regression levels. `scripts/evaluate_report_regression.py` generates temporary system projects from those declarations and runs the complete standard report composition path.
+
+The regression verifies stable twelve-section report structure, B7 split behavior, preferred diagram budgets, semantic coverage of split detail views, and B8 one-Interaction-per-diagram isolation. Repeated runs must produce identical machine-readable summaries. The medium case exercises multiple split paths and the dense case exercises all four B7-supported view types.
+
+`docs/report-regression.md` documents the contract and `tests/test_b10.py` locks determinism, representative density growth and the expected sequence-diagram counts. B10 deliberately tests report composition rather than adding report variants; profile variation remains B11 work.
 
 ## A36 result
 
