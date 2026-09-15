@@ -29,6 +29,7 @@ INCLUDE_INSTRUCTIONS = {
 # in the portable Chat runtime.
 INCLUDE_SCRIPTS = {
     "analyze.py",
+    "context.py",
     "ids.py",
     "model.py",
     "package_project.py",
@@ -42,6 +43,7 @@ INCLUDE_DOCS = {
     "architecture-decisions-and-constraints.md",
     "architecture-description.md",
     "context-model.md",
+    "context-summary.md",
     "data-stores.md",
     "deployment-context.md",
     "deployment-relations.md",
