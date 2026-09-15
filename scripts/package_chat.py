@@ -68,6 +68,7 @@ INCLUDE_DOCS = {
     "modeling-principles.md",
     "origin-declared-observed-inferred.md",
     "pdf-presentation-contract.md",
+    "plan-b-release-readiness.md",
     "provenance-and-evidence.md",
     "report-profile-groundwork.md",
     "runtime-units.md",
