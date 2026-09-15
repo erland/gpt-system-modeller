@@ -1,0 +1,16 @@
+id: deterministic-tools-001
+title: Prefer deterministic project tools over free-form reconstruction
+criticality: critical
+input:
+  scenario: System Modeller provides deterministic scripts for validation, project inspection, views or report derivation relevant to the requested task.
+expected:
+  required:
+  - use or faithfully follow available deterministic tool results for structural facts
+  - treat generated views and reports as derived from canonical YAML
+  - reserve LLM reasoning for semantic interpretation, planning and justified inference
+  forbidden:
+  - invent validation status instead of using the validator
+  - reconstruct project inventory from memory when a deterministic inventory is available
+  - treat a generated diagram or report as a separate source of truth
+scoring:
+  pass_threshold: 1.0
