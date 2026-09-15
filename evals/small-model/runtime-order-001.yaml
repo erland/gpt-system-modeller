@@ -1,0 +1,18 @@
+id: runtime-order-001
+title: Follow the explicit runtime operation order
+criticality: critical
+input:
+  scenario: A user requests a model change and an updated project artifact in one turn.
+expected:
+  required:
+  - inspect before validation and planning
+  - validate before canonical change
+  - validate again after canonical change
+  - derive views or reports only after successful post-change validation
+  - package only after derived artifacts are based on the validated canonical model
+  forbidden:
+  - skip directly from user request to mutation
+  - derive reports before post-change validation
+  - package a project known to be invalid
+scoring:
+  pass_threshold: 1.0
