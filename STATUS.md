@@ -3,10 +3,10 @@
 - Current plan: Plan B – Runtime robustness and architecture reporting
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
-- Plan B progress: B10 / B12
-- Current version: 0.1.0-dev.48
-- Milestone: **End-to-end architecture report regression covers small, medium and dense systems**
-- Next: B11 – prepare report-profile groundwork for future overview/standard/detailed variants without exposing unstable user choices.
+- Plan B progress: B11 / B12
+- Current version: 0.1.0-dev.49
+- Milestone: **Report-profile registry supports future variants while standard remains the only implemented profile**
+- Next: B12 – finalize Chat/Custom GPT distribution packaging, regression and release readiness for Plan B.
 
 ## Plan B
 
@@ -90,6 +90,14 @@ The standard report profile now contains a canonical `presentation.pdf` contract
 The regression verifies stable twelve-section report structure, B7 split behavior, preferred diagram budgets, semantic coverage of split detail views, and B8 one-Interaction-per-diagram isolation. Repeated runs must produce identical machine-readable summaries. The medium case exercises multiple split paths and the dense case exercises all four B7-supported view types.
 
 `docs/report-regression.md` documents the contract and `tests/test_b10.py` locks determinism, representative density growth and the expected sequence-diagram counts. B10 deliberately tests report composition rather than adding report variants; profile variation remains B11 work.
+
+### B11 result
+
+`metamodel/report-profiles/catalog.yaml` now defines the stable profile identities `overview`, `standard` and `detailed`. `standard` is the only implemented and stable profile, remains the default, and all three identities remain `user_selectable: false`.
+
+`scripts/report_profile.py` now resolves profiles through the catalog while preserving `report_profile.load()` as the standard default. Explicit `profile="standard"` resolves identically; `overview` and `detailed` fail deterministically as planned-but-not-implemented rather than silently aliasing the standard report. Unknown profiles also fail explicitly.
+
+`docs/report-profile-groundwork.md` documents the lifecycle boundary and `tests/test_b11.py` locks the registry, default resolution and non-selectability contract. The catalog is included through the metamodel and the documentation follows the portable Chat ZIP. B11 does not create alternate report output or expose a user-facing profile switch.
 
 ## A36 result
 
