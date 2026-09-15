@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 import yaml
 import report_profile
+import sequence_diagrams
 import view as view_engine
 import view_split
 
@@ -84,6 +85,14 @@ def append_view_diagrams(lines, project, typ, heading_level='###'):
         return
     for title,diagram in parts:
         lines += ['',f'{heading_level} {title}','', '```mermaid',diagram,'```']
+
+def append_sequence_diagrams(lines, project):
+    try:
+        diagrams=sequence_diagrams.materialize(project)
+    except Exception:
+        diagrams=[]
+    for item in diagrams:
+        lines += ['',f'### {item["title"]}','', '```mermaid',view_engine.mermaid(item['result']).rstrip(),'```']
 
 def relation_index(rels):
     out=defaultdict(list); inc=defaultdict(list)
@@ -181,7 +190,7 @@ def architecture_description(project: Path, include_diagrams=True) -> str:
     scenarios=typed['Scenario']
     lines += [table(['Scenario','Use case','Utfall'],[(e.get('name'),elements.get(e.get('use_case'),{}).get('name',e.get('use_case','')),e.get('outcome','')) for e in scenarios]).rstrip()]
     if include_diagrams:
-        append_view_diagrams(lines,project,'sequence')
+        append_sequence_diagrams(lines,project)
 
     # Runtime/deployment
     lines += ['','## 9. Runtime och deployment','']
