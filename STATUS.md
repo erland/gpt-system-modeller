@@ -3,10 +3,10 @@
 - Current plan: Plan B – Runtime robustness and architecture reporting
 - Plan A completion marker: A1–A30 / A30
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
-- Plan B progress: B3 / B12
-- Current version: 0.1.0-dev.41
-- Milestone: **Chat runtime simplified into explicit deterministic operations**
-- Next: B4 – add small-model regression coverage for the simplified runtime and context-driven workflow.
+- Plan B progress: B4 / B12
+- Current version: 0.1.0-dev.42
+- Milestone: **Small-model regression suite is reproducible and machine-scoreable**
+- Next: B5 – define a canonical declarative architecture report profile.
 
 ## Plan B
 
@@ -36,6 +36,12 @@ The output explicitly carries the Plan B runtime sequence `INSPECT → VALIDATE 
 `instructions/chat-runtime.md` is now structured directly around the seven runtime operations `INSPECT → VALIDATE → PLAN → CHANGE → VALIDATE → DERIVE → PACKAGE`.
 
 The contract now makes `scripts/context.py` the preferred entry point for `INSPECT`, requires validation before canonical mutation, maps each operation to deterministic runtime tools, defines stop conditions after validation failures, and keeps stable IDs, provenance and unresolved uncertainty explicit. `SYSTEM-MODELLER-CHAT.md` mirrors the same core flow so bootstrap and runtime instructions no longer depend on an implicit interpretation of the older numbered checklist.
+
+### B4 result
+
+`evals/small-model/suite.yaml` now groups the B1 evals into four explicit dimensions: instruction adherence, model quality, provenance/uncertainty and deterministic tool use. The same suite applies to `small_local`, `general_chat` and `strong_reasoning` comparison classes.
+
+`scripts/evaluate_small_model.py` validates the suite and deterministically scores recorded rubric judgments. Critical case failures explicitly set `canonical_mutation_allowed: false`, allowing the regression result to distinguish safe read/analysis use from safe canonical mutation. Passing and deliberate critical-failure fixtures plus `tests/test_b4.py` lock the scoring and safety-gate behavior.
 
 ## A36 result
 
