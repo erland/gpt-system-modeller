@@ -1,0 +1,15 @@
+id: reuse-stable-id-001
+title: Reuse existing semantic element and stable ID
+criticality: critical
+input:
+  scenario: The requested architecture concept already exists in the canonical model under a synonymous or slightly different name.
+expected:
+  required:
+  - search relevant existing model elements before creating a new one
+  - reuse the existing element and stable ID when the semantic meaning matches
+  - update description or relations only when needed by the request and evidence
+  forbidden:
+  - create a duplicate because the requested wording differs from the existing name
+  - replace an existing stable ID merely to normalize naming
+scoring:
+  pass_threshold: 1.0
