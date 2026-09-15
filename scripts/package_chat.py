@@ -34,6 +34,7 @@ INCLUDE_SCRIPTS = {
     "model.py",
     "package_project.py",
     "report.py",
+    "report_profile.py",
     "validate.py",
     "view.py",
 }
@@ -42,6 +43,7 @@ INCLUDE_SCRIPTS = {
 INCLUDE_DOCS = {
     "architecture-decisions-and-constraints.md",
     "architecture-description.md",
+    "architecture-report-profile.md",
     "context-model.md",
     "context-summary.md",
     "data-stores.md",
