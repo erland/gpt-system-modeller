@@ -1,0 +1,60 @@
+architecture_report:
+  profile: standard
+  version: 1
+  purpose: Canonical internal profile for the standard architecture description.
+  user_selectable: false
+
+  sections:
+    - id: purpose
+      title: Syfte och omfattning
+    - id: system_context
+      title: Systemets sammanhang
+      views: [system_context]
+    - id: functional
+      title: Funktionell översikt
+      views: [functional_overview]
+    - id: use_cases
+      title: Aktörer och use cases
+      views: [use_case_overview]
+    - id: information
+      title: Informationsarkitektur
+      views: [information_overview, functional_information]
+    - id: logical
+      title: Logisk arkitektur
+      views: [logical_component]
+    - id: integration
+      title: Integrationsarkitektur
+      views: [integration]
+    - id: scenarios
+      title: Viktiga scenarier
+      views: [sequence]
+    - id: deployment
+      title: Runtime och deployment
+      views: [deployment]
+    - id: decisions
+      title: Arkitekturbeslut och constraints
+    - id: uncertainties
+      title: Kända osäkerheter
+    - id: evidence
+      title: Källor och evidens
+
+  diagrams:
+    enabled: true
+    split_large_views: true
+    preferred_max_elements: 12
+    hard_max_elements: 20
+    preferred_max_relationships: 18
+    hard_max_relationships: 30
+    sequence:
+      one_interaction_per_diagram: true
+
+  narrative:
+    style: concise
+    include_element_catalogs: true
+    include_evidence_summary: true
+    distinguish_origin: true
+
+  presentation:
+    heading_numbering: true
+    empty_section_text: Ingen information modellerad.
+    diagram_format: mermaid
