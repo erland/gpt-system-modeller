@@ -55,10 +55,16 @@ knowledge:
       - docs/validation.md
       - schemas/project.schema.json
   - output: 04-views-and-architecture-description.md
-    purpose: MVP views and architecture description generation.
+    purpose: Views, architecture report profiles, readable diagram composition and presentation contracts.
     sources:
       - docs/views.md
       - docs/architecture-description.md
+      - docs/architecture-report-profile.md
+      - docs/diagram-complexity.md
+      - docs/diagram-splitting.md
+      - docs/scenario-sequence-diagrams.md
+      - docs/pdf-presentation-contract.md
+      - docs/report-profile-groundwork.md
   - output: 05-source-analysis-and-evidence.md
     purpose: Source analysis, observations, evidence and origin rules.
     sources:
@@ -90,6 +96,13 @@ parity_contract:
     - validation_semantics
     - ten_mvp_views
     - architecture_description
+    - deterministic_runtime_flow
+    - architecture_report_profile
+    - diagram_complexity_budgets
+    - automatic_diagram_splitting
+    - scenario_specific_sequence_diagrams
+    - pdf_presentation_contract
+    - report_profile_catalog
   shared_model_sources:
     - metamodel/
     - schemas/
