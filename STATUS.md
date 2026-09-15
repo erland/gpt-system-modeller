@@ -3,10 +3,10 @@
 - Current plan: Plan B – Runtime robustness and architecture reporting
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
-- Plan B progress: B6 / B12
-- Current version: 0.1.0-dev.44
-- Milestone: **Diagram complexity is measured deterministically against the standard report profile**
-- Next: B7 – split large views deterministically into overview and detail diagrams.
+- Plan B progress: B7 / B12
+- Current version: 0.1.0-dev.45
+- Milestone: **Large architecture views split deterministically into overview and detail diagrams**
+- Next: B8 – generate scenario-specific sequence diagrams, one relevant Interaction per diagram.
 
 ## Plan B
 
@@ -58,6 +58,14 @@ The profile intentionally remains `user_selectable: false`; support for alternat
 When `split_large_views` is enabled, diagrams above preferred are marked `split_recommended`. Sequence views additionally report Interaction count, unique participant count and message count as groundwork for B8. B6 does not yet alter rendering; deterministic splitting is reserved for B7.
 
 `docs/diagram-complexity.md` documents the contract and `tests/test_b6.py` verifies thresholds, sequence metrics, profile view ordering and reference-project measurement. The complexity tool and documentation are included in the portable Chat runtime.
+
+### B7 result
+
+`scripts/view_split.py` now splits oversized `logical_component`, `integration`, `deployment` and `functional_information` views before rendering. It prefers semantic anchors from the model—Subsystem, Responsibility, Environment/DeploymentNode and integration provider/producer nodes—and otherwise falls back to stable-ID partitioning.
+
+Each split produces overview part(s) first and then deterministic detail parts. Detail parts cover all original elements and are chunked against the preferred element and relationship budgets. `scripts/report.py` now renders those parts as separate Mermaid diagrams while keeping small views byte-compatible with the earlier report path.
+
+`docs/diagram-splitting.md` documents the strategy, `tests/test_b7.py` locks semantic splitting, fallback behavior, coverage and determinism, and the split runtime follows the portable Chat ZIP.
 
 ## A36 result
 
