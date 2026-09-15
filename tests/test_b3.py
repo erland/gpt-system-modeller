@@ -51,8 +51,9 @@ def main():
     if not m or int(m.group(1))<41: return fail(f'expected version >= dev.41, got {version}')
 
     status=(ROOT/'STATUS.md').read_text(encoding='utf-8')
-    if 'Plan B progress: B3 / B12' not in status: return fail('STATUS not advanced to B3')
-    if 'B4' not in status: return fail('next Plan B step missing')
+    progress=re.search(r'Plan B progress: B(\d+) / B12',status)
+    if not progress or int(progress.group(1))<3: return fail('STATUS not at B3 or later')
+    if '### B3 result' not in status: return fail('B3 result missing from STATUS history')
 
     print('B3 tests passed'); return 0
 
