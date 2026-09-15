@@ -16,8 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def diagram_policy(profile: dict[str, Any]) -> dict[str, Any]:
-    report = profile.get("architecture_report") or {}
-    policy = report.get("diagrams") or {}
+    policy = profile.get("diagrams") or {}
     required = (
         "preferred_max_elements",
         "hard_max_elements",
@@ -90,8 +89,7 @@ def measure_result(result: dict[str, Any], policy: dict[str, Any]) -> dict[str, 
 def profile_view_types(profile: dict[str, Any]) -> list[str]:
     result: list[str] = []
     seen: set[str] = set()
-    report = profile.get("architecture_report") or {}
-    for section in report.get("sections") or []:
+    for section in profile.get("sections") or []:
         for view_type in section.get("views") or []:
             if view_type not in seen:
                 seen.add(view_type)
@@ -100,7 +98,7 @@ def profile_view_types(profile: dict[str, Any]) -> list[str]:
 
 
 def measure_project(project: Path, view_types: list[str] | None = None) -> dict[str, Any]:
-    profile = report_profile.load_standard_profile()
+    profile = report_profile.load()
     policy = diagram_policy(profile)
     types = view_types or profile_view_types(profile)
     views = []
@@ -109,7 +107,7 @@ def measure_project(project: Path, view_types: list[str] | None = None) -> dict[
         materialized = view_engine.materialize(project, definition)
         views.append(measure_result(materialized, policy))
     return {
-        "profile": (profile.get("architecture_report") or {}).get("profile", "standard"),
+        "profile": profile.get("profile", "standard"),
         "views": views,
         "summary": {
             "view_count": len(views),
