@@ -58,3 +58,40 @@ architecture_report:
     heading_numbering: true
     empty_section_text: Ingen information modellerad.
     diagram_format: mermaid
+    pdf:
+      page:
+        size: A4
+        orientation: portrait
+        margin_top_mm: 18
+        margin_right_mm: 16
+        margin_bottom_mm: 18
+        margin_left_mm: 16
+      headings:
+        title_level: 1
+        section_level: 2
+        diagram_group_level: 3
+        detail_diagram_level: 4
+        major_section_page_break_before: true
+        keep_heading_with_next: true
+      diagrams:
+        max_width_percent: 92
+        max_height_mm: 155
+        center: true
+        keep_with_caption: true
+        caption_position: below
+        caption_prefix: Diagram
+        split_parts_start_on_new_page: false
+      tables:
+        repeat_header: true
+        allow_row_split: false
+        wrap_cells: true
+        font_size_pt: 8.5
+      text:
+        body_font_size_pt: 10
+        line_spacing: 1.15
+        code_wrap: true
+        preserve_code_frame: true
+      pagination:
+        orphan_lines: 2
+        widow_lines: 2
+        page_numbering: true
