@@ -3,10 +3,10 @@
 - Current plan: Plan B – Runtime robustness and architecture reporting
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
-- Plan B progress: B4 / B12
-- Current version: 0.1.0-dev.42
-- Milestone: **Small-model regression suite is reproducible and machine-scoreable**
-- Next: B5 – define a canonical declarative architecture report profile.
+- Plan B progress: B5 / B12
+- Current version: 0.1.0-dev.43
+- Milestone: **Canonical declarative architecture report profile established**
+- Next: B6 – add deterministic diagram complexity metrics and evaluate views against the profile budgets.
 
 ## Plan B
 
@@ -42,6 +42,14 @@ The contract now makes `scripts/context.py` the preferred entry point for `INSPE
 `evals/small-model/suite.yaml` now groups the B1 evals into four explicit dimensions: instruction adherence, model quality, provenance/uncertainty and deterministic tool use. The same suite applies to `small_local`, `general_chat` and `strong_reasoning` comparison classes.
 
 `scripts/evaluate_small_model.py` validates the suite and deterministically scores recorded rubric judgments. Critical case failures explicitly set `canonical_mutation_allowed: false`, allowing the regression result to distinguish safe read/analysis use from safe canonical mutation. Passing and deliberate critical-failure fixtures plus `tests/test_b4.py` lock the scoring and safety-gate behavior.
+
+### B5 result
+
+`metamodel/report-profiles/standard.yaml` is now the canonical internal profile for the standard architecture description. It declares the stable twelve-section structure, section-to-view mapping, concise narrative policy and the diagram budgets that B6–B8 will enforce.
+
+`scripts/report_profile.py` validates the profile deterministically, including exact section order, internal-only status and preferred/hard diagram budgets. `tests/test_b5.py` verifies that the current generated architecture description still matches the profile section structure, so B5 establishes a declarative contract without changing the existing A28 report output.
+
+The profile intentionally remains `user_selectable: false`; support for alternative report structures/detail levels is deferred until B11 after the standard report path is stable.
 
 ## A36 result
 
