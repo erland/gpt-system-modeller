@@ -3,10 +3,10 @@
 - Current plan: Plan B – Runtime robustness and architecture reporting
 - Plan A completion marker: A1–A30 / A30
 - Completed before Plan B: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
-- Plan B progress: B1 / B12
-- Current version: 0.1.0-dev.39
-- Milestone: **Plan B initiated; small-model baseline and eval contract defined**
-- Next: B2 – implement deterministic project/context summary as compact LLM working context.
+- Plan B progress: B2 / B12
+- Current version: 0.1.0-dev.40
+- Milestone: **Deterministic compact project context implemented for Chat runtime**
+- Next: B3 – simplify Chat runtime around explicit INSPECT → VALIDATE → PLAN → CHANGE → VALIDATE → DERIVE → PACKAGE operations.
 
 ## Plan B
 
@@ -24,6 +24,12 @@ A model-neutral small-model eval suite now defines baseline expectations for:
 - preference for deterministic project tools over free-form reconstruction.
 
 The evals live under `evals/small-model/` and are intended to be reusable across model families.
+
+### B2 result
+
+`scripts/context.py` now produces a deterministic compact working context containing project metadata, model and relationship counts, validation state, canonical shard inventory, uncertainty signals, duplicate-name candidates and optional focused matches. It delegates validation to the existing deterministic validator and is included in the portable Chat runtime together with `docs/context-summary.md`.
+
+The output explicitly carries the Plan B runtime sequence `INSPECT → VALIDATE → PLAN → CHANGE → VALIDATE → DERIVE → PACKAGE` but does not replace canonical YAML as source of truth.
 
 ## A36 result
 
