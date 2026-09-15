@@ -30,6 +30,7 @@ INCLUDE_INSTRUCTIONS = {
 INCLUDE_SCRIPTS = {
     "analyze.py",
     "context.py",
+    "diagram_complexity.py",
     "ids.py",
     "model.py",
     "package_project.py",
@@ -50,6 +51,7 @@ INCLUDE_DOCS = {
     "deployment-context.md",
     "deployment-relations.md",
     "design-principles.md",
+    "diagram-complexity.md",
     "functional-model.md",
     "information-model.md",
     "information-usage.md",
