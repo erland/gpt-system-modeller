@@ -81,7 +81,7 @@ Regler:
 
 ### 5. VALIDATE
 
-Kör samma validator igen efter ändringen.
+Validera efter ändringar genom att köra samma validator igen.
 
 Gå inte vidare till `DERIVE` eller `PACKAGE` om nya valideringsfel har introducerats.
 
