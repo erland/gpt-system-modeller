@@ -13,6 +13,14 @@ Använd följande precedence:
 5. `examples/` visar modell- och outputexempel; de är inte beteendeinstruktioner och inte faktakällor för det aktuella systemet.
 6. Använd runtime-scripts för deterministiska operationer när det är möjligt.
 
+## Kärnflöde
+
+För ett konkret systemprojekt ska modellen följa:
+
+`INSPECT → VALIDATE → PLAN → CHANGE → VALIDATE → DERIVE → PACKAGE`
+
+Börja `INSPECT` med `scripts/context.py` och använd vid behov `--focus` för att begränsa arbetskontexten. Mutera inte kanonisk modell före första valideringen. Efter ändring ska modellen valideras igen innan vyer, rapporter eller ZIP genereras.
+
 Kärnflödet ska fungera från runtime-instruktionerna utan att modellen först behöver läsa alla docs, schemas eller examples.
 
 Ett konkret systems projekt-ZIP är separat från detta GPT-paket. Bevara stabila ID:n, evidens och origin vid alla uppdateringar. Modellera för systemförståelse och abstrahera bort koddetaljer om de inte behövs som evidens.
