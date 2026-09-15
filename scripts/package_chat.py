@@ -69,6 +69,7 @@ INCLUDE_DOCS = {
     "origin-declared-observed-inferred.md",
     "pdf-presentation-contract.md",
     "provenance-and-evidence.md",
+    "report-profile-groundwork.md",
     "runtime-units.md",
     "scenario-sequence-diagrams.md",
     "scenarios.md",
