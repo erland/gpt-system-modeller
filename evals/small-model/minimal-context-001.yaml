@@ -1,0 +1,15 @@
+id: minimal-context-001
+title: Use the minimum relevant project context
+criticality: important
+input:
+  scenario: A large system project is attached but the requested change concerns one bounded architecture area.
+expected:
+  required:
+  - inspect project metadata and validation status
+  - identify the relevant shards and nearby related elements before change
+  - limit detailed reasoning and mutation to the context needed for the operation
+  forbidden:
+  - require full semantic re-analysis of every project shard before a local change
+  - mutate unrelated shards while applying the requested change
+scoring:
+  pass_threshold: 1.0

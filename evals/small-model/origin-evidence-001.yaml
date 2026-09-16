@@ -1,0 +1,16 @@
+id: origin-evidence-001
+title: Preserve origin, evidence and uncertainty
+criticality: critical
+input:
+  scenario: Source material supports part of a requested model change but another part requires inference.
+expected:
+  required:
+  - mark directly supported facts as observed or declared as appropriate
+  - mark LLM conclusions as inferred and keep unresolved uncertainty explicit
+  - preserve or add evidence references for supported claims
+  forbidden:
+  - present inferred content as observed fact
+  - remove uncertainty to make the model look complete
+  - add unsupported evidence references
+scoring:
+  pass_threshold: 1.0

@@ -1,0 +1,25 @@
+format: system-modeller-small-model-result-v1
+model:
+  id: reference-compliant
+  class: small_local
+  version: fixture
+cases:
+  runtime-order-001:
+    required: [true, true, true, true, true]
+    forbidden: [false, false, false]
+    notes: Reference fixture that follows the complete runtime order.
+  validate-before-change-001:
+    required: [true, true, true]
+    forbidden: [false, false]
+  minimal-context-001:
+    required: [true, true, true]
+    forbidden: [false, false]
+  reuse-stable-id-001:
+    required: [true, true, true]
+    forbidden: [false, false]
+  origin-evidence-001:
+    required: [true, true, true]
+    forbidden: [false, false, false]
+  deterministic-tools-001:
+    required: [true, true, true]
+    forbidden: [false, false, false]

@@ -53,7 +53,17 @@ Skapar en deterministisk filinventering för LLM-baserad analys. Scriptet gör i
 
 Validerar byggd Custom GPT-distribution och, när `--chat` anges, funktionell source-paritet mot Chat-distributionen. Se `docs/custom-gpt-validation.md`.
 
-
 ## CI-build (A34)
 
 `python3 scripts/ci_build.py --output-dir dist` bygger både Chat- och Custom GPT-ZIP, validerar deras paritet och skapar `build-manifest.yaml` med SHA-256. GitHub Actions använder samma entry point.
+
+## context.py (B2)
+
+Skapar en kompakt deterministisk arbetskontext för Chat-runtime med projektmetadata, modellinventering, valideringsstatus, osäkerheter, dubblettkandidater och valfri fokusfiltrering.
+
+```bash
+python3 scripts/context.py /path/to/project
+python3 scripts/context.py /path/to/project --format json --focus Order
+```
+
+Se `docs/context-summary.md`.

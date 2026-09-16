@@ -1,0 +1,35 @@
+format: system-modeller-report-regression-v1
+cases:
+  - id: small
+    description: Small architecture that should remain readable without splitting.
+    subsystems: 1
+    components_per_subsystem: 4
+    responsibilities: 2
+    information_per_responsibility: 2
+    integrations: 2
+    environments: 1
+    runtimes_per_environment: 2
+    interactions: 1
+    expected_min_split_views: 0
+  - id: medium
+    description: Medium architecture that exercises automatic splitting while remaining moderate in density.
+    subsystems: 2
+    components_per_subsystem: 7
+    responsibilities: 3
+    information_per_responsibility: 3
+    integrations: 5
+    environments: 2
+    runtimes_per_environment: 4
+    interactions: 2
+    expected_min_split_views: 3
+  - id: dense
+    description: Large dense architecture that must split all B7-supported report views.
+    subsystems: 3
+    components_per_subsystem: 10
+    responsibilities: 5
+    information_per_responsibility: 4
+    integrations: 9
+    environments: 3
+    runtimes_per_environment: 6
+    interactions: 4
+    expected_min_split_views: 4

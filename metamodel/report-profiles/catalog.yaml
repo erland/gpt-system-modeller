@@ -1,0 +1,24 @@
+report_profiles:
+  version: 1
+  default_profile: standard
+  user_selectable: false
+  profiles:
+    - id: overview
+      status: planned
+      implemented: false
+      user_selectable: false
+      purpose: Future concise architecture overview with fewer sections and lower narrative detail.
+    - id: standard
+      status: stable
+      implemented: true
+      user_selectable: false
+      file: standard.yaml
+      purpose: Canonical internal architecture report profile used by the current runtime.
+    - id: detailed
+      status: planned
+      implemented: false
+      user_selectable: false
+      purpose: Future detailed architecture description with expanded narrative and catalogs.
+  future_dimensions:
+    - audience
+    - purpose

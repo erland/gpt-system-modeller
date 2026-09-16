@@ -6,7 +6,10 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 import yaml
+import report_profile
+import sequence_diagrams
 import view as view_engine
+import view_split
 
 SECTIONS = [
     'Syfte och omfattning','Systemets sammanhang','Funktionell översikt',
@@ -60,6 +63,37 @@ def render_view(project, typ):
     except Exception:
         return None
 
+def render_view_parts(project, typ):
+    try:
+        result=view_engine.materialize(project, view_engine.default_definition(typ))
+        if result['summary'].get('element_count',0)==0:
+            return []
+        policy=report_profile.load()['diagrams']
+        split=view_split.split_result(result,policy)
+        if not split['split']:
+            return [(None,view_engine.mermaid(result).rstrip())]
+        return [(part['split']['title'],view_engine.mermaid(part).rstrip()) for part in split['parts']]
+    except Exception:
+        return []
+
+def append_view_diagrams(lines, project, typ, heading_level='###'):
+    parts=render_view_parts(project,typ)
+    if not parts:
+        return
+    if len(parts)==1 and parts[0][0] is None:
+        lines += ['','```mermaid',parts[0][1],'```']
+        return
+    for title,diagram in parts:
+        lines += ['',f'{heading_level} {title}','', '```mermaid',diagram,'```']
+
+def append_sequence_diagrams(lines, project):
+    try:
+        diagrams=sequence_diagrams.materialize(project)
+    except Exception:
+        diagrams=[]
+    for item in diagrams:
+        lines += ['',f'### {item["title"]}','', '```mermaid',view_engine.mermaid(item['result']).rstrip(),'```']
+
 def relation_index(rels):
     out=defaultdict(list); inc=defaultdict(list)
     for r in rels:
@@ -88,8 +122,7 @@ def architecture_description(project: Path, include_diagrams=True) -> str:
     lines.append(f'Modellen innehåller **{len(actors)} aktör(er)** och **{len(exts)} externt system/systemtjänst(er)** i systemkontexten.')
     lines += ['',table(['Typ','Namn','Beskrivning'], [('Aktör',e.get('name'),e.get('description','')) for e in actors]+[('Externt system',e.get('name'),e.get('description','')) for e in exts]).rstrip()]
     if include_diagrams:
-        d=render_view(project,'system_context')
-        if d: lines += ['','```mermaid',d,'```']
+        append_view_diagrams(lines,project,'system_context')
 
     # Functional
     lines += ['','## 3. Funktionell översikt','']
@@ -97,8 +130,7 @@ def architecture_description(project: Path, include_diagrams=True) -> str:
     lines.append('Systemets modellerade funktionella ansvar sammanfattas nedan.')
     lines += ['',table(['Ansvar','Beskrivning'],[(e.get('name'),e.get('description','')) for e in rs]).rstrip()]
     if include_diagrams:
-        d=render_view(project,'functional_overview')
-        if d: lines += ['','```mermaid',d,'```']
+        append_view_diagrams(lines,project,'functional_overview')
 
     # Actors/use cases
     lines += ['','## 4. Aktörer och use cases','']
@@ -110,8 +142,7 @@ def architecture_description(project: Path, include_diagrams=True) -> str:
         rows.append((u.get('name'),a,r,u.get('outcome','')))
     lines += [table(['Use case','Primär aktör','Ansvar','Utfall'],rows).rstrip()]
     if include_diagrams:
-        d=render_view(project,'use_case_overview')
-        if d: lines += ['','```mermaid',d,'```']
+        append_view_diagrams(lines,project,'use_case_overview')
 
     # Information
     lines += ['','## 5. Informationsarkitektur','']
@@ -122,10 +153,15 @@ def architecture_description(project: Path, include_diagrams=True) -> str:
         rows.append((e.get('name'),e.get('description',''),owner,e.get('classification','')))
     lines += [table(['Informationsobjekt','Beskrivning','Ägare','Klassificering'],rows).rstrip()]
     if include_diagrams:
-        d=render_view(project,'information_overview')
-        if d: lines += ['','```mermaid',d,'```']
-        d=render_view(project,'functional_information')
-        if d: lines += ['','### Funktion och information','', '```mermaid',d,'```']
+        append_view_diagrams(lines,project,'information_overview')
+        parts=render_view_parts(project,'functional_information')
+        if parts:
+            lines += ['','### Funktion och information']
+            if len(parts)==1 and parts[0][0] is None:
+                lines += ['', '```mermaid',parts[0][1],'```']
+            else:
+                for title,diagram in parts:
+                    lines += ['',f'#### {title}','', '```mermaid',diagram,'```']
 
     # Logical
     lines += ['','## 6. Logisk arkitektur','']
@@ -134,8 +170,7 @@ def architecture_description(project: Path, include_diagrams=True) -> str:
         for e in typed[t]: logical.append((t,e.get('name'),e.get('description','')))
     lines += [table(['Typ','Namn','Ansvar/beskrivning'],logical).rstrip()]
     if include_diagrams:
-        d=render_view(project,'logical_component')
-        if d: lines += ['','```mermaid',d,'```']
+        append_view_diagrams(lines,project,'logical_component')
 
     # Integration
     lines += ['','## 7. Integrationsarkitektur','']
@@ -148,16 +183,14 @@ def architecture_description(project: Path, include_diagrams=True) -> str:
             ints.append((t,e.get('name'),pname,consumers,e.get('protocol','') or e.get('communication_mode','')))
     lines += [table(['Typ','Namn','Producent/provider','Konsumenter','Protokoll/läge'],ints).rstrip()]
     if include_diagrams:
-        d=render_view(project,'integration')
-        if d: lines += ['','```mermaid',d,'```']
+        append_view_diagrams(lines,project,'integration')
 
     # Scenarios
     lines += ['','## 8. Viktiga scenarier','']
     scenarios=typed['Scenario']
     lines += [table(['Scenario','Use case','Utfall'],[(e.get('name'),elements.get(e.get('use_case'),{}).get('name',e.get('use_case','')),e.get('outcome','')) for e in scenarios]).rstrip()]
     if include_diagrams:
-        d=render_view(project,'sequence')
-        if d: lines += ['','```mermaid',d,'```']
+        append_sequence_diagrams(lines,project)
 
     # Runtime/deployment
     lines += ['','## 9. Runtime och deployment','']
@@ -166,8 +199,7 @@ def architecture_description(project: Path, include_diagrams=True) -> str:
         for e in typed[t]: deploy.append((t,e.get('name'),e.get('environment_kind','') or e.get('node_kind','') or e.get('runtime_kind',''),e.get('technology','') or e.get('platform','')))
     lines += [table(['Typ','Namn','Slag','Teknik/plattform'],deploy).rstrip()]
     if include_diagrams:
-        d=render_view(project,'deployment')
-        if d: lines += ['','```mermaid',d,'```']
+        append_view_diagrams(lines,project,'deployment')
 
     # Decisions
     lines += ['','## 10. Arkitekturbeslut och constraints','']
