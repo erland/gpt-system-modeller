@@ -1,87 +1,70 @@
 # GitHub Actions – verifiering och releasepublicering
 
-Steg A37 separerar kontinuerlig verifiering från faktisk releasepublicering.
+Workflowen `.github/workflows/build-distributions.yml` separerar repository-verifiering, unified build-kontroll och faktisk GitHub Release-publicering.
 
 ## Triggers
 
-Workflowen `.github/workflows/build-distributions.yml` reagerar på:
+Workflowen reagerar på:
 
-- `pull_request` – verifierar varje ny/uppdaterad PR,
-- `push` till `main` – verifierar och gör ett distributionsbygge/paritetskontroll,
-- `release` med `types: [published]` – verifierar, bygger och publicerar releaseartefakter,
-- `workflow_dispatch` – verifierar och gör distributionsbygge manuellt.
-
-En publicerad GitHub Release är därmed den normala release-triggern. En separat tagg-push behövs inte för att workflowen ska starta.
-
-## Jobb 1 – verify
-
-Körs på alla triggers och har endast `contents: read`.
-
-1. checkout,
-2. Python/CI-beroenden,
-3. hela regressionstestsviten (`scripts/test.sh`).
-
-PR:er bygger alltså inte fulla distributionsartefakter i onödan, men hela kodbasens regression verifieras när PR:n skapas och när nya commits pushas till den.
-
-## Jobb 2 – build-check
-
-Körs efter `verify` på:
-
-- push till `main`,
+- `pull_request`,
+- `push` till `main`,
+- `release` med `types: [published]` (publicerad GitHub Release),
 - `workflow_dispatch`.
 
-Jobbet:
+## Verify
 
-1. bygger Chat och Custom GPT med `scripts/ci_build.py`,
-2. kör A33-paritetsvalideringen direkt mot ZIP-filerna,
-3. laddar upp Chat, Custom GPT och `build-manifest.yaml` som Actions artifacts.
+`Verify repository` kör instruktionsefterlevnad och hela regressionstestsviten. Jobbet använder endast `contents: read`.
 
-Det ger en extra distributionskontroll efter merge/direct commit till `main` utan write-behörighet.
+## Build and validate distributions
 
-## Jobb 3 – release
+På PR, push till `main` och manuell körning bygger `scripts/ci_build.py` hela den unified leveransen:
 
-Körs endast när en GitHub Release publiceras och efter att `verify` gått grönt.
+- source project ZIP,
+- Chat ZIP,
+- Custom GPT ZIP,
+- Claude Project ZIP,
+- OpenCode ZIP,
+- `runtime-parity.yaml`,
+- `SHA256SUMS.txt`,
+- `build-manifest.yaml`.
 
-Jobbet:
+Custom GPT/Chat, Claude och OpenCode valideras därefter på nytt direkt från de genererade ZIP-filerna. Hela leveransen laddas upp som ett gemensamt Actions artifact, `system-modeller-unified-build`.
 
-1. checkar ut exakt `github.event.release.tag_name`,
-2. validerar att taggen följer `vX.Y.Z`,
-3. använder release-taggen som auktoritativ versionskälla,
-4. bygger Chat och Custom GPT,
-5. kör paritetsvalidering,
-6. laddar upp samma filer som Actions artifact,
-7. bifogar Chat-ZIP, Custom GPT-ZIP och `build-manifest.yaml` som assets på själva GitHub Release-sidan via `gh release upload`.
+## GitHub Release
 
-Endast release-jobbet har `contents: write`; övriga jobb använder read-only-behörighet.
+När en GitHub Release publiceras checkar release-jobbet ut exakt `github.event.release.tag_name`. Taggen är auktoritativ versionskälla.
+
+Release-jobbet bygger och återvaliderar samma unified leverans och laddar upp den både som Actions artifact och som assets på GitHub Release-sidan:
+
+- `system-modeller-project-vX.Y.Z.zip`
+- `system-modeller-chat-vX.Y.Z.zip`
+- `system-modeller-custom-gpt-vX.Y.Z.zip`
+- `system-modeller-claude-vX.Y.Z.zip`
+- `system-modeller-opencode-vX.Y.Z.zip`
+- `runtime-parity.yaml`
+- `SHA256SUMS.txt`
+- `build-manifest.yaml`
+
+Endast release-jobbet har `contents: write`; workflowens default och övriga jobb är read-only.
 
 ## Versionsprincip
 
-Versionsresolvern känner i A37 till tre releasekontexter i prioriteringsordning:
+Versionsresolvern prioriterar:
 
 1. publicerad GitHub Release (`github_release`),
-2. explicit releaseversion för lokal simulering,
+2. explicit releaseversion,
 3. Git-tagg (`github_tag`),
 4. annars `VERSION` som utvecklingsfallback.
 
-För en GitHub Release `v1.2.3` byggs därför:
-
-```text
-system-modeller-chat-v1.2.3.zip
-system-modeller-custom-gpt-v1.2.3.zip
-build-manifest.yaml
-```
-
-och manifestet anger `version_source: github_release` samt `release_tag: v1.2.3`.
-
 ## Lokal kontroll
 
-Vanlig distributionskontroll:
+Vanlig unified build:
 
 ```bash
 python scripts/ci_build.py --output-dir dist
 ```
 
-Simulerad release kan testas genom att sätta releaseeventets miljövariabler:
+Simulerad release:
 
 ```bash
 GITHUB_EVENT_NAME=release \
@@ -89,7 +72,6 @@ GITHUB_EVENT_RELEASE_TAG_NAME=v1.2.3 \
 python scripts/ci_build.py --output-dir dist
 ```
 
-
 ## Test environment isolation
 
-A39 runs every regression test through `scripts/run_test_isolated.sh`. The wrapper removes outer GitHub release/tag version variables before invoking the test. Tests that verify release/tag behavior inject their own explicit environment. This prevents a `release.published` job from changing the semantics of historical development-fallback tests while leaving the real release build context untouched.
+Regressionstester körs isolerat från omgivande release/tag-versionvariabler. Tester som verifierar releasebeteende injicerar sin egen explicita miljö.

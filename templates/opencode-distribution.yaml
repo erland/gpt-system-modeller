@@ -1,0 +1,64 @@
+schema_version: 1
+id: system-modeller-opencode
+display_name: System Modeller
+distribution_type: opencode_workspace
+version_source: VERSION
+output:
+  root: system-modeller-opencode
+  instructions: AGENTS.md
+  runtime_contract: .opencode/runtime-contract.json
+  config: opencode.json
+  manifest: manifest.yaml
+  runtime_scripts_dir: .opencode/runtime/scripts
+  tools_dir: .opencode/tools
+  knowledge_dir: .opencode/knowledge
+canonical_instruction: instructions/chat-runtime.md
+knowledge_roots:
+  - metamodel
+  - schemas
+knowledge_files:
+  - instructions/source-analysis.md
+  - docs/modeling-principles.md
+  - docs/provenance-and-evidence.md
+  - docs/origin-declared-observed-inferred.md
+  - docs/system-project-format.md
+  - docs/validation.md
+  - docs/views.md
+  - docs/architecture-description.md
+runtime_scripts:
+  declared_tools:
+    - context.py
+    - validate.py
+    - model.py
+    - view.py
+    - report.py
+    - package_project.py
+    - analyze.py
+  support:
+    - ids.py
+    - report_profile.py
+    - sequence_diagrams.py
+    - view_split.py
+    - diagram_complexity.py
+tools:
+  - id: system_context
+    script: context.py
+    mutates_workspace: false
+  - id: system_validate
+    script: validate.py
+    mutates_workspace: false
+  - id: system_model
+    script: model.py
+    mutates_workspace: true
+  - id: system_view
+    script: view.py
+    mutates_workspace: false
+  - id: system_report
+    script: report.py
+    mutates_workspace: false
+  - id: system_package
+    script: package_project.py
+    mutates_workspace: false
+  - id: system_analyze
+    script: analyze.py
+    mutates_workspace: false

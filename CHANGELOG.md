@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.0-dev.57 – Plan C complete
+
+- C1: established `gpt-project.yaml`, persistent `project-status.yaml`, capability/artifact/workspace/tool contracts and four-runtime registry.
+- C2: made the canonical runtime behavior platform-neutral and added deterministic runtime parity across behavior, capabilities, artifacts, workspace/state and tools.
+- C3: added deterministic Claude Project packaging, runtime contract, Knowledge projection and validation with explicit reduced local-tool parity.
+- C4: added deterministic OpenCode workspace packaging with root `AGENTS.md`, runtime contract, V2 permissions and typed project-local custom tools.
+- C5: introduced unified deterministic build and release-readiness for the source project package plus Chat, Custom GPT, Claude and OpenCode distributions, parity report, SHA-256 sums and schema-v2 build manifest.
+- C6: expanded GitHub Actions and GitHub Release publication to the complete unified artifact set while keeping write permission isolated to the release job.
+- C7: refreshed user-facing documentation, closed Plan C, tightened repository structure/hygiene checks and removed Python syntax warnings from the Custom GPT builder.
+- All four runtime distributions are compatibility `ready` and are generated from the same canonical project/runtime contract.
+
+
 ## 0.1.0-dev.50 – Plan B complete
 
 - B1–B4: hardened Chat runtime for simpler models with explicit operation order, deterministic context summary and small-model regression gates.

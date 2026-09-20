@@ -1,0 +1,27 @@
+schema_version: 1
+id: system-modeller-claude
+display_name: System Modeller
+distribution_type: claude_project
+version_source: VERSION
+output:
+  root: system-modeller-claude
+  instructions: project-instructions.md
+  knowledge_dir: knowledge
+  runtime_contract: project/runtime-contract.json
+  manifest: manifest.yaml
+canonical_sources:
+  instructions:
+    - instructions/chat-runtime.md
+    - instructions/source-analysis.md
+  knowledge:
+    - docs/modeling-principles.md
+    - docs/provenance-and-evidence.md
+    - docs/origin-declared-observed-inferred.md
+    - docs/system-project-format.md
+    - docs/validation.md
+    - docs/views.md
+    - docs/architecture-description.md
+tool_contract:
+  execution: unavailable
+  mutation_without_reliable_validation: forbidden
+  fallback: manual_traceable_read_analysis_only

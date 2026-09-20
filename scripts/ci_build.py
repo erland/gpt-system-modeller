@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build and parity-validate System Modeller CI distribution artifacts (A34)."""
+"""Build and validate all System Modeller project/runtime artifacts."""
 from __future__ import annotations
 
 import argparse
@@ -11,10 +11,16 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-import package_chat  # noqa: E402
-import package_custom_gpt  # noqa: E402
-import validate_custom_gpt  # noqa: E402
-import versioning  # noqa: E402
+import package_chat
+import package_claude
+import package_custom_gpt
+import package_gpt_project
+import package_opencode
+import runtime_parity
+import validate_claude
+import validate_custom_gpt
+import validate_opencode
+import versioning
 
 
 def sha256(path: Path) -> str:
@@ -25,38 +31,100 @@ def resolved_version(explicit: str | None = None):
     return versioning.resolve(explicit=explicit)
 
 
+def write_checksums(output_dir: Path, paths: list[Path]) -> Path:
+    checksum_path = output_dir / "SHA256SUMS.txt"
+    lines = [f"{sha256(path)}  {path.name}" for path in sorted(paths, key=lambda p: p.name)]
+    checksum_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return checksum_path
+
+
 def build(output_dir: Path, explicit_version: str | None = None) -> dict:
     info = resolved_version(explicit_version)
     version, release = info.repository_version, info.release_version
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    project = output_dir / f"system-modeller-project-v{release}.zip"
     chat = output_dir / f"system-modeller-chat-v{release}.zip"
     custom = output_dir / f"system-modeller-custom-gpt-v{release}.zip"
+    claude = output_dir / f"system-modeller-claude-v{release}.zip"
+    opencode = output_dir / f"system-modeller-opencode-v{release}.zip"
+
+    package_gpt_project.build(project)
     package_chat.build(chat, info.distribution_version)
     package_custom_gpt.build(custom, distribution_version=info.distribution_version)
-    findings, summary = validate_custom_gpt.validate(custom, chat, info.distribution_version)
+    package_claude.build(claude, distribution_version=info.distribution_version)
+    package_opencode.build(opencode, distribution_version=info.distribution_version)
+
+    findings, custom_summary = validate_custom_gpt.validate(custom, chat, info.distribution_version)
     errors = [f for f in findings if f.get("level") == "ERROR"]
-    if errors:
+    claude_errors = validate_claude.validate(claude)
+    opencode_errors = validate_opencode.validate(opencode)
+    if errors or claude_errors or opencode_errors:
         for finding in findings:
-            print(f"{finding['level']} {finding['code']}: {finding['message']}", file=sys.stderr)
-        raise RuntimeError(f"Custom GPT / Chat parity validation failed with {len(errors)} errors")
+            if finding.get("level") == "ERROR":
+                print(f"{finding['level']} {finding['code']}: {finding['message']}", file=sys.stderr)
+        for message in claude_errors:
+            print(f"ERROR CLAUDE: {message}", file=sys.stderr)
+        for message in opencode_errors:
+            print(f"ERROR OPENCODE: {message}", file=sys.stderr)
+        raise RuntimeError(
+            f"Runtime validation failed: custom/chat={len(errors)} claude={len(claude_errors)} opencode={len(opencode_errors)}"
+        )
+
+    parity_data = runtime_parity.baseline(runtime_parity.load_project())
+    parity_path = output_dir / "runtime-parity.yaml"
+    parity_path.write_text(yaml.safe_dump(parity_data, sort_keys=False, allow_unicode=True), encoding="utf-8")
+
+    artifacts = [
+        {"type": "project", "path": project},
+        {"type": "chat", "path": chat},
+        {"type": "custom_gpt", "path": custom},
+        {"type": "claude", "path": claude},
+        {"type": "opencode", "path": opencode},
+    ]
+    checksums = write_checksums(output_dir, [item["path"] for item in artifacts] + [parity_path])
+
     manifest = {
-        "schema_version": 1,
+        "schema_version": 2,
         "repository_version": version,
         "release_version": release,
         "distribution_version": info.distribution_version,
         "version_source": info.source,
         "release_tag": info.tag,
         "artifacts": [
-            {"type": "chat", "file": chat.name, "sha256": sha256(chat), "bytes": chat.stat().st_size},
-            {"type": "custom_gpt", "file": custom.name, "sha256": sha256(custom), "bytes": custom.stat().st_size},
+            {
+                "type": item["type"],
+                "file": item["path"].name,
+                "sha256": sha256(item["path"]),
+                "bytes": item["path"].stat().st_size,
+            }
+            for item in artifacts
+        ] + [
+            {
+                "type": "runtime_parity",
+                "file": parity_path.name,
+                "sha256": sha256(parity_path),
+                "bytes": parity_path.stat().st_size,
+            },
+            {
+                "type": "checksums",
+                "file": checksums.name,
+                "sha256": sha256(checksums),
+                "bytes": checksums.stat().st_size,
+            },
         ],
-        "parity": summary,
+        "validation": {
+            "custom_gpt_chat": custom_summary,
+            "claude": {"errors": 0},
+            "opencode": {"errors": 0},
+        },
+        "parity": parity_data,
     }
     manifest_path = output_dir / "build-manifest.yaml"
     manifest_path.write_text(yaml.safe_dump(manifest, sort_keys=False, allow_unicode=True), encoding="utf-8")
-    print(chat)
-    print(custom)
-    print(manifest_path)
+
+    for path in (project, chat, custom, claude, opencode, parity_path, checksums, manifest_path):
+        print(path)
     return manifest
 
 

@@ -1,12 +1,77 @@
 # Status
 
-- Current plan: Plan B – Runtime robustness and architecture reporting
+- Current plan: Plan C – Multi-runtime distributions
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
 - Plan B progress: B12 / B12 — Plan B complete
-- Current version: 0.1.0-dev.50
-- Milestone: **Plan B complete: robust Chat runtime and deterministic architecture reporting are packaged and regression-gated in both distributions**
-- Next: merge PR #6 when desired, then use the normal tag/release flow for an actual release.
+- Plan C progress: C7 / C7 — Plan C complete
+- Current version: 0.1.0-dev.57
+- Milestone: **Plan C complete: four-runtime architecture and unified delivery verified**
+- Next: merge PR #7 after final CI is green; release remains a separate GitHub Release action.
+
+## Plan C
+
+The normative Plan C development plan is in `docs/PLAN-C-multi-runtime-distributions.md`. Persistent machine-readable progress now lives in `project-status.yaml`; `gpt-project.yaml` is the canonical project/runtime contract.
+
+### C1 result
+
+`gpt-project.yaml` now declares project metadata, canonical instruction/knowledge roots, capability and artifact contracts, workspace/state rules, the explicit runtime tool registry and all four target runtimes: Chat, Custom GPT, Claude Project and OpenCode.
+
+Only Chat and Custom GPT remain enabled in C1. Claude and OpenCode are registered as planned runtimes and must not become active build targets until their adapters are implemented and compatibility-gated.
+
+`project-status.yaml` is now the primary machine-readable progress source for Plan C and points to C2 as the next step. `scripts/validate_project_contract.py` deterministically lints the contract, including runtime registration, active-target consistency, tool paths/capabilities, mutation approval requirements and VERSION/status synchronization. The lint is part of the normal test chain and covered by `tests/test_c1.py`.
+
+### C2 result
+
+The canonical runtime instruction at `instructions/chat-runtime.md` is now platform-neutral while retaining its legacy path so existing Chat and Custom GPT builders remain compatible. Chat-specific bootstrap remains isolated in `SYSTEM-MODELLER-CHAT.md`.
+
+The instruction now explicitly handles runtime tool availability: it must never claim unavailable tools were executed, safe read/derived fallbacks may be used when traceability is preserved, and canonical mutation must stop when reliable validation is unavailable.
+
+`gpt-project.yaml` now declares parity for Chat, Custom GPT, Claude Project and OpenCode across behavior, capabilities, artifacts, workspace/state and tools. `scripts/runtime_parity.py` validates and renders that baseline deterministically, `docs/runtime-parity-baseline.md` documents the interpretation, and `tests/test_c2.py` locks the contract.
+
+Claude and OpenCode remain disabled build targets in C2. C3 will implement Claude Project from the same canonical instruction and knowledge while explicitly representing unavailable local scripts as reduced tool parity.
+
+### C3 result
+
+A deterministic Claude Project distribution is now generated from the same canonical System Modeller sources. The package contains generated Project Instructions, selected Knowledge, `project/runtime-contract.json`, `manifest.yaml`, `README.md` and `VERSION`.
+
+`scripts/package_claude.py` builds a deterministic `system-modeller-claude-vX.Y.Z.zip`, while `scripts/validate_claude.py` validates structure, generated/source hashes and the reduced-tool contract. `tests/test_c3.py` locks deterministic packaging and explicitly verifies that Claude does not claim local Python-script execution.
+
+Claude compatibility is now `ready` in `gpt-project.yaml`, with behavior and artifact parity ready and capabilities available through documented fallbacks. Workspace/state remains reduced and local tools remain unavailable. Claude is intentionally not yet an active unified build target; C5 will integrate all ready runtimes into the common build path.
+
+### C4 result
+
+A deterministic OpenCode workspace distribution is now generated from the canonical System Modeller project. It contains root `AGENTS.md`, `.opencode/runtime-contract.json`, `opencode.json`, typed custom-tool wrappers under `.opencode/tools/`, the explicitly declared runtime scripts plus minimal support dependencies, canonical knowledge, `manifest.yaml`, `README.md` and `VERSION`.
+
+The generated tools use typed arguments and invoke Python through `Bun.spawn` without exposing a free-form shell command. The target System Modeller project is separate from the runtime workspace and is addressed through `projectRoot`.
+
+OpenCode V2 permissions require approval for `system_model`, generic shell execution and generic edits, while read-only/derived System Modeller tools are allowed. `scripts/validate_opencode.py` validates structure, permissions, source/generated hashes and wrapper presence; `tests/test_c4.py` locks deterministic packaging and the approval contract.
+
+OpenCode compatibility is now `ready`, but it remains outside the active unified build target set until C5.
+
+### C5 result
+
+`scripts/ci_build.py` is now the common deterministic build path for the System Modeller project package and all four runtime distributions. It builds and validates project, Chat, Custom GPT, Claude and OpenCode artifacts from the same repository state.
+
+The unified delivery also generates `runtime-parity.yaml`, `SHA256SUMS.txt` and a schema-version-2 `build-manifest.yaml` containing artifact hashes, sizes and validation summaries. `scripts/release_check.py` now runs two complete builds and verifies determinism, ZIP hygiene, runtime validators, manifest hashes and SHA-256 sums across the full artifact set.
+
+`gpt-project.yaml` now activates Chat, Custom GPT, Claude and OpenCode as build targets. Runtime-specific builders remain available as compatibility entry points. GitHub Actions still publishes the legacy subset in C5; C6 updates workflow artifact/upload and GitHub Release publication for the full unified delivery.
+
+### C6 result
+
+GitHub Actions now publishes and validates the complete unified artifact set. Pull requests, pushes to `main` and manual runs build the source project package plus Chat, Custom GPT, Claude and OpenCode distributions, then re-run runtime validators directly against the generated ZIPs.
+
+The full build is uploaded as the `system-modeller-unified-build` Actions artifact together with `runtime-parity.yaml`, `SHA256SUMS.txt` and `build-manifest.yaml`.
+
+Published GitHub Releases build the same artifact set from the authoritative release tag and attach all five ZIPs plus parity, checksums and manifest to the GitHub Release. Only the release job has `contents: write`; repository verification and ordinary build jobs remain read-only.
+
+### C7 result
+
+Plan C is complete. User-facing documentation now describes the four-runtime architecture and unified build rather than the historical Plan A development state. `CHANGELOG.md`, the Plan C document and persistent status all record completion.
+
+Repository hygiene now requires the canonical multi-runtime project/status contracts, all four builders/validators and the unified build/release infrastructure. The Custom GPT builder no longer emits invalid-escape SyntaxWarnings.
+
+Final regression coverage verifies all four runtimes are enabled and ready, the Plan C status is complete, the README documents the complete delivery, the project contract passes, the Custom GPT builder compiles with SyntaxWarnings promoted to errors, and unified release-readiness remains READY.
 
 ## Plan B
 
