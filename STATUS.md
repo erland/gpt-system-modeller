@@ -4,10 +4,10 @@
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
 - Plan B progress: B12 / B12 — Plan B complete
-- Plan C progress: C2 / C7
-- Current version: 0.1.0-dev.52
-- Milestone: **C2 complete: platform-neutral runtime behavior and four-runtime parity baseline established**
-- Next: C3 – implement the Claude Project distribution and its reduced-tool compatibility contract.
+- Plan C progress: C3 / C7
+- Current version: 0.1.0-dev.53
+- Milestone: **C3 complete: Claude Project distribution implemented and compatibility-validated**
+- Next: C4 – implement the OpenCode workspace distribution and declared custom-tool policy.
 
 ## Plan C
 
@@ -30,6 +30,14 @@ The instruction now explicitly handles runtime tool availability: it must never 
 `gpt-project.yaml` now declares parity for Chat, Custom GPT, Claude Project and OpenCode across behavior, capabilities, artifacts, workspace/state and tools. `scripts/runtime_parity.py` validates and renders that baseline deterministically, `docs/runtime-parity-baseline.md` documents the interpretation, and `tests/test_c2.py` locks the contract.
 
 Claude and OpenCode remain disabled build targets in C2. C3 will implement Claude Project from the same canonical instruction and knowledge while explicitly representing unavailable local scripts as reduced tool parity.
+
+### C3 result
+
+A deterministic Claude Project distribution is now generated from the same canonical System Modeller sources. The package contains generated Project Instructions, selected Knowledge, `project/runtime-contract.json`, `manifest.yaml`, `README.md` and `VERSION`.
+
+`scripts/package_claude.py` builds a deterministic `system-modeller-claude-vX.Y.Z.zip`, while `scripts/validate_claude.py` validates structure, generated/source hashes and the reduced-tool contract. `tests/test_c3.py` locks deterministic packaging and explicitly verifies that Claude does not claim local Python-script execution.
+
+Claude compatibility is now `ready` in `gpt-project.yaml`, with behavior and artifact parity ready and capabilities available through documented fallbacks. Workspace/state remains reduced and local tools remain unavailable. Claude is intentionally not yet an active unified build target; C5 will integrate all ready runtimes into the common build path.
 
 ## Plan B
 
