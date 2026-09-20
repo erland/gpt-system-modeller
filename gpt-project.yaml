@@ -156,15 +156,15 @@ runtimes:
       tools: unavailable
   opencode:
     enabled: false
-    compatibility: planned
-    adapter: pending
+    compatibility: ready
+    adapter: opencode_workspace
     build_target: opencode
     artifact_pattern: system-modeller-opencode-v{version}.zip
     local_tools: declared_custom_tools
     parity:
-      behavior: planned
-      capabilities: planned
-      artifacts: planned
+      behavior: ready
+      capabilities: ready
+      artifacts: ready
       workspace_state: ready
       tools: declared_custom_tools
 
