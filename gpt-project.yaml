@@ -143,15 +143,15 @@ runtimes:
       tools: unavailable
   claude:
     enabled: false
-    compatibility: planned
-    adapter: pending
+    compatibility: ready
+    adapter: claude_project
     build_target: claude
     artifact_pattern: system-modeller-claude-v{version}.zip
     local_tools: unavailable
     parity:
-      behavior: planned
-      capabilities: planned_with_fallbacks
-      artifacts: planned
+      behavior: ready
+      capabilities: ready_with_fallbacks
+      artifacts: ready
       workspace_state: reduced
       tools: unavailable
   opencode:
