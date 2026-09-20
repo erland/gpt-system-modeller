@@ -2,6 +2,7 @@
 
 - Current plan: Plan C – Multi-runtime distributions
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
+- Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
 - Plan B progress: B12 / B12 — Plan B complete
 - Plan C progress: C1 / C7
 - Current version: 0.1.0-dev.51
