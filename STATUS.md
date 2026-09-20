@@ -4,10 +4,10 @@
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
 - Plan B progress: B12 / B12 — Plan B complete
-- Plan C progress: C1 / C7
-- Current version: 0.1.0-dev.51
-- Milestone: **C1 complete: canonical GPT project contract and persistent project status established**
-- Next: C2 – make the shared runtime instruction platform-neutral and establish runtime parity baseline.
+- Plan C progress: C2 / C7
+- Current version: 0.1.0-dev.52
+- Milestone: **C2 complete: platform-neutral runtime behavior and four-runtime parity baseline established**
+- Next: C3 – implement the Claude Project distribution and its reduced-tool compatibility contract.
 
 ## Plan C
 
@@ -20,6 +20,16 @@ The normative Plan C development plan is in `docs/PLAN-C-multi-runtime-distribut
 Only Chat and Custom GPT remain enabled in C1. Claude and OpenCode are registered as planned runtimes and must not become active build targets until their adapters are implemented and compatibility-gated.
 
 `project-status.yaml` is now the primary machine-readable progress source for Plan C and points to C2 as the next step. `scripts/validate_project_contract.py` deterministically lints the contract, including runtime registration, active-target consistency, tool paths/capabilities, mutation approval requirements and VERSION/status synchronization. The lint is part of the normal test chain and covered by `tests/test_c1.py`.
+
+### C2 result
+
+The canonical runtime instruction at `instructions/chat-runtime.md` is now platform-neutral while retaining its legacy path so existing Chat and Custom GPT builders remain compatible. Chat-specific bootstrap remains isolated in `SYSTEM-MODELLER-CHAT.md`.
+
+The instruction now explicitly handles runtime tool availability: it must never claim unavailable tools were executed, safe read/derived fallbacks may be used when traceability is preserved, and canonical mutation must stop when reliable validation is unavailable.
+
+`gpt-project.yaml` now declares parity for Chat, Custom GPT, Claude Project and OpenCode across behavior, capabilities, artifacts, workspace/state and tools. `scripts/runtime_parity.py` validates and renders that baseline deterministically, `docs/runtime-parity-baseline.md` documents the interpretation, and `tests/test_c2.py` locks the contract.
+
+Claude and OpenCode remain disabled build targets in C2. C3 will implement Claude Project from the same canonical instruction and knowledge while explicitly representing unavailable local scripts as reduced tool parity.
 
 ## Plan B
 
