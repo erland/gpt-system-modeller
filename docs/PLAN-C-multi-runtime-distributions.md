@@ -119,6 +119,16 @@ Vid version `X.Y.Z` ska release minst kunna producera:
 
 Claude ska alltså inte försöka imitera OpenCodes lokala verktygsintegration. Skillnaden dokumenteras i paritetsrapporten och är inte i sig ett hinder för en användbar Claude-distribution, förutsatt att kritiska beteenden har säker manuell fallback.
 
-## Nästa steg
+## Resultat
 
-C1 – inför canonical project contract och persistent project status.
+Plan C är slutförd.
+
+- C1 etablerade canonical project contract och persistent status.
+- C2 gjorde runtimebeteendet plattformsneutralt och införde parity-baseline.
+- C3 implementerade Claude Project-distributionen.
+- C4 implementerade OpenCode workspace-distributionen.
+- C5 införde unified build och validering.
+- C6 införde full CI- och GitHub Release-publicering.
+- C7 slutförde regression, dokumentation och repository hygiene.
+
+Samtliga fyra runtimes har compatibility `ready` och byggs från samma canonical projektkontrakt.
