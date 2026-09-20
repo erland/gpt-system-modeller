@@ -1,0 +1,26 @@
+schema_version: "1.0"
+project: system-modeller
+plan:
+  id: C
+  name: Multi-runtime distributions
+  document: docs/PLAN-C-multi-runtime-distributions.md
+progress:
+  completed_step: C1
+  total_steps: 7
+  state: in_progress
+version: 0.1.0-dev.51
+milestone: Canonical GPT project contract and persistent project status established.
+next_step:
+  id: C2
+  title: Canonical instruction and runtime parity baseline
+  objective: >
+    Make the shared runtime instruction platform-neutral and introduce a
+    deterministic parity baseline across Chat, Custom GPT, Claude and OpenCode.
+runtime_status:
+  chat: ready
+  custom_gpt: ready
+  claude: planned
+  opencode: planned
+notes:
+  - Existing Chat and Custom GPT behavior is intentionally unchanged in C1.
+  - Claude and OpenCode remain disabled until their adapters pass compatibility checks.
