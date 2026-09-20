@@ -1,0 +1,162 @@
+schema_version: "1.0"
+project:
+  id: system-modeller
+  name: System Modeller
+  description: >
+    LLM-based system modelling assistant for building, maintaining, analysing
+    and presenting a traceable YAML model of how a system works and is structured.
+  version_source: VERSION
+  canonical_instruction: instructions/chat-runtime.md
+
+knowledge:
+  canonical_roots:
+    - metamodel
+    - schemas
+    - docs
+  optional_roots:
+    - examples
+  source_analysis_instruction: instructions/source-analysis.md
+
+contracts:
+  capabilities:
+    - id: inspect_project
+      description: Inspect a system project and establish compact working context.
+      critical: true
+    - id: validate_before_change
+      description: Validate canonical model before mutation and stop on blocking failures.
+      critical: true
+    - id: mutate_canonical_model
+      description: Change canonical YAML while preserving stable IDs, provenance and uncertainty.
+      critical: true
+    - id: derive_views
+      description: Materialise deterministic architecture views from canonical YAML.
+      critical: true
+    - id: generate_architecture_report
+      description: Generate the standard architecture description and diagram set.
+      critical: true
+    - id: package_system_project
+      description: Package a portable system project after successful validation.
+      critical: false
+    - id: analyse_sources
+      description: Analyse source code or documents into observations and evidence before modelling.
+      critical: false
+
+  artifacts:
+    canonical:
+      - id: system_project
+        format: zip
+        producer: scripts/package_project.py
+        description: Portable System Modeller project package.
+      - id: architecture_report
+        format: markdown
+        producer: scripts/report.py
+        description: Deterministically derived architecture description.
+    runtime_distributions:
+      - chat
+      - custom_gpt
+      - claude
+      - opencode
+
+  workspace:
+    source_of_truth: canonical_yaml
+    required_project_file: project.yaml
+    mutation_policy: validate_before_and_after
+    preserve:
+      - stable_ids
+      - provenance
+      - evidence
+      - origin
+      - unresolved_uncertainty
+    runtime_sequence:
+      - INSPECT
+      - VALIDATE
+      - PLAN
+      - CHANGE
+      - VALIDATE
+      - DERIVE
+      - PACKAGE
+
+  tools:
+    - id: context
+      path: scripts/context.py
+      mode: read_only
+      capability: inspect_project
+      runtime_required: true
+    - id: validate
+      path: scripts/validate.py
+      mode: read_only
+      capability: validate_before_change
+      runtime_required: true
+    - id: model
+      path: scripts/model.py
+      mode: mutating
+      capability: mutate_canonical_model
+      runtime_required: true
+      approval_required: true
+    - id: view
+      path: scripts/view.py
+      mode: derived_output
+      capability: derive_views
+      runtime_required: true
+    - id: report
+      path: scripts/report.py
+      mode: derived_output
+      capability: generate_architecture_report
+      runtime_required: true
+    - id: package_project
+      path: scripts/package_project.py
+      mode: derived_output
+      capability: package_system_project
+      runtime_required: true
+    - id: analyze
+      path: scripts/analyze.py
+      mode: read_only
+      capability: analyse_sources
+      runtime_required: true
+
+runtimes:
+  chat:
+    enabled: true
+    compatibility: ready
+    adapter: existing
+    build_target: chat
+    artifact_pattern: system-modeller-chat-v{version}.zip
+    local_tools: runtime_dependent
+  custom_gpt:
+    enabled: true
+    compatibility: ready
+    adapter: existing
+    build_target: custom_gpt
+    artifact_pattern: system-modeller-custom-gpt-v{version}.zip
+    local_tools: unavailable
+  claude:
+    enabled: false
+    compatibility: planned
+    adapter: pending
+    build_target: claude
+    artifact_pattern: system-modeller-claude-v{version}.zip
+    local_tools: unavailable
+  opencode:
+    enabled: false
+    compatibility: planned
+    adapter: pending
+    build_target: opencode
+    artifact_pattern: system-modeller-opencode-v{version}.zip
+    local_tools: declared_custom_tools
+
+build:
+  active_targets:
+    - chat
+    - custom_gpt
+  planned_targets:
+    - claude
+    - opencode
+  parity_dimensions:
+    - behavior
+    - capabilities
+    - artifacts
+    - workspace_state
+    - tools
+  version_authority:
+    development: VERSION
+    release: github_tag
