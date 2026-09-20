@@ -4,10 +4,10 @@
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
 - Plan B progress: B12 / B12 — Plan B complete
-- Plan C progress: C5 / C7
-- Current version: 0.1.0-dev.55
-- Milestone: **C5 complete: unified deterministic build and validation established for project package and four runtimes**
-- Next: C6 – update CI and GitHub Release publication for the complete unified artifact set.
+- Plan C progress: C6 / C7
+- Current version: 0.1.0-dev.56
+- Milestone: **C6 complete: unified CI and GitHub Release publication established for the complete artifact set**
+- Next: C7 – final regression, documentation and repository hygiene review.
 
 ## Plan C
 
@@ -56,6 +56,14 @@ OpenCode compatibility is now `ready`, but it remains outside the active unified
 The unified delivery also generates `runtime-parity.yaml`, `SHA256SUMS.txt` and a schema-version-2 `build-manifest.yaml` containing artifact hashes, sizes and validation summaries. `scripts/release_check.py` now runs two complete builds and verifies determinism, ZIP hygiene, runtime validators, manifest hashes and SHA-256 sums across the full artifact set.
 
 `gpt-project.yaml` now activates Chat, Custom GPT, Claude and OpenCode as build targets. Runtime-specific builders remain available as compatibility entry points. GitHub Actions still publishes the legacy subset in C5; C6 updates workflow artifact/upload and GitHub Release publication for the full unified delivery.
+
+### C6 result
+
+GitHub Actions now publishes and validates the complete unified artifact set. Pull requests, pushes to `main` and manual runs build the source project package plus Chat, Custom GPT, Claude and OpenCode distributions, then re-run runtime validators directly against the generated ZIPs.
+
+The full build is uploaded as the `system-modeller-unified-build` Actions artifact together with `runtime-parity.yaml`, `SHA256SUMS.txt` and `build-manifest.yaml`.
+
+Published GitHub Releases build the same artifact set from the authoritative release tag and attach all five ZIPs plus parity, checksums and manifest to the GitHub Release. Only the release job has `contents: write`; repository verification and ordinary build jobs remain read-only.
 
 ## Plan B
 
