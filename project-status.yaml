@@ -5,23 +5,24 @@ plan:
   name: Multi-runtime distributions
   document: docs/PLAN-C-multi-runtime-distributions.md
 progress:
-  completed_step: C3
+  completed_step: C4
   total_steps: 7
   state: in_progress
-version: 0.1.0-dev.53
-milestone: Claude Project distribution implemented and compatibility-validated.
+version: 0.1.0-dev.54
+milestone: OpenCode workspace distribution implemented and compatibility-validated.
 next_step:
-  id: C4
-  title: OpenCode workspace distribution
+  id: C5
+  title: Unified build and validation
   objective: >
-    Implement the OpenCode adapter with generated AGENTS.md, runtime contract,
-    declared custom tools and approval rules for mutating operations.
+    Integrate all ready runtime distributions into one deterministic build path
+    with manifest, parity report and SHA-256 checksums.
 runtime_status:
   chat: ready
   custom_gpt: ready
   claude: ready
-  opencode: planned
+  opencode: ready
 notes:
-  - Claude Project packages canonical behavior and selected Knowledge.
-  - Claude local script execution is explicitly unavailable; canonical mutation requires reliable validation.
-  - Claude remains disabled as a unified build target until C5 integrates all active distribution builds.
+  - OpenCode generates root AGENTS.md, V2 opencode.json permissions and project-local typed custom tools.
+  - system_model requires approval; read-only/derived System Modeller tools are allowed.
+  - The target System Modeller project is separate from the runtime workspace and is addressed through projectRoot.
+  - Claude and OpenCode become active unified build targets in C5.
