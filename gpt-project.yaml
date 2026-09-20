@@ -142,7 +142,7 @@ runtimes:
       workspace_state: reduced
       tools: unavailable
   claude:
-    enabled: false
+    enabled: true
     compatibility: ready
     adapter: claude_project
     build_target: claude
@@ -155,7 +155,7 @@ runtimes:
       workspace_state: reduced
       tools: unavailable
   opencode:
-    enabled: false
+    enabled: true
     compatibility: ready
     adapter: opencode_workspace
     build_target: opencode
@@ -172,9 +172,9 @@ build:
   active_targets:
     - chat
     - custom_gpt
-  planned_targets:
     - claude
     - opencode
+  planned_targets: []
   parity_dimensions:
     - behavior
     - capabilities
