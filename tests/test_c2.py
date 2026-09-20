@@ -43,12 +43,16 @@ def main():
     rendered = yaml.safe_load(result.stdout)
     if list(rendered["runtimes"]) != ["chat", "custom_gpt", "claude", "opencode"]:
         return fail("parity render order changed")
-    if rendered["runtimes"]["claude"]["enabled"] or rendered["runtimes"]["opencode"]["enabled"]:
-        return fail("C2 must not activate Claude or OpenCode")
-
     status = yaml.safe_load((ROOT / "project-status.yaml").read_text(encoding="utf-8"))
-    if status["progress"]["completed_step"] != "C2" or status["next_step"]["id"] != "C3":
-        return fail("persistent status not advanced to C2")
+    step = status["progress"]["completed_step"]
+    match = re.fullmatch(r"C([1-7])", step or "")
+    if not match or int(match.group(1)) < 2:
+        return fail("persistent status predates C2")
+    if step == "C2":
+        if status["next_step"]["id"] != "C3":
+            return fail("C2 must point to C3")
+        if rendered["runtimes"]["claude"]["enabled"] or rendered["runtimes"]["opencode"]["enabled"]:
+            return fail("C2 must not activate Claude or OpenCode")
 
     print("C2 runtime parity tests passed")
     return 0
