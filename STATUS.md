@@ -1,12 +1,24 @@
 # Status
 
-- Current plan: Plan B – Runtime robustness and architecture reporting
+- Current plan: Plan C – Multi-runtime distributions
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
-- Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
 - Plan B progress: B12 / B12 — Plan B complete
-- Current version: 0.1.0-dev.50
-- Milestone: **Plan B complete: robust Chat runtime and deterministic architecture reporting are packaged and regression-gated in both distributions**
-- Next: merge PR #6 when desired, then use the normal tag/release flow for an actual release.
+- Plan C progress: C1 / C7
+- Current version: 0.1.0-dev.51
+- Milestone: **C1 complete: canonical GPT project contract and persistent project status established**
+- Next: C2 – make the shared runtime instruction platform-neutral and establish runtime parity baseline.
+
+## Plan C
+
+The normative Plan C development plan is in `docs/PLAN-C-multi-runtime-distributions.md`. Persistent machine-readable progress now lives in `project-status.yaml`; `gpt-project.yaml` is the canonical project/runtime contract.
+
+### C1 result
+
+`gpt-project.yaml` now declares project metadata, canonical instruction/knowledge roots, capability and artifact contracts, workspace/state rules, the explicit runtime tool registry and all four target runtimes: Chat, Custom GPT, Claude Project and OpenCode.
+
+Only Chat and Custom GPT remain enabled in C1. Claude and OpenCode are registered as planned runtimes and must not become active build targets until their adapters are implemented and compatibility-gated.
+
+`project-status.yaml` is now the primary machine-readable progress source for Plan C and points to C2 as the next step. `scripts/validate_project_contract.py` deterministically lints the contract, including runtime registration, active-target consistency, tool paths/capabilities, mutation approval requirements and VERSION/status synchronization. The lint is part of the normal test chain and covered by `tests/test_c1.py`.
 
 ## Plan B
 
