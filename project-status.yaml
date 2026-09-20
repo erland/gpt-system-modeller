@@ -5,23 +5,18 @@ plan:
   name: Multi-runtime distributions
   document: docs/PLAN-C-multi-runtime-distributions.md
 progress:
-  completed_step: C6
+  completed_step: C7
   total_steps: 7
-  state: in_progress
-version: 0.1.0-dev.56
-milestone: Unified CI and GitHub Release publication established for the complete artifact set.
-next_step:
-  id: C7
-  title: Regression, documentation and hygiene
-  objective: >
-    Run final multi-runtime regression/hygiene review, complete user-facing
-    documentation and close Plan C without changing canonical behavior.
+  state: complete
+version: 0.1.0-dev.57
+milestone: Plan C complete – four-runtime architecture, unified build, CI/release publication and final hygiene verified.
 runtime_status:
   chat: ready
   custom_gpt: ready
   claude: ready
   opencode: ready
 notes:
-  - Pull request, main and manual workflows build and validate the complete unified artifact set.
-  - GitHub Release publishes project, all four runtime ZIPs, parity, checksums and manifest.
-  - Only the release job has contents: write; all other jobs remain read-only.
+  - Chat, Custom GPT, Claude Project and OpenCode are generated from the same canonical project/runtime contract.
+  - Unified build produces project plus all four runtime ZIPs, runtime parity, checksums and build manifest.
+  - CI and GitHub Release publish the complete validated artifact set.
+  - Final C7 work is documentation/hygiene only and does not change canonical runtime behavior.
