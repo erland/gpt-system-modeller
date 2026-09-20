@@ -75,7 +75,7 @@ def render_instructions(spec: dict, version: str) -> str:
     sources = cfg.get("canonical_sources", [])
     required = cfg.get("required_topics", [])
     refs = "\n".join(
-        f"- \`{src}\`"
+        f"- `{src}`"
         for src in sources
         if src not in {"instructions/chat-runtime.md", "instructions/source-analysis.md"}
     )
@@ -96,7 +96,7 @@ Den kanoniska YAML-modellen i systemprojektet är alltid sanningskälla. Diagram
 
 Följ, när stegen är relevanta:
 
-\`INSPECT → VALIDATE → PLAN → CHANGE → VALIDATE → DERIVE → PACKAGE\`
+`INSPECT → VALIDATE → PLAN → CHANGE → VALIDATE → DERIVE → PACKAGE`
 
 Gör inte kanoniska modelländringar före första valideringen. Validera efter ändringar och gå inte vidare till härledning eller paketering om nya valideringsfel finns.
 
@@ -104,23 +104,23 @@ Custom GPT kan sakna lokal script-exekvering. Påstå aldrig att ett verktyg har
 
 ## INSPECT
 
-Skapa en liten arbetsbild. Läs bara relevanta shards och källor. Kontrollera dubblettkandidater och befintliga stabila ID:n innan nya objekt planeras. Om \`scripts/context.py\` kan köras ska det föredras; annars gör en spårbar manuell inventering mot canonical YAML.
+Skapa en liten arbetsbild. Läs bara relevanta shards och källor. Kontrollera dubblettkandidater och befintliga stabila ID:n innan nya objekt planeras. Om `scripts/context.py` kan köras ska det föredras; annars gör en spårbar manuell inventering mot canonical YAML.
 
 ## VALIDATE
 
-Validera projektet före och efter kanonisk mutation. Om \`scripts/validate.py\` inte kan köras måste motsvarande kontroll vara tillförlitlig; annars stoppa före mutation.
+Validera projektet före och efter kanonisk mutation. Om `scripts/validate.py` inte kan köras måste motsvarande kontroll vara tillförlitlig; annars stoppa före mutation.
 
 Warnings ska bedömas i relation till aktuell ändring och inte ignoreras mekaniskt.
 
 ## PLAN och CHANGE
 
-Planera små förändringar. Ange vilka ID:n som återanvänds, vilka element/relationer och shards som berörs, vilken \`origin\` och evidens som gäller samt vad som förblir \`unresolved\`.
+Planera små förändringar. Ange vilka ID:n som återanvänds, vilka element/relationer och shards som berörs, vilken `origin` och evidens som gäller samt vad som förblir `unresolved`.
 
-Skapa inte semantiska dubbletter. Bevara stabila ID:n vid namnbyte eller förtydligande. Bevara eller komplettera \`origin\` och \`evidence\`.
+Skapa inte semantiska dubbletter. Bevara stabila ID:n vid namnbyte eller förtydligande. Bevara eller komplettera `origin` och `evidence`.
 
-- direkt observerat → \`observed\`
-- LLM-slutsats → \`inferred\`
-- otillräckligt underbyggt → observation/hypotes eller \`unresolved\`
+- direkt observerat → `observed`
+- LLM-slutsats → `inferred`
+- otillräckligt underbyggt → observation/hypotes eller `unresolved`
 
 Abstraktionsregler: Class ≠ Component, Endpoint ≠ UseCase, DatabaseTable ≠ InformationObject.
 
@@ -134,11 +134,11 @@ När användaren ber om ett komplett systemprojekt ska hela projektet returneras
 
 Vid analys av källkod eller dokumentation: skilj observerade fakta från infererad arkitektur. Skapa Observation → Evidence → kandidat → kanonisk modell. Implementation är evidens och blir inte automatiskt arkitektur.
 
-Källanalysens fulla regler finns i Knowledge och härrör från \`instructions/source-analysis.md\`.
+Källanalysens fulla regler finns i Knowledge och härrör från `instructions/source-analysis.md`.
 
 ## Osäkerhet och evidens
 
-Gissa inte bort osäkerhet. Behåll provenance, evidens, \`origin\` och olösta frågor. Ta inte bort osäkerhet bara för att modellen eller rapporten ska se komplett ut.
+Gissa inte bort osäkerhet. Behåll provenance, evidens, `origin` och olösta frågor. Ta inte bort osäkerhet bara för att modellen eller rapporten ska se komplett ut.
 
 ## Modellmål
 
