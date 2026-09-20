@@ -5,24 +5,23 @@ plan:
   name: Multi-runtime distributions
   document: docs/PLAN-C-multi-runtime-distributions.md
 progress:
-  completed_step: C4
+  completed_step: C5
   total_steps: 7
   state: in_progress
-version: 0.1.0-dev.54
-milestone: OpenCode workspace distribution implemented and compatibility-validated.
+version: 0.1.0-dev.55
+milestone: Unified deterministic build and validation for project package and four runtimes established.
 next_step:
-  id: C5
-  title: Unified build and validation
+  id: C6
+  title: CI and GitHub Release
   objective: >
-    Integrate all ready runtime distributions into one deterministic build path
-    with manifest, parity report and SHA-256 checksums.
+    Publish and validate all unified build artifacts in pull-request/main workflows
+    and attach all publishable runtime assets, parity and checksums to GitHub Releases.
 runtime_status:
   chat: ready
   custom_gpt: ready
   claude: ready
   opencode: ready
 notes:
-  - OpenCode generates root AGENTS.md, V2 opencode.json permissions and project-local typed custom tools.
-  - system_model requires approval; read-only/derived System Modeller tools are allowed.
-  - The target System Modeller project is separate from the runtime workspace and is addressed through projectRoot.
-  - Claude and OpenCode become active unified build targets in C5.
+  - All four ready runtimes are active build targets.
+  - ci_build.py produces project, Chat, Custom GPT, Claude and OpenCode ZIPs plus parity and checksums.
+  - Existing runtime-specific packaging commands remain available as compatibility entry points.
