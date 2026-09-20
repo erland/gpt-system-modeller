@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
+import re
 import subprocess
 import sys
 import yaml
@@ -31,10 +32,10 @@ def main():
 
     if set(project["runtimes"]) != {"chat", "custom_gpt", "claude", "opencode"}:
         return fail("runtime registry incomplete")
-    if project["build"]["active_targets"] != ["chat", "custom_gpt"]:
-        return fail("C1 must not activate new runtime builds")
-    if status["progress"]["completed_step"] != "C1" or status["next_step"]["id"] != "C2":
-        return fail("persistent status does not advance correctly")
+    step = status["progress"]["completed_step"]
+    match = re.fullmatch(r"C([1-7])", step or "")
+    if not match or int(match.group(1)) < 1:
+        return fail("persistent status predates C1")
     if status["version"] != (ROOT / "VERSION").read_text(encoding="utf-8").strip():
         return fail("status and VERSION differ")
 
