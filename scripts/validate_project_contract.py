@@ -10,6 +10,7 @@ PROJECT = ROOT / "gpt-project.yaml"
 STATUS = ROOT / "project-status.yaml"
 RUNTIMES = {"chat", "custom_gpt", "claude", "opencode"}
 TOOL_MODES = {"read_only", "mutating", "derived_output"}
+PARITY_DIMENSIONS = ["behavior", "capabilities", "artifacts", "workspace_state", "tools"]
 
 
 def fail(message: str) -> int:
@@ -73,10 +74,14 @@ def main() -> int:
         if tool.get("mode") == "mutating" and tool.get("approval_required") is not True:
             return fail(f"mutating tool {tool['id']} must require approval")
 
+    build = project.get("build") or {}
+    if build.get("parity_dimensions") != PARITY_DIMENSIONS:
+        return fail("parity dimensions must use the canonical C2 order")
+
     runtimes = project.get("runtimes") or {}
     if set(runtimes) != RUNTIMES:
         return fail("runtime registry must contain chat, custom_gpt, claude and opencode")
-    active = set((project.get("build") or {}).get("active_targets") or [])
+    active = set(build.get("active_targets") or [])
     for runtime_id, runtime in runtimes.items():
         enabled = runtime.get("enabled") is True
         if enabled != (runtime_id in active):
@@ -84,6 +89,11 @@ def main() -> int:
         pattern = runtime.get("artifact_pattern", "")
         if "{version}" not in pattern:
             return fail(f"runtime {runtime_id} artifact pattern must contain {{version}}")
+        parity = runtime.get("parity") or {}
+        if list(parity) != PARITY_DIMENSIONS:
+            return fail(f"runtime {runtime_id} must declare all parity dimensions in canonical order")
+        if any(not isinstance(parity[d], str) or not parity[d] for d in PARITY_DIMENSIONS):
+            return fail(f"runtime {runtime_id} parity values must be non-empty strings")
 
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     if status.get("version") != version:
