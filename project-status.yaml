@@ -5,22 +5,23 @@ plan:
   name: Multi-runtime distributions
   document: docs/PLAN-C-multi-runtime-distributions.md
 progress:
-  completed_step: C1
+  completed_step: C2
   total_steps: 7
   state: in_progress
-version: 0.1.0-dev.51
-milestone: Canonical GPT project contract and persistent project status established.
+version: 0.1.0-dev.52
+milestone: Platform-neutral canonical runtime instruction and four-runtime parity baseline established.
 next_step:
-  id: C2
-  title: Canonical instruction and runtime parity baseline
+  id: C3
+  title: Claude Project distribution
   objective: >
-    Make the shared runtime instruction platform-neutral and introduce a
-    deterministic parity baseline across Chat, Custom GPT, Claude and OpenCode.
+    Implement the Claude Project adapter from canonical instructions and knowledge,
+    with explicit runtime contract and reduced local-tool parity.
 runtime_status:
   chat: ready
   custom_gpt: ready
   claude: planned
   opencode: planned
 notes:
-  - Existing Chat and Custom GPT behavior is intentionally unchanged in C1.
+  - The canonical instruction content is platform-neutral while retaining its legacy path for build compatibility.
+  - Chat-specific bootstrap remains in SYSTEM-MODELLER-CHAT.md.
   - Claude and OpenCode remain disabled until their adapters pass compatibility checks.
