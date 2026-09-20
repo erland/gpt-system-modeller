@@ -122,6 +122,12 @@ runtimes:
     build_target: chat
     artifact_pattern: system-modeller-chat-v{version}.zip
     local_tools: runtime_dependent
+    parity:
+      behavior: ready
+      capabilities: ready
+      artifacts: ready
+      workspace_state: runtime_dependent
+      tools: runtime_dependent
   custom_gpt:
     enabled: true
     compatibility: ready
@@ -129,6 +135,12 @@ runtimes:
     build_target: custom_gpt
     artifact_pattern: system-modeller-custom-gpt-v{version}.zip
     local_tools: unavailable
+    parity:
+      behavior: ready
+      capabilities: ready_with_fallbacks
+      artifacts: ready
+      workspace_state: reduced
+      tools: unavailable
   claude:
     enabled: false
     compatibility: planned
@@ -136,6 +148,12 @@ runtimes:
     build_target: claude
     artifact_pattern: system-modeller-claude-v{version}.zip
     local_tools: unavailable
+    parity:
+      behavior: planned
+      capabilities: planned_with_fallbacks
+      artifacts: planned
+      workspace_state: reduced
+      tools: unavailable
   opencode:
     enabled: false
     compatibility: planned
@@ -143,6 +161,12 @@ runtimes:
     build_target: opencode
     artifact_pattern: system-modeller-opencode-v{version}.zip
     local_tools: declared_custom_tools
+    parity:
+      behavior: planned
+      capabilities: planned
+      artifacts: planned
+      workspace_state: ready
+      tools: declared_custom_tools
 
 build:
   active_targets:
