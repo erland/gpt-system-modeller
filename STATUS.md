@@ -4,10 +4,10 @@
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
 - Plan B progress: B12 / B12 — Plan B complete
-- Plan C progress: C3 / C7
-- Current version: 0.1.0-dev.53
-- Milestone: **C3 complete: Claude Project distribution implemented and compatibility-validated**
-- Next: C4 – implement the OpenCode workspace distribution and declared custom-tool policy.
+- Plan C progress: C4 / C7
+- Current version: 0.1.0-dev.54
+- Milestone: **C4 complete: OpenCode workspace distribution implemented and compatibility-validated**
+- Next: C5 – integrate all ready runtimes into one deterministic build and validation path.
 
 ## Plan C
 
@@ -38,6 +38,16 @@ A deterministic Claude Project distribution is now generated from the same canon
 `scripts/package_claude.py` builds a deterministic `system-modeller-claude-vX.Y.Z.zip`, while `scripts/validate_claude.py` validates structure, generated/source hashes and the reduced-tool contract. `tests/test_c3.py` locks deterministic packaging and explicitly verifies that Claude does not claim local Python-script execution.
 
 Claude compatibility is now `ready` in `gpt-project.yaml`, with behavior and artifact parity ready and capabilities available through documented fallbacks. Workspace/state remains reduced and local tools remain unavailable. Claude is intentionally not yet an active unified build target; C5 will integrate all ready runtimes into the common build path.
+
+### C4 result
+
+A deterministic OpenCode workspace distribution is now generated from the canonical System Modeller project. It contains root `AGENTS.md`, `.opencode/runtime-contract.json`, `opencode.json`, typed custom-tool wrappers under `.opencode/tools/`, the explicitly declared runtime scripts plus minimal support dependencies, canonical knowledge, `manifest.yaml`, `README.md` and `VERSION`.
+
+The generated tools use typed arguments and invoke Python through `Bun.spawn` without exposing a free-form shell command. The target System Modeller project is separate from the runtime workspace and is addressed through `projectRoot`.
+
+OpenCode V2 permissions require approval for `system_model`, generic shell execution and generic edits, while read-only/derived System Modeller tools are allowed. `scripts/validate_opencode.py` validates structure, permissions, source/generated hashes and wrapper presence; `tests/test_c4.py` locks deterministic packaging and the approval contract.
+
+OpenCode compatibility is now `ready`, but it remains outside the active unified build target set until C5.
 
 ## Plan B
 
