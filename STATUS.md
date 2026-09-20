@@ -4,10 +4,10 @@
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
 - Plan B progress: B12 / B12 — Plan B complete
-- Plan C progress: C6 / C7
-- Current version: 0.1.0-dev.56
-- Milestone: **C6 complete: unified CI and GitHub Release publication established for the complete artifact set**
-- Next: C7 – final regression, documentation and repository hygiene review.
+- Plan C progress: C7 / C7 — Plan C complete
+- Current version: 0.1.0-dev.57
+- Milestone: **Plan C complete: four-runtime architecture and unified delivery verified**
+- Next: merge PR #7 after final CI is green; release remains a separate GitHub Release action.
 
 ## Plan C
 
@@ -64,6 +64,14 @@ GitHub Actions now publishes and validates the complete unified artifact set. Pu
 The full build is uploaded as the `system-modeller-unified-build` Actions artifact together with `runtime-parity.yaml`, `SHA256SUMS.txt` and `build-manifest.yaml`.
 
 Published GitHub Releases build the same artifact set from the authoritative release tag and attach all five ZIPs plus parity, checksums and manifest to the GitHub Release. Only the release job has `contents: write`; repository verification and ordinary build jobs remain read-only.
+
+### C7 result
+
+Plan C is complete. User-facing documentation now describes the four-runtime architecture and unified build rather than the historical Plan A development state. `CHANGELOG.md`, the Plan C document and persistent status all record completion.
+
+Repository hygiene now requires the canonical multi-runtime project/status contracts, all four builders/validators and the unified build/release infrastructure. The Custom GPT builder no longer emits invalid-escape SyntaxWarnings.
+
+Final regression coverage verifies all four runtimes are enabled and ready, the Plan C status is complete, the README documents the complete delivery, the project contract passes, the Custom GPT builder compiles with SyntaxWarnings promoted to errors, and unified release-readiness remains READY.
 
 ## Plan B
 
