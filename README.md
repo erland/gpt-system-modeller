@@ -28,6 +28,8 @@ Aktuell utvecklingsversion finns i [`VERSION`](VERSION). Maskinläsbar projektst
 - **Fakta och inferens hålls isär**; deklarerat, observerat och infererat innehåll ska kunna särskiljas.
 - **Validering före och efter mutation** är en del av det canonical runtimeflödet.
 
+Fördjupning: [`docs/modeling-principles.md`](docs/modeling-principles.md) beskriver de normativa modellerings- och abstraktionsreglerna.
+
 Det gemensamma runtimeflödet är:
 
 `INSPECT → VALIDATE → PLAN → CHANGE → VALIDATE → DERIVE → PACKAGE`
