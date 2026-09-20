@@ -8,7 +8,7 @@ Workflowen reagerar på:
 
 - `pull_request`,
 - `push` till `main`,
-- publicerad GitHub Release,
+- `release` med `types: [published]` (publicerad GitHub Release),
 - `workflow_dispatch`.
 
 ## Verify
