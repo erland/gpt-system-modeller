@@ -98,6 +98,7 @@ Uppdatera README, runtime-dokumentation, STATUS och CHANGELOG. Kör slutlig proj
 
 Vid version `X.Y.Z` ska release minst kunna producera:
 
+- `system-modeller-project-vX.Y.Z.zip`
 - `system-modeller-chat-vX.Y.Z.zip`
 - `system-modeller-custom-gpt-vX.Y.Z.zip`
 - `system-modeller-claude-vX.Y.Z.zip`
