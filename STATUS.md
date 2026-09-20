@@ -4,10 +4,10 @@
 - Plan A completion marker: A1–A30 / A30 — Plan A complete
 - Completed: A1–A39 / A30 + A31 + A32 + A33 + A34 + A35 + A36 + A37 + A38 + A39
 - Plan B progress: B12 / B12 — Plan B complete
-- Plan C progress: C4 / C7
-- Current version: 0.1.0-dev.54
-- Milestone: **C4 complete: OpenCode workspace distribution implemented and compatibility-validated**
-- Next: C5 – integrate all ready runtimes into one deterministic build and validation path.
+- Plan C progress: C5 / C7
+- Current version: 0.1.0-dev.55
+- Milestone: **C5 complete: unified deterministic build and validation established for project package and four runtimes**
+- Next: C6 – update CI and GitHub Release publication for the complete unified artifact set.
 
 ## Plan C
 
@@ -48,6 +48,14 @@ The generated tools use typed arguments and invoke Python through `Bun.spawn` wi
 OpenCode V2 permissions require approval for `system_model`, generic shell execution and generic edits, while read-only/derived System Modeller tools are allowed. `scripts/validate_opencode.py` validates structure, permissions, source/generated hashes and wrapper presence; `tests/test_c4.py` locks deterministic packaging and the approval contract.
 
 OpenCode compatibility is now `ready`, but it remains outside the active unified build target set until C5.
+
+### C5 result
+
+`scripts/ci_build.py` is now the common deterministic build path for the System Modeller project package and all four runtime distributions. It builds and validates project, Chat, Custom GPT, Claude and OpenCode artifacts from the same repository state.
+
+The unified delivery also generates `runtime-parity.yaml`, `SHA256SUMS.txt` and a schema-version-2 `build-manifest.yaml` containing artifact hashes, sizes and validation summaries. `scripts/release_check.py` now runs two complete builds and verifies determinism, ZIP hygiene, runtime validators, manifest hashes and SHA-256 sums across the full artifact set.
+
+`gpt-project.yaml` now activates Chat, Custom GPT, Claude and OpenCode as build targets. Runtime-specific builders remain available as compatibility entry points. GitHub Actions still publishes the legacy subset in C5; C6 updates workflow artifact/upload and GitHub Release publication for the full unified delivery.
 
 ## Plan B
 
