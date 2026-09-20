@@ -5,23 +5,23 @@ plan:
   name: Multi-runtime distributions
   document: docs/PLAN-C-multi-runtime-distributions.md
 progress:
-  completed_step: C2
+  completed_step: C3
   total_steps: 7
   state: in_progress
-version: 0.1.0-dev.52
-milestone: Platform-neutral canonical runtime instruction and four-runtime parity baseline established.
+version: 0.1.0-dev.53
+milestone: Claude Project distribution implemented and compatibility-validated.
 next_step:
-  id: C3
-  title: Claude Project distribution
+  id: C4
+  title: OpenCode workspace distribution
   objective: >
-    Implement the Claude Project adapter from canonical instructions and knowledge,
-    with explicit runtime contract and reduced local-tool parity.
+    Implement the OpenCode adapter with generated AGENTS.md, runtime contract,
+    declared custom tools and approval rules for mutating operations.
 runtime_status:
   chat: ready
   custom_gpt: ready
-  claude: planned
+  claude: ready
   opencode: planned
 notes:
-  - The canonical instruction content is platform-neutral while retaining its legacy path for build compatibility.
-  - Chat-specific bootstrap remains in SYSTEM-MODELLER-CHAT.md.
-  - Claude and OpenCode remain disabled until their adapters pass compatibility checks.
+  - Claude Project packages canonical behavior and selected Knowledge.
+  - Claude local script execution is explicitly unavailable; canonical mutation requires reliable validation.
+  - Claude remains disabled as a unified build target until C5 integrates all active distribution builds.
