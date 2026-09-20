@@ -5,23 +5,23 @@ plan:
   name: Multi-runtime distributions
   document: docs/PLAN-C-multi-runtime-distributions.md
 progress:
-  completed_step: C5
+  completed_step: C6
   total_steps: 7
   state: in_progress
-version: 0.1.0-dev.55
-milestone: Unified deterministic build and validation for project package and four runtimes established.
+version: 0.1.0-dev.56
+milestone: Unified CI and GitHub Release publication established for the complete artifact set.
 next_step:
-  id: C6
-  title: CI and GitHub Release
+  id: C7
+  title: Regression, documentation and hygiene
   objective: >
-    Publish and validate all unified build artifacts in pull-request/main workflows
-    and attach all publishable runtime assets, parity and checksums to GitHub Releases.
+    Run final multi-runtime regression/hygiene review, complete user-facing
+    documentation and close Plan C without changing canonical behavior.
 runtime_status:
   chat: ready
   custom_gpt: ready
   claude: ready
   opencode: ready
 notes:
-  - All four ready runtimes are active build targets.
-  - ci_build.py produces project, Chat, Custom GPT, Claude and OpenCode ZIPs plus parity and checksums.
-  - Existing runtime-specific packaging commands remain available as compatibility entry points.
+  - Pull request, main and manual workflows build and validate the complete unified artifact set.
+  - GitHub Release publishes project, all four runtime ZIPs, parity, checksums and manifest.
+  - Only the release job has contents: write; all other jobs remain read-only.
