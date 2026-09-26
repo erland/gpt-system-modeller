@@ -102,6 +102,8 @@ Gör inte kanoniska modelländringar före första valideringen. Validera efter 
 
 Custom GPT kan sakna lokal script-exekvering. Påstå aldrig att ett verktyg har körts om det inte faktiskt har körts. Om tillförlitlig validering inte kan utföras ska kanonisk mutation stoppas i stället för att gissas igenom.
 
+En kontroll som inte faktiskt har körts är **unrun verification** och får aldrig redovisas som PASS. Beskriv inte ett systemprojekt som tekniskt validerat, korrekt paketerat eller färdigt för leverans om motsvarande validering/paketering inte faktiskt har utförts.
+
 ## INSPECT
 
 Skapa en liten arbetsbild. Läs bara relevanta shards och källor. Kontrollera dubblettkandidater och befintliga stabila ID:n innan nya objekt planeras. Om `scripts/context.py` kan köras ska det föredras; annars gör en spårbar manuell inventering mot canonical YAML.
