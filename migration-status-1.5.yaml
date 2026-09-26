@@ -16,13 +16,14 @@ migration:
   total_steps: 9
 
 progress:
-  current_step: 5
-  last_completed_step: 4
+  current_step: 6
+  last_completed_step: 5
   completed_steps:
     - 1
     - 2
     - 3
     - 4
+    - 5
   skipped_steps: []
   inserted_steps: []
 
@@ -105,10 +106,25 @@ chat_zip_verification:
   conversation_authoritative: false
   mutation_policy: validate_before_and_after
 
+custom_gpt_verification:
+  validation: scripts/validate_custom_gpt_builder_1_5.py
+  regression: tests/test_gpt_builder_1_5_custom_gpt.py
+  status: passed
+  instruction_within_budget: true
+  knowledge_traceability_preserved: true
+  capabilities: ready_with_fallbacks
+  workspace_state: reduced
+  local_tools: unavailable
+  unrun_verification_explicit: true
+  false_pass_forbidden: true
+  canonical_mutation_stops_without_reliable_validation: true
+  ci_passed: true
+  distribution_build_passed: true
+
 next_step:
-  recommended: 5
-  title: Verifiera Custom GPT
-  reason: "Chat ZIP passerar GPT Byggaren 1.5.0-verifieringen och ordinarie regression/distributionsbuild är gröna."
+  recommended: 6
+  title: Verifiera Claude Project och OpenCode
+  reason: "Custom GPT passerar nu GPT Byggaren 1.5.0-verifieringen för instruction budget, Knowledge-spårbarhet, reducerad workspace/tool parity och explicit no-false-PASS."
 
 resume:
   supported: true
@@ -118,4 +134,4 @@ resume:
     - gpt-project.yaml
     - project-status.yaml
     - instructions/chat-runtime.md
-  human_readable_status: "Steg 1–4 av 9 i GPT Byggaren 1.5.0-migreringen är klara."
+  human_readable_status: "Steg 1–5 av 9 i GPT Byggaren 1.5.0-migreringen är klara."
