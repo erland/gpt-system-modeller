@@ -9,6 +9,7 @@ import tempfile
 import zipfile
 import yaml
 import sys
+import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "runtime-distribution-registry.yaml"
@@ -68,6 +69,16 @@ def build_and_check(output_dir: Path, explicit_version: str | None = None) -> di
         ci_build.build(second, explicit_version)
 
         errors: list[str] = []
+        for script,args in [
+            ("validate_runtime_artifacts_1_5.py", ["--version", release, "--dir", str(first)]),
+            ("validate_release_assets_1_5.py", ["--version", release, "--dir", str(first)]),
+        ]:
+            result=subprocess.run(
+                [sys.executable,str(ROOT/"scripts"/script),*args],
+                cwd=ROOT,text=True,capture_output=True,
+            )
+            if result.returncode!=0:
+                errors.append(f"{script} failed: {result.stdout.strip()} {result.stderr.strip()}".strip())
         for name in names.values():
             a, b = first / name, second / name
             if not a.is_file() or not b.is_file():
