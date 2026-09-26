@@ -19,11 +19,8 @@ def main():
         "scripts/validate_claude.py",
         "scripts/validate_opencode.py",
         "name: system-modeller-unified-build",
-        "dist/system-modeller-project-v*.zip",
-        "dist/system-modeller-chat-v*.zip",
-        "dist/system-modeller-custom-gpt-v*.zip",
-        "dist/system-modeller-claude-v*.zip",
-        "dist/system-modeller-opencode-v*.zip",
+        "scripts/validate_release_assets_1_5.py",
+        "dist/*.zip",
         "dist/runtime-parity.yaml",
         "dist/SHA256SUMS.txt",
         "dist/build-manifest.yaml",
@@ -40,18 +37,10 @@ def main():
         return fail("workflow default must remain read-only")
 
     release_upload = workflow.split("gh release upload", 1)[1]
-    for name in (
-        "system-modeller-project-v*.zip",
-        "system-modeller-chat-v*.zip",
-        "system-modeller-custom-gpt-v*.zip",
-        "system-modeller-claude-v*.zip",
-        "system-modeller-opencode-v*.zip",
-        "runtime-parity.yaml",
-        "SHA256SUMS.txt",
-        "build-manifest.yaml",
-    ):
-        if name not in release_upload:
-            return fail("GitHub Release upload missing " + name)
+    if "assets[@]" not in release_upload:
+        return fail("GitHub Release upload must use validated registry-derived asset list")
+    if "system-modeller-chat-v*.zip" in release_upload or "system-modeller-opencode-v*.zip" in release_upload:
+        return fail("GitHub Release upload must not hardcode runtime wildcard assets")
 
     doc = (ROOT / "docs/github-actions.md").read_text(encoding="utf-8")
     for phrase in ("system-modeller-unified-build", "Claude Project ZIP", "OpenCode ZIP", "SHA256SUMS.txt", "contents: write"):
