@@ -1,0 +1,68 @@
+schema_version: 1
+project:
+  id: system-modeller
+  name: System Modeller
+  development_version: 0.1.0-dev.57
+  product_plan:
+    id: C
+    status: complete
+    completed_step: C7
+    total_steps: 7
+
+migration:
+  target_builder_version: 1.5.0
+  strategy: behavior_preserving
+  plan: docs/gpt-builder-1.5-runtime-migration.md
+  total_steps: 9
+
+progress:
+  current_step: 2
+  last_completed_step: 1
+  completed_steps:
+    - 1
+  skipped_steps: []
+  inserted_steps: []
+
+state:
+  overall: warning
+  blocking_issues: []
+  warnings:
+    - "Befintligt gpt-project.yaml behöver normaliseras mot GPT Byggaren 1.5.0-kontrakten."
+    - "OpenAI Plugin compatibility assessment återstår."
+
+preservation:
+  canonical_instruction: instructions/chat-runtime.md
+  project_contract: gpt-project.yaml
+  product_status: project-status.yaml
+  version: VERSION
+  unified_build: scripts/ci_build.py
+  release_readiness: scripts/release_check.py
+  preserve_plan_c: true
+  preserve_evals: true
+  preserve_runtime_behavior: true
+
+runtime_baseline:
+  active:
+    - chat
+    - custom_gpt
+    - claude
+    - opencode
+  openai_plugin:
+    status: not_active
+    intended_target: reduced
+    advisory_only: true
+
+next_step:
+  recommended: 2
+  title: Normalisera projektkontrakt mot GPT Byggaren 1.5.0
+  reason: "Separat 1.5.0-migrationsspår finns nu. Nästa steg är att normalisera capability-, artifact-, state- och tool-kontrakt utan att ändra System Modellers canonical beteende."
+
+resume:
+  supported: true
+  required_files:
+    - migration-status-1.5.yaml
+    - docs/gpt-builder-1.5-runtime-migration.md
+    - gpt-project.yaml
+    - project-status.yaml
+    - instructions/chat-runtime.md
+  human_readable_status: "Steg 1 av 9 i GPT Byggaren 1.5.0-migreringen är klart."
