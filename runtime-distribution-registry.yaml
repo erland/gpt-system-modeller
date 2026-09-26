@@ -1,0 +1,68 @@
+schema_version: 1
+registry_id: system-modeller-runtime-distributions
+builder_contract:
+  target_version: 1.5.0
+  normalized_contract: gpt-builder-1.5-contract.yaml
+  project_contract: gpt-project.yaml
+  runtime_selection: active_targets
+  artifact_policy: exact_active_target_set
+  version_source:
+    development: VERSION
+    release: github_tag
+
+active_targets:
+  - chat
+  - custom_gpt
+  - claude
+  - opencode
+
+inactive_targets:
+  openai_plugin:
+    compatibility: reduced
+    status: not_active
+    advisory_only: true
+    reason: "Full peer-runtime parity is not assumed without project file access, reliable validation, persistent workspace, mutation and packaging capabilities."
+
+project_artifact:
+  id: project
+  artifact_pattern: system-modeller-project-v{version}.zip
+
+targets:
+  chat:
+    status: active
+    adapter_id: chat
+    artifact_pattern: system-modeller-chat-v{version}.zip
+    compatibility: equivalent_runtime_dependent
+    source_runtime: chat
+  custom_gpt:
+    status: active
+    adapter_id: custom_gpt
+    artifact_pattern: system-modeller-custom-gpt-v{version}.zip
+    compatibility: equivalent_with_platform_constraints
+    source_runtime: custom_gpt
+  claude:
+    status: active
+    adapter_id: claude_project
+    artifact_pattern: system-modeller-claude-v{version}.zip
+    compatibility: reduced
+    source_runtime: claude
+  opencode:
+    status: active
+    adapter_id: opencode_workspace
+    artifact_pattern: system-modeller-opencode-v{version}.zip
+    compatibility: equivalent
+    source_runtime: opencode
+
+derived_artifacts:
+  runtime_parity: runtime-parity.yaml
+  checksums: SHA256SUMS.txt
+  manifest: build-manifest.yaml
+
+release:
+  runtime_assets_from: active_targets
+  include_project_artifact: true
+  include_derived_artifacts:
+    - runtime_parity
+    - checksums
+    - manifest
+  wildcard_runtime_selection: false
