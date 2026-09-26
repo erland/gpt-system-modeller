@@ -16,8 +16,8 @@ migration:
   total_steps: 9
 
 progress:
-  current_step: 8
-  last_completed_step: 7
+  current_step: 9
+  last_completed_step: 8
   completed_steps:
     - 1
     - 2
@@ -26,6 +26,7 @@ progress:
     - 5
     - 6
     - 7
+    - 8
   skipped_steps: []
   inserted_steps: []
 
@@ -163,10 +164,25 @@ openai_plugin_assessment:
   ci_passed: true
   distribution_build_passed: true
 
+release_readiness:
+  registry: runtime-distribution-registry.yaml
+  runtime_validation: scripts/validate_runtime_artifacts_1_5.py
+  release_asset_validation: scripts/validate_release_assets_1_5.py
+  release_check: scripts/release_check.py
+  runtime_assets_from_registry: true
+  exact_active_runtime_asset_set: true
+  project_artifact_from_registry: true
+  derived_artifacts_from_registry: true
+  github_release_uses_validated_asset_list: true
+  wildcard_runtime_selection: false
+  ci_runtime_gates_passed: true
+  exact_asset_gate_passed: true
+  distribution_build_passed: true
+
 next_step:
-  recommended: 8
-  title: Generalisera CI och release
-  reason: "OpenAI Plugin-bedömningen är nu dokumenterad och regressionstestad som not_active/reduced/advisory_only. Ingen aktiv distribution eller full peer-runtime parity påstås."
+  recommended: 9
+  title: Slutlig release-readiness
+  reason: "CI, distributionsbuild, lokal release-readiness och GitHub Release använder nu samma GPT Byggaren 1.5.0-registry. Runtime-validering och exakt asset-set verifieras före publicering."
 
 resume:
   supported: true
@@ -176,4 +192,4 @@ resume:
     - gpt-project.yaml
     - project-status.yaml
     - instructions/chat-runtime.md
-  human_readable_status: "Steg 1–7 av 9 i GPT Byggaren 1.5.0-migreringen är klara."
+  human_readable_status: "Steg 1–8 av 9 i GPT Byggaren 1.5.0-migreringen är klara."
