@@ -85,6 +85,24 @@ jobs:
           python scripts/validate_claude.py             --claude "dist/system-modeller-claude-v${RELEASE}.zip"
           python scripts/validate_opencode.py             --opencode "dist/system-modeller-opencode-v${RELEASE}.zip"
 
+      - name: Validate GPT Builder 1.5 runtime gates
+        run: |
+          RELEASE=$(python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path('scripts').resolve()))
+          import versioning
+          print(versioning.resolve().release_version)
+          PY
+          )
+          python scripts/validate_gpt_builder_1_5_contract.py
+          python scripts/validate_runtime_distribution_registry.py
+          python scripts/validate_openai_plugin_1_5_assessment.py
+          python scripts/validate_chat_gpt_builder_1_5.py --artifact "dist/system-modeller-chat-v${RELEASE}.zip"
+          python scripts/validate_custom_gpt_builder_1_5.py --artifact "dist/system-modeller-custom-gpt-v${RELEASE}.zip"
+          python scripts/validate_claude_gpt_builder_1_5.py --artifact "dist/system-modeller-claude-v${RELEASE}.zip"
+          python scripts/validate_opencode_gpt_builder_1_5.py --artifact "dist/system-modeller-opencode-v${RELEASE}.zip"
+
       - name: Validate exact registry asset set
         run: |
           RELEASE=$(python - <<'PY'
