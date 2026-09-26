@@ -60,3 +60,20 @@ Härled build/release-assets deklarativt och kör samma 1.5-gates i CI och relea
 
 ### 9. Slutlig release-readiness
 Synka README/STATUS, lägg final readiness-gate och verifiera mergebar PR.
+
+
+## Slutstatus
+
+Migreringen är genomförd **9/9**.
+
+Slutlig runtime-status:
+
+- Chat ZIP — equivalent_runtime_dependent
+- Custom GPT — equivalent_with_platform_constraints
+- Claude Project — reduced
+- OpenCode — equivalent
+- OpenAI Plugin — not_active / reduced / advisory_only
+
+CI, distributionsbuild, lokal release-readiness och GitHub Release använder samma GPT Byggaren 1.5.0-registry. Release-assets härleds exakt från `runtime-distribution-registry.yaml`, och full plugin-parity får inte påstås utan verifierad projektfilåtkomst, runtime-tool execution, persistent workspace/state, reliable validation/mutation och komplett projektpaketering.
+
+Plan C är fortsatt komplett och utvecklingsversionen är fortsatt **0.1.0-dev.57**.
