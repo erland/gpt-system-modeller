@@ -47,7 +47,7 @@ def main():
             "scripts/report.py",
             "scripts/package_project.py",
             "scripts/analyze.py",
-            "schemas/system-project.schema.json",
+            "schemas/project.schema.json",
             "templates/system-project/project.yaml",
         ]
         for req in required:
