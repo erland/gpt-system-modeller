@@ -16,11 +16,12 @@ migration:
   total_steps: 9
 
 progress:
-  current_step: 3
-  last_completed_step: 2
+  current_step: 4
+  last_completed_step: 3
   completed_steps:
     - 1
     - 2
+    - 3
   skipped_steps: []
   inserted_steps: []
 
@@ -73,10 +74,28 @@ gpt_builder_1_5:
   mutation_approval_required: true
   plan_c_preserved: true
 
+registry:
+  source_of_truth: runtime-distribution-registry.yaml
+  validation: scripts/validate_runtime_distribution_registry.py
+  regression: tests/test_gpt_builder_1_5_registry.py
+  builder_target_version: 1.5.0
+  runtime_selection: active_targets
+  artifact_policy: exact_active_target_set
+  active_targets:
+    - chat
+    - custom_gpt
+    - claude
+    - opencode
+  ci_build_uses_registry_artifact_patterns: true
+  openai_plugin:
+    status: not_active
+    compatibility: reduced
+    advisory_only: true
+
 next_step:
-  recommended: 3
-  title: Normalisera runtime registry och build metadata
-  reason: "Befintliga capability-, artifact-, state- och tool-kontrakt är nu explicit mappade och regressionstestade mot GPT Byggaren 1.5.0 utan att ändra Plan C eller canonical runtime-beteende."
+  recommended: 4
+  title: Verifiera Chat ZIP
+  reason: "Runtime registry, artifactnamn och compatibility är nu deklarativa för GPT Byggaren 1.5.0. Unified build härleder runtime-artifactnamn från registryt och både full regression samt Build and validate distributions passerar."
 
 resume:
   supported: true
@@ -86,4 +105,4 @@ resume:
     - gpt-project.yaml
     - project-status.yaml
     - instructions/chat-runtime.md
-  human_readable_status: "Steg 1–2 av 9 i GPT Byggaren 1.5.0-migreringen är klara."
+  human_readable_status: "Steg 1–3 av 9 i GPT Byggaren 1.5.0-migreringen är klara."
