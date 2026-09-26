@@ -16,8 +16,8 @@ migration:
   total_steps: 9
 
 progress:
-  current_step: 7
-  last_completed_step: 6
+  current_step: 8
+  last_completed_step: 7
   completed_steps:
     - 1
     - 2
@@ -25,14 +25,14 @@ progress:
     - 4
     - 5
     - 6
+    - 7
   skipped_steps: []
   inserted_steps: []
 
 state:
   overall: warning
   blocking_issues: []
-  warnings:
-    - "OpenAI Plugin compatibility assessment återstår."
+  warnings: []
 
 preservation:
   canonical_instruction: instructions/chat-runtime.md
@@ -144,10 +144,29 @@ opencode_verification:
   shell_permission: ask
   edit_permission: ask
 
+openai_plugin_assessment:
+  document: docs/openai-plugin-1.5-assessment.md
+  validation: scripts/validate_openai_plugin_1_5_assessment.py
+  regression: tests/test_gpt_builder_1_5_openai_plugin.py
+  status: not_active
+  compatibility: reduced
+  advisory_only: true
+  active_distribution: false
+  full_parity_requires:
+    - project_file_access
+    - reliable_validation_before_after
+    - persistent_workspace_state
+    - controlled_canonical_mutation
+    - runtime_tool_execution
+    - complete_project_packaging
+  unrun_verification_must_not_be_pass: true
+  ci_passed: true
+  distribution_build_passed: true
+
 next_step:
-  recommended: 7
-  title: OpenAI Plugin compatibility assessment
-  reason: "Claude Project och OpenCode passerar nu separata GPT Byggaren 1.5.0-gates. Claude behåller reduced tool/workspace parity och mutation stoppas utan tillförlitlig validering. OpenCode behåller equivalent parity med typed tools, explicit projectRoot och approval på mutation."
+  recommended: 8
+  title: Generalisera CI och release
+  reason: "OpenAI Plugin-bedömningen är nu dokumenterad och regressionstestad som not_active/reduced/advisory_only. Ingen aktiv distribution eller full peer-runtime parity påstås."
 
 resume:
   supported: true
@@ -157,4 +176,4 @@ resume:
     - gpt-project.yaml
     - project-status.yaml
     - instructions/chat-runtime.md
-  human_readable_status: "Steg 1–6 av 9 i GPT Byggaren 1.5.0-migreringen är klara."
+  human_readable_status: "Steg 1–7 av 9 i GPT Byggaren 1.5.0-migreringen är klara."
