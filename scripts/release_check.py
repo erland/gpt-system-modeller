@@ -9,8 +9,10 @@ import tempfile
 import zipfile
 import yaml
 import sys
+import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
+REGISTRY = ROOT / "runtime-distribution-registry.yaml"
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import ci_build
@@ -48,16 +50,16 @@ def build_and_check(output_dir: Path, explicit_version: str | None = None) -> di
     release = info.release_version
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    names = {
-        "project": f"system-modeller-project-v{release}.zip",
-        "chat": f"system-modeller-chat-v{release}.zip",
-        "custom_gpt": f"system-modeller-custom-gpt-v{release}.zip",
-        "claude": f"system-modeller-claude-v{release}.zip",
-        "opencode": f"system-modeller-opencode-v{release}.zip",
-        "runtime_parity": "runtime-parity.yaml",
-        "checksums": "SHA256SUMS.txt",
-        "manifest": "build-manifest.yaml",
-    }
+    registry = yaml.safe_load(REGISTRY.read_text(encoding="utf-8"))
+    names = {"project": registry["project_artifact"]["artifact_pattern"].format(version=release)}
+    names.update({
+        rid: registry["targets"][rid]["artifact_pattern"].format(version=release)
+        for rid in registry["active_targets"]
+    })
+    names.update({
+        key: registry["derived_artifacts"][key]
+        for key in registry["release"]["include_derived_artifacts"]
+    })
 
     with tempfile.TemporaryDirectory() as td:
         td = Path(td)
@@ -67,6 +69,16 @@ def build_and_check(output_dir: Path, explicit_version: str | None = None) -> di
         ci_build.build(second, explicit_version)
 
         errors: list[str] = []
+        for script,args in [
+            ("validate_runtime_artifacts_1_5.py", ["--version", release, "--dir", str(first)]),
+            ("validate_release_assets_1_5.py", ["--version", release, "--dir", str(first)]),
+        ]:
+            result=subprocess.run(
+                [sys.executable,str(ROOT/"scripts"/script),*args],
+                cwd=ROOT,text=True,capture_output=True,
+            )
+            if result.returncode!=0:
+                errors.append(f"{script} failed: {result.stdout.strip()} {result.stderr.strip()}".strip())
         for name in names.values():
             a, b = first / name, second / name
             if not a.is_file() or not b.is_file():
@@ -82,7 +94,7 @@ def build_and_check(output_dir: Path, explicit_version: str | None = None) -> di
         errors.extend(f"CLAUDE: {e}" for e in validate_claude.validate(first / names["claude"]))
         errors.extend(f"OPENCODE: {e}" for e in validate_opencode.validate(first / names["opencode"]))
 
-        for typ in ("project", "chat", "custom_gpt", "claude", "opencode"):
+        for typ in ["project"] + list(registry["active_targets"]):
             path = first / names[typ]
             if path.is_file():
                 errors.extend(inspect_zip(path))
@@ -110,7 +122,7 @@ def build_and_check(output_dir: Path, explicit_version: str | None = None) -> di
             if "  " in line:
                 checksum, filename = line.split("  ", 1)
                 checksum_map[filename] = checksum
-        for typ in ("project", "chat", "custom_gpt", "claude", "opencode", "runtime_parity"):
+        for typ in ["project"] + list(registry["active_targets"]) + ["runtime_parity"]:
             name = names[typ]
             path = first / name
             if path.is_file() and checksum_map.get(name) != digest(path):

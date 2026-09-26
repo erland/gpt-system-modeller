@@ -1,0 +1,79 @@
+schema_version: 1
+builder:
+  target_version: 1.5.0
+  strategy: normalize_existing_project_contract
+  behavior_preserving: true
+
+canonical:
+  project_contract: gpt-project.yaml
+  instruction: instructions/chat-runtime.md
+  status: project-status.yaml
+  version: VERSION
+
+contracts:
+  capabilities:
+    source: gpt-project.yaml
+    key: contracts.capabilities
+    critical:
+      - inspect_project
+      - validate_before_change
+      - mutate_canonical_model
+      - derive_views
+      - generate_architecture_report
+  artifacts:
+    source: gpt-project.yaml
+    key: contracts.artifacts
+    required:
+      - system_project
+      - architecture_report
+  state:
+    source: gpt-project.yaml
+    key: contracts.workspace
+    authority: canonical_yaml
+    required_project_file: project.yaml
+    conversation_authoritative: false
+    mutation_policy: validate_before_and_after
+    runtime_sequence:
+      - INSPECT
+      - VALIDATE
+      - PLAN
+      - CHANGE
+      - VALIDATE
+      - DERIVE
+      - PACKAGE
+  tools:
+    source: gpt-project.yaml
+    key: contracts.tools
+    required_runtime_tools:
+      - context
+      - validate
+      - model
+      - view
+      - report
+      - package_project
+      - analyze
+    mutating_tool: model
+    mutation_approval_required: true
+
+runtime_policy:
+  active:
+    - chat
+    - custom_gpt
+    - claude
+    - opencode
+  compatibility:
+    chat: equivalent_runtime_dependent
+    custom_gpt: equivalent_with_platform_constraints
+    claude: reduced
+    opencode: equivalent
+  openai_plugin:
+    status: not_active
+    target: reduced
+    assessment_required: true
+
+preservation:
+  stable_ids: true
+  provenance: true
+  evidence: true
+  origin: true
+  unresolved_uncertainty: true

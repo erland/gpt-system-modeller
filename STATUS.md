@@ -7,7 +7,26 @@
 - Plan C progress: C7 / C7 — Plan C complete
 - Current version: 0.1.0-dev.57
 - Milestone: **Plan C complete: four-runtime architecture and unified delivery verified**
-- Next: merge PR #7 after final CI is green; release remains a separate GitHub Release action.
+- GPT Builder 1.5 migration: 9 / 9 complete
+- Active runtimes: Chat, Custom GPT, Claude Project, OpenCode
+- OpenAI Plugin: not_active / reduced / advisory_only
+- Next: merge PR #8 after final CI is green; release remains a separate GitHub Release action.
+
+## GPT Byggaren 1.5.0
+
+Migreringen till GPT Byggaren 1.5.0 är beteendebevarande och ändrar inte Plan C-resultatet eller utvecklingsversionen.
+
+Slutlig runtime-status:
+
+- Chat ZIP: equivalent_runtime_dependent.
+- Custom GPT: equivalent_with_platform_constraints med explicit no-false-PASS.
+- Claude Project: reduced.
+- OpenCode: equivalent med typed tools, explicit `projectRoot` och approval på mutation.
+- OpenAI Plugin: not_active / reduced / advisory_only.
+
+Build, runtime-verifiering, release-readiness och GitHub Release-publicering härleds från `runtime-distribution-registry.yaml`. Exakt artifact-set valideras före upload och wildcard runtime selection är avstängd.
+
+Maskinläsbar status finns i `migration-status-1.5.yaml`.
 
 ## Plan C
 

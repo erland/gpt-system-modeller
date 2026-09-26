@@ -17,6 +17,14 @@ System Modeller byggs från samma canonical projektkontrakt till fyra runtime-di
 
 Aktuell utvecklingsversion finns i [`VERSION`](VERSION). Maskinläsbar projektstatus finns i [`project-status.yaml`](project-status.yaml) och runtime-/capability-kontraktet i [`gpt-project.yaml`](gpt-project.yaml).
 
+## GPT Byggaren 1.5.0
+
+Projektets multi-runtimearkitektur är migrerad till GPT Byggaren 1.5.0 med bibehållet canonical beteende och Plan C-status.
+
+Aktiva runtimes är fortsatt Chat ZIP, Custom GPT, Claude Project och OpenCode. OpenAI Plugin är explicit bedömd som `not_active / reduced / advisory_only` och räknas inte som peer runtime så länge projektfilåtkomst, faktisk tool execution, persistent workspace, validering/mutation och komplett paketering inte kan verifieras.
+
+Se [`docs/gpt-builder-1.5-runtime-migration.md`](docs/gpt-builder-1.5-runtime-migration.md), [`docs/openai-plugin-1.5-assessment.md`](docs/openai-plugin-1.5-assessment.md) och [`migration-status-1.5.yaml`](migration-status-1.5.yaml).
+
 ## Grundprinciper
 
 - **YAML är canonical source of truth** för systemmodellen.

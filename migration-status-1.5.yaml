@@ -1,0 +1,196 @@
+schema_version: 1
+project:
+  id: system-modeller
+  name: System Modeller
+  development_version: 0.1.0-dev.57
+  product_plan:
+    id: C
+    status: complete
+    completed_step: C7
+    total_steps: 7
+
+migration:
+  target_builder_version: 1.5.0
+  strategy: behavior_preserving
+  plan: docs/gpt-builder-1.5-runtime-migration.md
+  total_steps: 9
+
+progress:
+  current_step: 9
+  last_completed_step: 9
+  completed_steps:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+  skipped_steps: []
+  inserted_steps: []
+
+state:
+  overall: pass
+  blocking_issues: []
+  warnings: []
+
+preservation:
+  canonical_instruction: instructions/chat-runtime.md
+  project_contract: gpt-project.yaml
+  product_status: project-status.yaml
+  version: VERSION
+  unified_build: scripts/ci_build.py
+  release_readiness: scripts/release_check.py
+  preserve_plan_c: true
+  preserve_evals: true
+  preserve_runtime_behavior: true
+
+runtime_baseline:
+  active:
+    - chat
+    - custom_gpt
+    - claude
+    - opencode
+  openai_plugin:
+    status: not_active
+    intended_target: reduced
+    advisory_only: true
+
+gpt_builder_1_5:
+  normalized_contract: gpt-builder-1.5-contract.yaml
+  validation: scripts/validate_gpt_builder_1_5_contract.py
+  regression: tests/test_gpt_builder_1_5_contract.py
+  canonical_instruction: instructions/chat-runtime.md
+  state_authority: canonical_yaml
+  required_project_file: project.yaml
+  conversation_authoritative: false
+  mutation_policy: validate_before_and_after
+  runtime_sequence:
+    - INSPECT
+    - VALIDATE
+    - PLAN
+    - CHANGE
+    - VALIDATE
+    - DERIVE
+    - PACKAGE
+  mutating_tool: model
+  mutation_approval_required: true
+  plan_c_preserved: true
+
+registry:
+  source_of_truth: runtime-distribution-registry.yaml
+  validation: scripts/validate_runtime_distribution_registry.py
+  regression: tests/test_gpt_builder_1_5_registry.py
+  builder_target_version: 1.5.0
+  runtime_selection: active_targets
+  artifact_policy: exact_active_target_set
+  active_targets:
+    - chat
+    - custom_gpt
+    - claude
+    - opencode
+  ci_build_uses_registry_artifact_patterns: true
+  openai_plugin:
+    status: not_active
+    compatibility: reduced
+    advisory_only: true
+
+chat_zip_verification:
+  validation: scripts/validate_chat_gpt_builder_1_5.py
+  regression: tests/test_gpt_builder_1_5_chat.py
+  status: passed
+  canonical_instruction_byte_identical: true
+  runtime_sequence_preserved: true
+  deterministic_runtime_tools_present: true
+  state_authority: canonical_yaml
+  required_project_file: project.yaml
+  conversation_authoritative: false
+  mutation_policy: validate_before_and_after
+
+custom_gpt_verification:
+  validation: scripts/validate_custom_gpt_builder_1_5.py
+  regression: tests/test_gpt_builder_1_5_custom_gpt.py
+  status: passed
+  instruction_within_budget: true
+  knowledge_traceability_preserved: true
+  capabilities: ready_with_fallbacks
+  workspace_state: reduced
+  local_tools: unavailable
+  unrun_verification_explicit: true
+  false_pass_forbidden: true
+  canonical_mutation_stops_without_reliable_validation: true
+  ci_passed: true
+  distribution_build_passed: true
+
+claude_project_verification:
+  validation: scripts/validate_claude_gpt_builder_1_5.py
+  regression: tests/test_gpt_builder_1_5_claude_opencode.py
+  status: passed
+  compatibility: reduced
+  workspace_state: reduced
+  local_tools: unavailable
+  canonical_mutation_requires_reliable_validation: true
+  executable_repo_scripts_packaged: false
+
+opencode_verification:
+  validation: scripts/validate_opencode_gpt_builder_1_5.py
+  regression: tests/test_gpt_builder_1_5_claude_opencode.py
+  status: passed
+  compatibility: equivalent
+  workspace_state: ready
+  explicit_project_root: true
+  typed_custom_tools: true
+  system_model_mutation_approval: ask
+  shell_permission: ask
+  edit_permission: ask
+
+openai_plugin_assessment:
+  document: docs/openai-plugin-1.5-assessment.md
+  validation: scripts/validate_openai_plugin_1_5_assessment.py
+  regression: tests/test_gpt_builder_1_5_openai_plugin.py
+  status: not_active
+  compatibility: reduced
+  advisory_only: true
+  active_distribution: false
+  full_parity_requires:
+    - project_file_access
+    - reliable_validation_before_after
+    - persistent_workspace_state
+    - controlled_canonical_mutation
+    - runtime_tool_execution
+    - complete_project_packaging
+  unrun_verification_must_not_be_pass: true
+  ci_passed: true
+  distribution_build_passed: true
+
+release_readiness:
+  registry: runtime-distribution-registry.yaml
+  runtime_validation: scripts/validate_runtime_artifacts_1_5.py
+  release_asset_validation: scripts/validate_release_assets_1_5.py
+  release_check: scripts/release_check.py
+  runtime_assets_from_registry: true
+  exact_active_runtime_asset_set: true
+  project_artifact_from_registry: true
+  derived_artifacts_from_registry: true
+  github_release_uses_validated_asset_list: true
+  wildcard_runtime_selection: false
+  ci_runtime_gates_passed: true
+  exact_asset_gate_passed: true
+  distribution_build_passed: true
+
+next_step:
+  recommended: merge
+  title: Merge migrations-PR
+  reason: "GPT Byggaren 1.5.0-migreringen är komplett 9/9. Fyra aktiva runtimes är verifierade, OpenAI Plugin är advisory only och build/release är registry-drivna."
+
+resume:
+  supported: true
+  required_files:
+    - migration-status-1.5.yaml
+    - docs/gpt-builder-1.5-runtime-migration.md
+    - gpt-project.yaml
+    - project-status.yaml
+    - instructions/chat-runtime.md
+  human_readable_status: "GPT Byggaren 1.5.0-migreringen är klar 9/9. PR kan mergas när slutlig CI är grön."
