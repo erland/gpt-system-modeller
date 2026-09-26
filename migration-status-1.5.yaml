@@ -16,10 +16,11 @@ migration:
   total_steps: 9
 
 progress:
-  current_step: 2
-  last_completed_step: 1
+  current_step: 3
+  last_completed_step: 2
   completed_steps:
     - 1
+    - 2
   skipped_steps: []
   inserted_steps: []
 
@@ -27,7 +28,6 @@ state:
   overall: warning
   blocking_issues: []
   warnings:
-    - "Befintligt gpt-project.yaml behöver normaliseras mot GPT Byggaren 1.5.0-kontrakten."
     - "OpenAI Plugin compatibility assessment återstår."
 
 preservation:
@@ -52,10 +52,31 @@ runtime_baseline:
     intended_target: reduced
     advisory_only: true
 
+gpt_builder_1_5:
+  normalized_contract: gpt-builder-1.5-contract.yaml
+  validation: scripts/validate_gpt_builder_1_5_contract.py
+  regression: tests/test_gpt_builder_1_5_contract.py
+  canonical_instruction: instructions/chat-runtime.md
+  state_authority: canonical_yaml
+  required_project_file: project.yaml
+  conversation_authoritative: false
+  mutation_policy: validate_before_and_after
+  runtime_sequence:
+    - INSPECT
+    - VALIDATE
+    - PLAN
+    - CHANGE
+    - VALIDATE
+    - DERIVE
+    - PACKAGE
+  mutating_tool: model
+  mutation_approval_required: true
+  plan_c_preserved: true
+
 next_step:
-  recommended: 2
-  title: Normalisera projektkontrakt mot GPT Byggaren 1.5.0
-  reason: "Separat 1.5.0-migrationsspår finns nu. Nästa steg är att normalisera capability-, artifact-, state- och tool-kontrakt utan att ändra System Modellers canonical beteende."
+  recommended: 3
+  title: Normalisera runtime registry och build metadata
+  reason: "Befintliga capability-, artifact-, state- och tool-kontrakt är nu explicit mappade och regressionstestade mot GPT Byggaren 1.5.0 utan att ändra Plan C eller canonical runtime-beteende."
 
 resume:
   supported: true
@@ -65,4 +86,4 @@ resume:
     - gpt-project.yaml
     - project-status.yaml
     - instructions/chat-runtime.md
-  human_readable_status: "Steg 1 av 9 i GPT Byggaren 1.5.0-migreringen är klart."
+  human_readable_status: "Steg 1–2 av 9 i GPT Byggaren 1.5.0-migreringen är klara."
