@@ -9,6 +9,7 @@ import sys
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
+REGISTRY = ROOT / "runtime-distribution-registry.yaml"
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import package_chat
@@ -43,11 +44,16 @@ def build(output_dir: Path, explicit_version: str | None = None) -> dict:
     version, release = info.repository_version, info.release_version
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    project = output_dir / f"system-modeller-project-v{release}.zip"
-    chat = output_dir / f"system-modeller-chat-v{release}.zip"
-    custom = output_dir / f"system-modeller-custom-gpt-v{release}.zip"
-    claude = output_dir / f"system-modeller-claude-v{release}.zip"
-    opencode = output_dir / f"system-modeller-opencode-v{release}.zip"
+    registry = yaml.safe_load(REGISTRY.read_text(encoding="utf-8"))
+    project = output_dir / registry["project_artifact"]["artifact_pattern"].format(version=release)
+    runtime_paths = {
+        runtime_id: output_dir / registry["targets"][runtime_id]["artifact_pattern"].format(version=release)
+        for runtime_id in registry["active_targets"]
+    }
+    chat = runtime_paths["chat"]
+    custom = runtime_paths["custom_gpt"]
+    claude = runtime_paths["claude"]
+    opencode = runtime_paths["opencode"]
 
     package_gpt_project.build(project)
     package_chat.build(chat, info.distribution_version)
@@ -75,12 +81,9 @@ def build(output_dir: Path, explicit_version: str | None = None) -> dict:
     parity_path = output_dir / "runtime-parity.yaml"
     parity_path.write_text(yaml.safe_dump(parity_data, sort_keys=False, allow_unicode=True), encoding="utf-8")
 
-    artifacts = [
-        {"type": "project", "path": project},
-        {"type": "chat", "path": chat},
-        {"type": "custom_gpt", "path": custom},
-        {"type": "claude", "path": claude},
-        {"type": "opencode", "path": opencode},
+    artifacts = [{"type": "project", "path": project}] + [
+        {"type": runtime_id, "path": runtime_paths[runtime_id]}
+        for runtime_id in registry["active_targets"]
     ]
     checksums = write_checksums(output_dir, [item["path"] for item in artifacts] + [parity_path])
 
