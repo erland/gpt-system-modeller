@@ -17,7 +17,7 @@ migration:
 
 progress:
   current_step: 9
-  last_completed_step: 8
+  last_completed_step: 9
   completed_steps:
     - 1
     - 2
@@ -27,11 +27,12 @@ progress:
     - 6
     - 7
     - 8
+    - 9
   skipped_steps: []
   inserted_steps: []
 
 state:
-  overall: warning
+  overall: pass
   blocking_issues: []
   warnings: []
 
@@ -180,9 +181,9 @@ release_readiness:
   distribution_build_passed: true
 
 next_step:
-  recommended: 9
-  title: Slutlig release-readiness
-  reason: "CI, distributionsbuild, lokal release-readiness och GitHub Release använder nu samma GPT Byggaren 1.5.0-registry. Runtime-validering och exakt asset-set verifieras före publicering."
+  recommended: merge
+  title: Merge migrations-PR
+  reason: "GPT Byggaren 1.5.0-migreringen är komplett 9/9. Fyra aktiva runtimes är verifierade, OpenAI Plugin är advisory only och build/release är registry-drivna."
 
 resume:
   supported: true
@@ -192,4 +193,4 @@ resume:
     - gpt-project.yaml
     - project-status.yaml
     - instructions/chat-runtime.md
-  human_readable_status: "Steg 1–8 av 9 i GPT Byggaren 1.5.0-migreringen är klara."
+  human_readable_status: "GPT Byggaren 1.5.0-migreringen är klar 9/9. PR kan mergas när slutlig CI är grön."
