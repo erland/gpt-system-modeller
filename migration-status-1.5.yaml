@@ -16,14 +16,15 @@ migration:
   total_steps: 9
 
 progress:
-  current_step: 6
-  last_completed_step: 5
+  current_step: 7
+  last_completed_step: 6
   completed_steps:
     - 1
     - 2
     - 3
     - 4
     - 5
+    - 6
   skipped_steps: []
   inserted_steps: []
 
@@ -121,10 +122,32 @@ custom_gpt_verification:
   ci_passed: true
   distribution_build_passed: true
 
+claude_project_verification:
+  validation: scripts/validate_claude_gpt_builder_1_5.py
+  regression: tests/test_gpt_builder_1_5_claude_opencode.py
+  status: passed
+  compatibility: reduced
+  workspace_state: reduced
+  local_tools: unavailable
+  canonical_mutation_requires_reliable_validation: true
+  executable_repo_scripts_packaged: false
+
+opencode_verification:
+  validation: scripts/validate_opencode_gpt_builder_1_5.py
+  regression: tests/test_gpt_builder_1_5_claude_opencode.py
+  status: passed
+  compatibility: equivalent
+  workspace_state: ready
+  explicit_project_root: true
+  typed_custom_tools: true
+  system_model_mutation_approval: ask
+  shell_permission: ask
+  edit_permission: ask
+
 next_step:
-  recommended: 6
-  title: Verifiera Claude Project och OpenCode
-  reason: "Custom GPT passerar nu GPT Byggaren 1.5.0-verifieringen för instruction budget, Knowledge-spårbarhet, reducerad workspace/tool parity och explicit no-false-PASS."
+  recommended: 7
+  title: OpenAI Plugin compatibility assessment
+  reason: "Claude Project och OpenCode passerar nu separata GPT Byggaren 1.5.0-gates. Claude behåller reduced tool/workspace parity och mutation stoppas utan tillförlitlig validering. OpenCode behåller equivalent parity med typed tools, explicit projectRoot och approval på mutation."
 
 resume:
   supported: true
@@ -134,4 +157,4 @@ resume:
     - gpt-project.yaml
     - project-status.yaml
     - instructions/chat-runtime.md
-  human_readable_status: "Steg 1–5 av 9 i GPT Byggaren 1.5.0-migreringen är klara."
+  human_readable_status: "Steg 1–6 av 9 i GPT Byggaren 1.5.0-migreringen är klara."
