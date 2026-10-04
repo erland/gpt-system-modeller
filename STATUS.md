@@ -6,10 +6,10 @@
 - Plan B progress: B12 / B12 — Plan B complete
 - Plan C progress: C7 / C7 — Plan C complete
 - Current version: 0.1.0-dev.57
-- Milestone: **Plan C complete: four-runtime architecture and unified delivery verified**
+- Milestone: **Plan C complete: five-runtime architecture and unified delivery verified**
 - GPT Builder 1.5 migration: 9 / 9 complete
-- Active runtimes: Chat, Custom GPT, Claude Project, OpenCode
-- OpenAI Plugin: not_active / reduced / advisory_only
+- Active runtimes: Chat, Custom GPT, Claude Project, OpenCode, OpenAI Plugin
+- OpenAI Plugin: equivalent_runtime_dependent
 - Next: merge PR #8 after final CI is green; release remains a separate GitHub Release action.
 
 ## GPT Byggaren 1.5.0
@@ -22,7 +22,7 @@ Slutlig runtime-status:
 - Custom GPT: equivalent_with_platform_constraints med explicit no-false-PASS.
 - Claude Project: reduced.
 - OpenCode: equivalent med typed tools, explicit `projectRoot` och approval på mutation.
-- OpenAI Plugin: not_active / reduced / advisory_only.
+- OpenAI Plugin: equivalent_runtime_dependent med required filesystem/persistent-state/Python execution för canonical mutation och verifiering.
 
 Build, runtime-verifiering, release-readiness och GitHub Release-publicering härleds från `runtime-distribution-registry.yaml`. Exakt artifact-set valideras före upload och wildcard runtime selection är avstängd.
 

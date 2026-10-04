@@ -62,11 +62,13 @@ def main():
         "custom_gpt":{"behavior":"ready","artifacts":"ready"},
         "claude":{"behavior":"ready","artifacts":"ready"},
         "opencode":{"behavior":"ready","capabilities":"ready","artifacts":"ready","workspace_state":"ready"},
+        "openai_plugin":{"behavior":"ready","artifacts":"ready"},
     }
     for rid,expected in expected_parity.items():
         runtime=project["runtimes"].get(rid,{})
-        if runtime.get("enabled") is not True or runtime.get("compatibility")!="ready":
-            errors.append(f"runtime not enabled/ready: {rid}")
+        expected_compat = "equivalent_runtime_dependent" if rid == "openai_plugin" else "ready"
+        if runtime.get("enabled") is not True or runtime.get("compatibility")!=expected_compat:
+            errors.append(f"runtime not enabled with expected compatibility: {rid}")
         parity=runtime.get("parity",{})
         for dim,val in expected.items():
             if parity.get(dim)!=val:

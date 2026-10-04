@@ -8,7 +8,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT / "gpt-project.yaml"
 DIMENSIONS = ["behavior", "capabilities", "artifacts", "workspace_state", "tools"]
-RUNTIMES = ["chat", "custom_gpt", "claude", "opencode"]
+RUNTIMES = ["chat", "custom_gpt", "claude", "opencode", "openai_plugin"]
 
 
 def load_project():

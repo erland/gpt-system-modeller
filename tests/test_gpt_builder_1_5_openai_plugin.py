@@ -12,8 +12,11 @@ def fail(message):
 
 def main():
     registry=yaml.safe_load((ROOT/"runtime-distribution-registry.yaml").read_text(encoding="utf-8"))
-    if "openai_plugin" in registry["active_targets"]:
-        return fail("OpenAI Plugin must not be active")
+    if "openai_plugin" not in registry["active_targets"]:
+        return fail("OpenAI Plugin must be active")
+    plugin=registry["targets"].get("openai_plugin",{})
+    if plugin.get("compatibility")!="equivalent_runtime_dependent":
+        return fail("OpenAI Plugin compatibility mismatch")
     result=subprocess.run(
         [sys.executable,str(ROOT/"scripts/validate_openai_plugin_1_5_assessment.py")],
         cwd=ROOT,text=True,capture_output=True,
@@ -21,7 +24,7 @@ def main():
     if result.returncode!=0:
         print(result.stdout); print(result.stderr)
         return fail("OpenAI Plugin 1.5 assessment validation failed")
-    print("GPT Builder 1.5 OpenAI Plugin assessment regression passed")
+    print("GPT Builder 1.5 OpenAI Plugin active-runtime assessment regression passed")
     return 0
 
 if __name__=="__main__":

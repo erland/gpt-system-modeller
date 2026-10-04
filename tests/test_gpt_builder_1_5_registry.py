@@ -14,7 +14,7 @@ def main():
     registry=yaml.safe_load((ROOT/"runtime-distribution-registry.yaml").read_text(encoding="utf-8"))
     project=yaml.safe_load((ROOT/"gpt-project.yaml").read_text(encoding="utf-8"))
 
-    if registry["active_targets"]!=["chat","custom_gpt","claude","opencode"]:
+    if registry["active_targets"]!=["chat","custom_gpt","claude","opencode","openai_plugin"]:
         return fail("unexpected active runtime set")
     if registry["active_targets"]!=project["build"]["active_targets"]:
         return fail("registry and project active targets differ")

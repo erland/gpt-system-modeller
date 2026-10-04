@@ -30,7 +30,7 @@ def main():
     project = yaml.safe_load((ROOT / "gpt-project.yaml").read_text(encoding="utf-8"))
     status = yaml.safe_load((ROOT / "project-status.yaml").read_text(encoding="utf-8"))
 
-    if set(project["runtimes"]) != {"chat", "custom_gpt", "claude", "opencode"}:
+    if set(project["runtimes"]) != {"chat", "custom_gpt", "claude", "opencode", "openai_plugin"}:
         return fail("runtime registry incomplete")
     step = status["progress"]["completed_step"]
     match = re.fullmatch(r"C([1-7])", step or "")

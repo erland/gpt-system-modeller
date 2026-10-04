@@ -56,6 +56,7 @@ contracts:
       - custom_gpt
       - claude
       - opencode
+      - openai_plugin
 
   workspace:
     source_of_truth: canonical_yaml
@@ -167,6 +168,19 @@ runtimes:
       artifacts: ready
       workspace_state: ready
       tools: declared_custom_tools
+  openai_plugin:
+    enabled: true
+    compatibility: equivalent_runtime_dependent
+    adapter: skills_first_plugin
+    build_target: openai_plugin
+    artifact_pattern: system-modeller-plugin-v{version}.zip
+    local_tools: packaged_python_scripts
+    parity:
+      behavior: ready
+      capabilities: runtime_dependent
+      artifacts: ready
+      workspace_state: runtime_dependent
+      tools: runtime_dependent
 
 build:
   active_targets:
@@ -174,6 +188,7 @@ build:
     - custom_gpt
     - claude
     - opencode
+    - openai_plugin
   planned_targets: []
   parity_dimensions:
     - behavior

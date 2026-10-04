@@ -1,7 +1,7 @@
 # GPT Byggaren 1.5.0 – migreringsplan
 
 Projekt: **System Modeller**  
-Utgångsläge: utvecklingsversion **0.1.0-dev.57**, Plan C komplett, fyra aktiva runtimes och unified build/release.
+Utgångsläge: utvecklingsversion **0.1.0-dev.57**, Plan C komplett, fem aktiva runtimes och unified build/release.
 
 ## Mål
 
@@ -16,7 +16,7 @@ Följande ska bevaras:
 - Stable IDs, provenance, evidence, origin och unresolved uncertainty.
 - Runtimeflödet `INSPECT → VALIDATE → PLAN → CHANGE → VALIDATE → DERIVE → PACKAGE`.
 - Validering före och efter mutation.
-- Fyra aktiva runtimes: Chat, Custom GPT, Claude Project och OpenCode.
+- Fem aktiva runtimes: Chat, Custom GPT, Claude Project, OpenCode och OpenAI Plugin.
 - Unified build via `scripts/ci_build.py`.
 - Release-readiness via `scripts/release_check.py`.
 - Plan C-status och tidigare produkt-/utvecklingshistorik.
@@ -29,8 +29,9 @@ Aktiva runtimes:
 2. Custom GPT
 3. Claude Project
 4. OpenCode
+5. OpenAI Plugin
 
-OpenAI Plugin ska bedömas explicit i 1.5.0 men inte aktiveras som full peer runtime om kärnkraven för projektfilåtkomst, mutation, validering, workspace och paketering inte kan uppfyllas.
+OpenAI Plugin är aktiv som `equivalent_runtime_dependent`. Full canonical körning kräver projektfilåtkomst, persistent workspace/state och kompatibel Python code execution för validation before/after, mutation, deterministic derive och packaging.
 
 ## Steg
 
@@ -53,7 +54,7 @@ Verifiera compiled instruction, Knowledge, plattformsbegränsningar och no-false
 Behåll Claude som reduced och OpenCode som equivalent med typed custom tools och mutation approval.
 
 ### 7. OpenAI Plugin compatibility assessment
-Dokumentera och CI-lås not_active/reduced/advisory om full parity inte kan uppfyllas.
+Aktivera skills-first Plugin, paketera explicit runtime-script closure och CI-lås host-dependent parity, mutation approval och no-false-PASS.
 
 ### 8. Generalisera CI/release
 Härled build/release-assets deklarativt och kör samma 1.5-gates i CI och release.
@@ -72,8 +73,8 @@ Slutlig runtime-status:
 - Custom GPT — equivalent_with_platform_constraints
 - Claude Project — reduced
 - OpenCode — equivalent
-- OpenAI Plugin — not_active / reduced / advisory_only
+- OpenAI Plugin — equivalent_runtime_dependent
 
-CI, distributionsbuild, lokal release-readiness och GitHub Release använder samma GPT Byggaren 1.5.0-registry. Release-assets härleds exakt från `runtime-distribution-registry.yaml`, och full plugin-parity får inte påstås utan verifierad projektfilåtkomst, runtime-tool execution, persistent workspace/state, reliable validation/mutation och komplett projektpaketering.
+CI, distributionsbuild, lokal release-readiness och GitHub Release använder samma GPT Byggaren 1.5.0-registry. Release-assets härleds exakt från `runtime-distribution-registry.yaml`, och Plugin-parity är runtime-dependent och full canonical körning får endast påstås när projektfilåtkomst, Python runtime-tool execution, persistent workspace/state, reliable validation/mutation och komplett projektpaketering faktiskt finns.
 
 Plan C är fortsatt komplett och utvecklingsversionen är fortsatt **0.1.0-dev.57**.

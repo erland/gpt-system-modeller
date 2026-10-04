@@ -8,7 +8,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT / "gpt-project.yaml"
 STATUS = ROOT / "project-status.yaml"
-RUNTIMES = {"chat", "custom_gpt", "claude", "opencode"}
+RUNTIMES = {"chat", "custom_gpt", "claude", "opencode", "openai_plugin"}
 TOOL_MODES = {"read_only", "mutating", "derived_output"}
 PARITY_DIMENSIONS = ["behavior", "capabilities", "artifacts", "workspace_state", "tools"]
 
@@ -80,7 +80,7 @@ def main() -> int:
 
     runtimes = project.get("runtimes") or {}
     if set(runtimes) != RUNTIMES:
-        return fail("runtime registry must contain chat, custom_gpt, claude and opencode")
+        return fail("runtime registry must contain chat, custom_gpt, claude, opencode and openai_plugin")
     active = set(build.get("active_targets") or [])
     for runtime_id, runtime in runtimes.items():
         enabled = runtime.get("enabled") is True
