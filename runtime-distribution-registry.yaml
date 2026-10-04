@@ -15,13 +15,9 @@ active_targets:
   - custom_gpt
   - claude
   - opencode
+  - openai_plugin
 
-inactive_targets:
-  openai_plugin:
-    compatibility: reduced
-    status: not_active
-    advisory_only: true
-    reason: "Full peer-runtime parity is not assumed without project file access, reliable validation, persistent workspace, mutation and packaging capabilities."
+inactive_targets: {}
 
 project_artifact:
   id: project
@@ -52,6 +48,12 @@ targets:
     artifact_pattern: system-modeller-opencode-v{version}.zip
     compatibility: equivalent
     source_runtime: opencode
+  openai_plugin:
+    status: active
+    adapter_id: openai_plugin
+    artifact_pattern: system-modeller-plugin-v{version}.zip
+    compatibility: equivalent_runtime_dependent
+    source_runtime: openai_plugin
 
 derived_artifacts:
   runtime_parity: runtime-parity.yaml
