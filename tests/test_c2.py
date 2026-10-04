@@ -30,7 +30,7 @@ def main():
     dims = project["build"]["parity_dimensions"]
     if dims != ["behavior", "capabilities", "artifacts", "workspace_state", "tools"]:
         return fail("unexpected parity dimensions")
-    for runtime_id in ("chat", "custom_gpt", "claude", "opencode"):
+    for runtime_id in ("chat", "custom_gpt", "claude", "opencode", "openai_plugin"):
         parity = project["runtimes"][runtime_id].get("parity") or {}
         if set(parity) != set(dims):
             return fail(f"{runtime_id} parity baseline incomplete")
@@ -42,7 +42,7 @@ def main():
     if result.returncode != 0:
         return fail(result.stdout + result.stderr)
     rendered = yaml.safe_load(result.stdout)
-    if list(rendered["runtimes"]) != ["chat", "custom_gpt", "claude", "opencode"]:
+    if list(rendered["runtimes"]) != ["chat", "custom_gpt", "claude", "opencode", "openai_plugin"]:
         return fail("parity render order changed")
     status = yaml.safe_load((ROOT / "project-status.yaml").read_text(encoding="utf-8"))
     step = status["progress"]["completed_step"]
