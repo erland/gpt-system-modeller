@@ -35,9 +35,9 @@ def main():
         if target.get("artifact_pattern")!=runtime.get("artifact_pattern"):
             errors.append(f"{rid}: artifact pattern mismatch")
 
-    plugin=registry.get("inactive_targets",{}).get("openai_plugin",{})
-    if plugin.get("status")!="not_active" or plugin.get("compatibility")!="reduced":
-        errors.append("OpenAI Plugin baseline must remain not_active/reduced")
+    plugin=registry.get("targets",{}).get("openai_plugin",{})
+    if plugin.get("status")!="active" or plugin.get("compatibility")!="equivalent_runtime_dependent":
+        errors.append("OpenAI Plugin must be active/equivalent_runtime_dependent")
 
     release=registry.get("release",{})
     if release.get("runtime_assets_from")!="active_targets":
@@ -56,7 +56,7 @@ def main():
         return 1
 
     print("OK: GPT Builder 1.5 runtime distribution registry")
-    print("Four active runtimes and artifact patterns are synchronized with gpt-project.yaml")
+    print("Five active runtimes and artifact patterns are synchronized with gpt-project.yaml")
     return 0
 
 if __name__=="__main__":
