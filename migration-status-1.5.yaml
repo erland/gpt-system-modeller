@@ -53,10 +53,11 @@ runtime_baseline:
     - custom_gpt
     - claude
     - opencode
+    - openai_plugin
   openai_plugin:
-    status: not_active
-    intended_target: reduced
-    advisory_only: true
+    status: active
+    intended_target: equivalent_runtime_dependent
+    advisory_only: false
 
 gpt_builder_1_5:
   normalized_contract: gpt-builder-1.5-contract.yaml
@@ -91,11 +92,12 @@ registry:
     - custom_gpt
     - claude
     - opencode
+    - openai_plugin
   ci_build_uses_registry_artifact_patterns: true
   openai_plugin:
-    status: not_active
-    compatibility: reduced
-    advisory_only: true
+    status: active
+    compatibility: equivalent_runtime_dependent
+    advisory_only: false
 
 chat_zip_verification:
   validation: scripts/validate_chat_gpt_builder_1_5.py
@@ -150,10 +152,10 @@ openai_plugin_assessment:
   document: docs/openai-plugin-1.5-assessment.md
   validation: scripts/validate_openai_plugin_1_5_assessment.py
   regression: tests/test_gpt_builder_1_5_openai_plugin.py
-  status: not_active
-  compatibility: reduced
-  advisory_only: true
-  active_distribution: false
+  status: active
+  compatibility: equivalent_runtime_dependent
+  advisory_only: false
+  active_distribution: true
   full_parity_requires:
     - project_file_access
     - reliable_validation_before_after
@@ -183,7 +185,7 @@ release_readiness:
 next_step:
   recommended: merge
   title: Merge migrations-PR
-  reason: "GPT Byggaren 1.5.0-migreringen är komplett 9/9. Fyra aktiva runtimes är verifierade, OpenAI Plugin är advisory only och build/release är registry-drivna."
+  reason: "GPT Byggaren 1.5.0-migreringen är komplett 9/9. Fem aktiva runtimes är verifierade, OpenAI Plugin är equivalent_runtime_dependent och build/release är registry-drivna."
 
 resume:
   supported: true
