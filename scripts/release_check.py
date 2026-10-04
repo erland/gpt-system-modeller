@@ -19,6 +19,7 @@ import ci_build
 import validate_claude
 import validate_custom_gpt
 import validate_opencode
+import validate_plugin
 import versioning
 
 FORBIDDEN_PARTS = {".git", "__pycache__", ".pytest_cache", ".venv", "venv", "distributions"}
@@ -93,6 +94,7 @@ def build_and_check(output_dir: Path, explicit_version: str | None = None) -> di
         errors.extend(f"{f['code']}: {f['message']}" for f in findings if f.get("level") == "ERROR")
         errors.extend(f"CLAUDE: {e}" for e in validate_claude.validate(first / names["claude"]))
         errors.extend(f"OPENCODE: {e}" for e in validate_opencode.validate(first / names["opencode"]))
+        errors.extend(f"PLUGIN: {e}" for e in validate_plugin.validate(first / names["openai_plugin"]))
 
         for typ in ["project"] + list(registry["active_targets"]):
             path = first / names[typ]
