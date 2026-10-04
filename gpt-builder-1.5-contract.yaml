@@ -61,14 +61,16 @@ runtime_policy:
     - custom_gpt
     - claude
     - opencode
+    - openai_plugin
   compatibility:
     chat: equivalent_runtime_dependent
     custom_gpt: equivalent_with_platform_constraints
     claude: reduced
     opencode: equivalent
+    openai_plugin: equivalent_runtime_dependent
   openai_plugin:
-    status: not_active
-    target: reduced
+    status: active
+    target: equivalent_runtime_dependent
     assessment_required: true
 
 preservation:
