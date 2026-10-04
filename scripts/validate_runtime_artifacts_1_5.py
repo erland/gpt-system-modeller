@@ -13,6 +13,7 @@ VALIDATORS={
     "custom_gpt":"validate_custom_gpt_builder_1_5.py",
     "claude":"validate_claude_gpt_builder_1_5.py",
     "opencode":"validate_opencode_gpt_builder_1_5.py",
+    "openai_plugin":"validate_plugin.py",
 }
 
 def main():
