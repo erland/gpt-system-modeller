@@ -19,12 +19,13 @@ def main():
     project = yaml.safe_load((ROOT / "gpt-project.yaml").read_text(encoding="utf-8"))
     status = yaml.safe_load((ROOT / "project-status.yaml").read_text(encoding="utf-8"))
 
-    if project["build"]["active_targets"] != ["chat", "custom_gpt", "claude", "opencode"]:
-        return fail("all four runtimes must remain active")
-    for runtime_id in ("chat", "custom_gpt", "claude", "opencode"):
+    if project["build"]["active_targets"] != ["chat", "custom_gpt", "claude", "opencode", "openai_plugin"]:
+        return fail("all five runtimes must remain active")
+    for runtime_id in ("chat", "custom_gpt", "claude", "opencode", "openai_plugin"):
         runtime = project["runtimes"][runtime_id]
-        if not runtime.get("enabled") or runtime.get("compatibility") != "ready":
-            return fail(f"{runtime_id} is not enabled/ready")
+        expected_compat = "equivalent_runtime_dependent" if runtime_id == "openai_plugin" else "ready"
+        if not runtime.get("enabled") or runtime.get("compatibility") != expected_compat:
+            return fail(f"{runtime_id} is not enabled with expected compatibility")
 
     if status["progress"]["completed_step"] != "C7" or status["progress"]["state"] != "complete":
         return fail("Plan C persistent status is not complete")
@@ -43,6 +44,7 @@ def main():
         "Custom GPT",
         "Claude Project",
         "OpenCode workspace",
+        "OpenAI Plugin",
         "scripts/ci_build.py",
         "runtime-parity.yaml",
         "SHA256SUMS.txt",
