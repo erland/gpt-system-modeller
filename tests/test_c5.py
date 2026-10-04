@@ -20,9 +20,9 @@ def digest(path):
 
 def main():
     project = yaml.safe_load((ROOT / "gpt-project.yaml").read_text(encoding="utf-8"))
-    expected_targets = ["chat", "custom_gpt", "claude", "opencode"]
+    expected_targets = ["chat", "custom_gpt", "claude", "opencode", "openai_plugin"]
     if project["build"]["active_targets"] != expected_targets:
-        return fail("all four runtimes must be active in C5")
+        return fail("all five runtimes must be active")
 
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     release = version.split("-dev.", 1)[0]
@@ -39,6 +39,7 @@ def main():
             "custom_gpt": f"system-modeller-custom-gpt-v{release}.zip",
             "claude": f"system-modeller-claude-v{release}.zip",
             "opencode": f"system-modeller-opencode-v{release}.zip",
+            "openai_plugin": f"system-modeller-plugin-v{release}.zip",
             "runtime_parity": "runtime-parity.yaml",
             "checksums": "SHA256SUMS.txt",
         }
@@ -60,14 +61,14 @@ def main():
 
         lines = (out / "SHA256SUMS.txt").read_text(encoding="utf-8").splitlines()
         sums = dict(line.split("  ", 1)[::-1] for line in lines if "  " in line)
-        for typ in ("project", "chat", "custom_gpt", "claude", "opencode", "runtime_parity"):
+        for typ in ("project", "chat", "custom_gpt", "claude", "opencode", "openai_plugin", "runtime_parity"):
             name = expected[typ]
             if sums.get(name) != digest(out / name):
                 return fail("SHA256SUMS mismatch " + name)
 
         parity = yaml.safe_load((out / "runtime-parity.yaml").read_text(encoding="utf-8"))
         if not all(parity["runtimes"][rid]["enabled"] for rid in expected_targets):
-            return fail("parity report must show all four runtimes enabled")
+            return fail("parity report must show all five runtimes enabled")
 
     status = yaml.safe_load((ROOT / "project-status.yaml").read_text(encoding="utf-8"))
     match = re.fullmatch(r"C([1-7])", status["progress"]["completed_step"] or "")
