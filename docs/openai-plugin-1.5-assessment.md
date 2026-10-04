@@ -2,61 +2,71 @@
 
 ## Beslut
 
-OpenAI Plugin är **inte en aktiv runtime-distribution** för System Modeller i GPT Byggaren 1.5.0.
+OpenAI Plugin är en **aktiv peer runtime** för System Modeller.
 
-Compatibility-målet är **reduced / advisory only**.
+Compatibility är `equivalent_runtime_dependent`.
 
-Pluginen får användas för rådgivande modellstöd när användaren tillhandahåller tillräckligt underlag, men får inte presenteras som full peer runtime för System Modellers kompletta projektflöde.
+Det betyder att canonical System Modeller-beteende kan bevaras när hosten tillhandahåller de capabilities som krävs för ett verkligt projektflöde. Pluginpaketet provisionerar inte själv workspace eller Python-runtime.
 
-## Kärnkrav för full parity
+## Kärnkrav
 
-Full System Modeller-runtime kräver i praktiken:
+Fullt System Modeller-flöde kräver:
 
-- åtkomst till konkreta projektfiler,
-- tillförlitlig validering före och efter mutation,
-- persistent workspace/state utanför chattminnet,
-- kontrollerad mutation av canonical YAML,
-- faktisk exekvering av runtimeverktyg,
-- paketering av komplett systemprojekt,
-- spårbarhet för stable IDs, provenance, evidence, origin och unresolved uncertainty,
-- no-false-PASS.
+1. faktisk projektfilåtkomst och filesystem read/write,
+2. persistent workspace/state utanför chattminnet,
+3. Python code execution,
+4. PyYAML och jsonschema,
+5. validation before/after canonical mutation,
+6. kontrollerad canonical mutation med approval,
+7. runtime-tool execution för deterministic derive/report/package,
+8. komplett projektpaketering,
+9. preservation av stable IDs, provenance, evidence, origin och unresolved uncertainty,
+10. no-false-PASS.
 
-En skills-first plugin får därför inte anta att dessa capabilities finns bara för att instruktioner eller referensfiler kan paketeras.
+Canonical YAML är alltid source of truth. Conversation history är aldrig auktoritativ projektstate.
 
-## Tillåtet advisory-beteende
+## Paketerade runtimeverktyg
 
-En framtida advisory-plugin får bland annat:
+Pluginen innehåller de sju canonical runtimeverktygen:
 
-- förklara System Modellers metamodel och modelleringsprinciper,
-- resonera om element, relationer, evidens och origin,
-- föreslå små change plans,
-- analysera användartillhandahållet modellunderlag,
-- föreslå vyer och rapportstruktur,
-- förklara valideringsfel som användaren tillhandahåller.
+- context.py
+- validate.py
+- model.py
+- view.py
+- report.py
+- package_project.py
+- analyze.py
 
-Den får inte, utan faktisk capability:
+Den innehåller också deras explicita support-closure:
 
-- hävda att scripts eller validering har körts,
-- hävda att canonical YAML har muterats,
-- behandla chattminne som auktoritativ projektstate,
-- hävda att ett komplett projekt-ZIP har skapats,
-- hävda att paketering eller teknisk validering har passerat,
-- omvandla unrun verification till PASS.
+- ids.py
+- report_profile.py
+- sequence_diagrams.py
+- view_split.py
+- diagram_complexity.py
 
-## Aktiveringskriterier
+samt runtime-relevant `schemas/` och `metamodel/`.
 
-OpenAI Plugin får inte flyttas till aktiv peer runtime förrän en konkret implementation kan demonstrera och CI-verifiera:
+Scripts är resurser och behöver inte MCP-wrapper enbart för att köras. Hostens kompatibla Python code execution kan användas direkt.
 
-1. projektfilåtkomst,
-2. tillförlitlig validation before/after,
-3. persistent workspace/state,
-4. kontrollerad canonical mutation,
-5. faktisk runtime-tool execution,
-6. komplett projektpaketering.
+## Mutation och approval
 
-Fram till dess gäller:
+`model.py` muterar canonical YAML och kräver approval. Pluginen ska bevara ordningen:
 
-- registry status: `not_active`
-- compatibility target: `reduced`
-- mode: `advisory_only`
-- aktiv distribution: nej
+`INSPECT → VALIDATE → PLAN → CHANGE → VALIDATE → DERIVE → PACKAGE`
+
+Mutation får inte genomföras om pre-validation inte kan köras tillförlitligt. Post-validation måste köras efter förändring.
+
+## Runtime-dependent parity
+
+`equivalent_runtime_dependent` är korrekt eftersom parity beror på hosten. Om required filesystem, persistent workspace/state eller Python execution saknas får Pluginen fortfarande ge rådgivande hjälp, men den får inte hävda att canonical System Modeller-flödet genomförts.
+
+Unrun verification får aldrig redovisas som PASS. Ett scriptresultat får aldrig simuleras.
+
+## Release
+
+Plugin-distributionen byggs och valideras som:
+
+`system-modeller-plugin-v<version>.zip`
+
+Den ingår i registry-driven unified build, parity, checksums, manifest och exact release asset set.
