@@ -8,12 +8,13 @@ Målet är **systemförståelse före maximal implementationsdetalj**. Den kanon
 
 Plan A (MVP), Plan B (runtime-robusthet och rapportering) och Plan C (multi-runtime distributions) är implementerade.
 
-System Modeller byggs från samma canonical projektkontrakt till fyra runtime-distributioner:
+System Modeller byggs från samma canonical projektkontrakt till fem runtime-distributioner:
 
 - Chat ZIP
 - Custom GPT
 - Claude Project
 - OpenCode workspace
+- OpenAI Plugin
 
 Aktuell utvecklingsversion finns i [`VERSION`](VERSION). Maskinläsbar projektstatus finns i [`project-status.yaml`](project-status.yaml) och runtime-/capability-kontraktet i [`gpt-project.yaml`](gpt-project.yaml).
 
@@ -21,7 +22,7 @@ Aktuell utvecklingsversion finns i [`VERSION`](VERSION). Maskinläsbar projektst
 
 Projektets multi-runtimearkitektur är migrerad till GPT Byggaren 1.5.0 med bibehållet canonical beteende och Plan C-status.
 
-Aktiva runtimes är fortsatt Chat ZIP, Custom GPT, Claude Project och OpenCode. OpenAI Plugin är explicit bedömd som `not_active / reduced / advisory_only` och räknas inte som peer runtime så länge projektfilåtkomst, faktisk tool execution, persistent workspace, validering/mutation och komplett paketering inte kan verifieras.
+System Modeller har fem aktiva peer runtimes: Chat ZIP, Custom GPT, Claude Project, OpenCode och OpenAI Plugin. Plugin är `equivalent_runtime_dependent`: full canonical mutation, validering, derivation och paketering kräver writable filesystem, persistent workspace/state och kompatibel Python code execution.
 
 Se [`docs/gpt-builder-1.5-runtime-migration.md`](docs/gpt-builder-1.5-runtime-migration.md), [`docs/openai-plugin-1.5-assessment.md`](docs/openai-plugin-1.5-assessment.md) och [`migration-status-1.5.yaml`](migration-status-1.5.yaml).
 
@@ -120,6 +121,7 @@ Den producerar:
 - `system-modeller-custom-gpt-vX.Y.Z.zip`
 - `system-modeller-claude-vX.Y.Z.zip`
 - `system-modeller-opencode-vX.Y.Z.zip`
+- `system-modeller-plugin-vX.Y.Z.zip`
 - `runtime-parity.yaml`
 - `SHA256SUMS.txt`
 - `build-manifest.yaml`
@@ -162,7 +164,7 @@ python3 scripts/package_project.py /path/to/system-project --output project.zip
 
 `.github/workflows/build-distributions.yml` verifierar repositoryt och bygger den unified leveransen på pull requests, `main` och manuella körningar.
 
-En publicerad GitHub Release använder release-taggen som auktoritativ versionskälla och bifogar projektpaketet, alla fyra runtime-ZIP:ar, parity report, checksummor och build manifest. Endast release-jobbet har write-behörighet.
+En publicerad GitHub Release använder release-taggen som auktoritativ versionskälla och bifogar projektpaketet, alla fem runtime-ZIP:ar, parity report, checksummor och build manifest. Endast release-jobbet har write-behörighet.
 
 Se [`docs/github-actions.md`](docs/github-actions.md), [`docs/unified-build.md`](docs/unified-build.md), [`docs/runtime-parity-baseline.md`](docs/runtime-parity-baseline.md), [`docs/claude-project-distribution.md`](docs/claude-project-distribution.md) och [`docs/opencode-distribution.md`](docs/opencode-distribution.md).
 
