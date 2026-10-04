@@ -17,10 +17,12 @@ import package_claude
 import package_custom_gpt
 import package_gpt_project
 import package_opencode
+import package_plugin
 import runtime_parity
 import validate_claude
 import validate_custom_gpt
 import validate_opencode
+import validate_plugin
 import versioning
 
 
@@ -54,18 +56,21 @@ def build(output_dir: Path, explicit_version: str | None = None) -> dict:
     custom = runtime_paths["custom_gpt"]
     claude = runtime_paths["claude"]
     opencode = runtime_paths["opencode"]
+    plugin = runtime_paths["openai_plugin"]
 
     package_gpt_project.build(project)
     package_chat.build(chat, info.distribution_version)
     package_custom_gpt.build(custom, distribution_version=info.distribution_version)
     package_claude.build(claude, distribution_version=info.distribution_version)
     package_opencode.build(opencode, distribution_version=info.distribution_version)
+    package_plugin.build(plugin, distribution_version=info.distribution_version)
 
     findings, custom_summary = validate_custom_gpt.validate(custom, chat, info.distribution_version)
     errors = [f for f in findings if f.get("level") == "ERROR"]
     claude_errors = validate_claude.validate(claude)
     opencode_errors = validate_opencode.validate(opencode)
-    if errors or claude_errors or opencode_errors:
+    plugin_errors = validate_plugin.validate(plugin)
+    if errors or claude_errors or opencode_errors or plugin_errors:
         for finding in findings:
             if finding.get("level") == "ERROR":
                 print(f"{finding['level']} {finding['code']}: {finding['message']}", file=sys.stderr)
@@ -73,8 +78,10 @@ def build(output_dir: Path, explicit_version: str | None = None) -> dict:
             print(f"ERROR CLAUDE: {message}", file=sys.stderr)
         for message in opencode_errors:
             print(f"ERROR OPENCODE: {message}", file=sys.stderr)
+        for message in plugin_errors:
+            print(f"ERROR PLUGIN: {message}", file=sys.stderr)
         raise RuntimeError(
-            f"Runtime validation failed: custom/chat={len(errors)} claude={len(claude_errors)} opencode={len(opencode_errors)}"
+            f"Runtime validation failed: custom/chat={len(errors)} claude={len(claude_errors)} opencode={len(opencode_errors)} plugin={len(plugin_errors)}"
         )
 
     parity_data = runtime_parity.baseline(runtime_parity.load_project())
@@ -120,13 +127,14 @@ def build(output_dir: Path, explicit_version: str | None = None) -> dict:
             "custom_gpt_chat": custom_summary,
             "claude": {"errors": 0},
             "opencode": {"errors": 0},
+            "openai_plugin": {"errors": 0},
         },
         "parity": parity_data,
     }
     manifest_path = output_dir / "build-manifest.yaml"
     manifest_path.write_text(yaml.safe_dump(manifest, sort_keys=False, allow_unicode=True), encoding="utf-8")
 
-    for path in (project, chat, custom, claude, opencode, parity_path, checksums, manifest_path):
+    for path in (project, chat, custom, claude, opencode, plugin, parity_path, checksums, manifest_path):
         print(path)
     return manifest
 
