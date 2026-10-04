@@ -12,38 +12,39 @@ def main():
     doc=(ROOT/"docs/openai-plugin-1.5-assessment.md").read_text(encoding="utf-8").casefold()
 
     plugin=normalized["runtime_policy"]["openai_plugin"]
-    if plugin.get("status")!="not_active":
-        errors.append("normalized plugin status must remain not_active")
-    if plugin.get("target")!="reduced":
-        errors.append("normalized plugin target must remain reduced")
+    if plugin.get("status")!="active":
+        errors.append("normalized plugin status must be active")
+    if plugin.get("target")!="equivalent_runtime_dependent":
+        errors.append("normalized plugin target must be equivalent_runtime_dependent")
     if plugin.get("assessment_required") is not True:
         errors.append("plugin assessment must remain required")
 
-    rplugin=registry.get("inactive_targets",{}).get("openai_plugin",{})
-    if rplugin.get("status")!="not_active":
-        errors.append("registry plugin status must remain not_active")
-    if rplugin.get("compatibility")!="reduced":
-        errors.append("registry plugin compatibility must remain reduced")
-    if rplugin.get("advisory_only") is not True:
-        errors.append("registry plugin must remain advisory_only")
+    rplugin=registry.get("targets",{}).get("openai_plugin",{})
+    if rplugin.get("status")!="active":
+        errors.append("registry plugin status must be active")
+    if rplugin.get("compatibility")!="equivalent_runtime_dependent":
+        errors.append("registry plugin compatibility must be equivalent_runtime_dependent")
 
-    if "openai_plugin" in registry.get("active_targets",[]):
-        errors.append("OpenAI Plugin must not be active")
-    if "openai_plugin" in registry.get("targets",{}):
-        errors.append("OpenAI Plugin must not have an active build target")
-    if "openai_plugin" in project["contracts"]["artifacts"]["runtime_distributions"]:
-        errors.append("OpenAI Plugin must not appear in runtime distributions")
+    if "openai_plugin" not in registry.get("active_targets",[]):
+        errors.append("OpenAI Plugin must be active")
+    if "openai_plugin" not in project["contracts"]["artifacts"]["runtime_distributions"]:
+        errors.append("OpenAI Plugin must appear in runtime distributions")
+    runtime=project.get("runtimes",{}).get("openai_plugin",{})
+    if runtime.get("enabled") is not True:
+        errors.append("OpenAI Plugin runtime must be enabled")
 
     markers=[
-        "reduced / advisory only",
+        "equivalent_runtime_dependent",
         "projektfilåtkomst",
         "validation before/after",
         "persistent workspace/state",
         "kontrollerad canonical mutation",
+        "python",
         "runtime-tool execution",
         "komplett projektpaketering",
         "unrun verification",
         "pass",
+        "approval",
     ]
     for marker in markers:
         if marker.casefold() not in doc:
@@ -54,8 +55,7 @@ def main():
         for e in errors: print("-",e)
         return 1
 
-    print("OK: OpenAI Plugin remains not_active/reduced/advisory_only")
-    print("No active distribution or full peer-runtime parity is claimed")
+    print("OK: OpenAI Plugin active/equivalent_runtime_dependent")
     return 0
 
 if __name__=="__main__":
