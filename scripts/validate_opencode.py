@@ -10,8 +10,6 @@ from zipfile import ZipFile
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-PREFIX = "system-modeller-opencode/"
-
 
 def digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
@@ -26,9 +24,9 @@ def read_distribution(path: Path) -> dict[str, bytes]:
         }
     with ZipFile(path) as zf:
         return {
-            name[len(PREFIX):]: zf.read(name)
+            name: zf.read(name)
             for name in zf.namelist()
-            if name.startswith(PREFIX) and not name.endswith("/")
+            if not name.endswith("/")
         }
 
 
