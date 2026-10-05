@@ -41,25 +41,27 @@ def main():
         if not chat.is_file() or not custom.is_file():
             return fail('release event did not control artifact filenames')
         with zipfile.ZipFile(chat) as zf:
-            if zf.read('system-modeller/VERSION').decode().strip() != '3.4.5':
+            if zf.read('VERSION').decode().strip() != '3.4.5':
                 return fail('release event did not control embedded Chat VERSION')
         with zipfile.ZipFile(custom) as zf:
-            manifest = yaml.safe_load(zf.read('system-modeller-custom-gpt/manifest.yaml'))
+            manifest = yaml.safe_load(zf.read('manifest.yaml'))
             if manifest.get('version') != '3.4.5':
                 return fail('release event did not control Custom GPT manifest')
         bm = yaml.safe_load((td/'build-manifest.yaml').read_text(encoding='utf-8'))
         if bm.get('version_source') != 'github_release' or bm.get('release_tag') != 'v3.4.5':
             return fail('build manifest does not record github_release source')
 
-    wf = (ROOT/'.github/workflows/build-distributions.yml').read_text(encoding='utf-8')
+    ci = (ROOT/'.github/workflows/ci.yml').read_text(encoding='utf-8')
+    release_wf = (ROOT/'.github/workflows/release.yml').read_text(encoding='utf-8')
+    wf = ci + '\n' + release_wf
     required = [
         'release:',
         'types: [published]',
         'pull_request:',
         'branches: [main]',
-        'name: Verify repository',
-        'name: Build and validate distributions',
-        'name: Build and publish release assets',
+        'name: CI',
+        'name: Release',
+        'Run regression suite',
         'contents: write',
         'github.event.release.tag_name',
         'gh release upload',
