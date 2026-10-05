@@ -68,7 +68,7 @@ jobs:
           echo "release=$RELEASE" >> "$GITHUB_OUTPUT"
 
       - name: Validate runtime ZIP root layout
-        run: python scripts/validate_runtime_zip_layout.py dist/*.zip
+        run: python scripts/validate_runtime_zip_layout.py dist/system-modeller-chat-*.zip dist/system-modeller-custom-gpt-*.zip dist/system-modeller-claude-*.zip dist/system-modeller-opencode-*.zip dist/system-modeller-plugin-*.zip
 
       - name: Validate GPT Builder runtime gates
         run: python scripts/validate_runtime_artifacts_1_5.py --version "${{ steps.version.outputs.release }}" --dir dist
