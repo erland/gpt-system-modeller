@@ -38,7 +38,7 @@ def main():
         with zipfile.ZipFile(custom) as zin, zipfile.ZipFile(bad,'w') as zout:
             for info in zin.infolist():
                 data=zin.read(info.filename)
-                if info.filename.endswith('/instructions.md'):
+                if info.filename == 'instructions.md' or info.filename.endswith('/instructions.md'):
                     data += b'\nTAMPERED\n'
                 zout.writestr(info,data)
         rc=subprocess.run(['python3',str(validator),'--custom',str(bad),'--chat',str(chat)],cwd=ROOT,stdout=subprocess.DEVNULL).returncode
@@ -49,7 +49,7 @@ def main():
             changed=False
             for info in zin.infolist():
                 data=zin.read(info.filename)
-                if not changed and '/metamodel/' in info.filename and info.filename.endswith('.yaml'):
+                if not changed and (info.filename.startswith('metamodel/') or '/metamodel/' in info.filename) and info.filename.endswith('.yaml'):
                     data += b'\n# tampered\n'; changed=True
                 zout.writestr(info,data)
         rc=subprocess.run(['python3',str(validator),'--custom',str(custom),'--chat',str(badchat)],cwd=ROOT,stdout=subprocess.DEVNULL).returncode
