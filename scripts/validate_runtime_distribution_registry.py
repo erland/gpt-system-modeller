@@ -46,7 +46,7 @@ def main():
         errors.append("wildcard runtime selection must be false")
 
     derived=registry.get("derived_artifacts",{})
-    expected={"runtime_parity":"runtime-parity.yaml","checksums":"SHA256SUMS.txt","manifest":"build-manifest.yaml"}
+    expected={"runtime_parity":"runtime-parity.yaml","checksums":"SHA256SUMS.txt","manifest":"build-manifest.yaml","delivery_manifest":"delivery-manifest.yaml"}
     if derived!=expected:
         errors.append("derived artifact registry mismatch")
 
