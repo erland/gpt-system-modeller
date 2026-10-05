@@ -13,19 +13,20 @@ def fail(msg): print('FAIL:',msg); return 1
 def digest(p): return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
 def main():
-    wf=ROOT/'.github/workflows/build-distributions.yml'
+    ci=ROOT/'.github/workflows/ci.yml'
+    release_wf=ROOT/'.github/workflows/release.yml'
     builder=ROOT/'scripts/ci_build.py'
     req=ROOT/'requirements-ci.txt'
     doc=ROOT/'docs/github-actions.md'
-    for p in [wf,builder,req,doc]:
+    for p in [ci,release_wf,builder,req,doc]:
         if not p.is_file(): return fail('missing A34 artifact '+str(p.relative_to(ROOT)))
-    raw=wf.read_text(encoding='utf-8')
-    for phrase in ['actions/checkout@v7','actions/setup-python@v7','actions/upload-artifact@v7','bash scripts/test.sh','scripts/ci_build.py','scripts/validate_custom_gpt.py','permissions:','contents: read','workflow_dispatch']:
-        if phrase not in raw: return fail('workflow missing '+phrase)
-    # A34 established read-only CI. A37 may grant write only to the isolated release job.
-    if 'contents: read' not in raw: return fail('workflow lost read-only default permissions')
-    if 'contents: write' in raw and 'name: Build and publish release assets' not in raw:
-        return fail('write permission is not isolated to a release publishing job')
+    raw=ci.read_text(encoding='utf-8')
+    release_raw=release_wf.read_text(encoding='utf-8')
+    for phrase in ['actions/checkout@v7','actions/setup-python@v7','actions/upload-artifact@v7','bash scripts/test.sh','scripts/ci_build.py','permissions:','contents: read','workflow_dispatch']:
+        if phrase not in raw: return fail('CI workflow missing '+phrase)
+    if 'contents: write' in raw: return fail('CI workflow must remain read-only')
+    if 'contents: write' not in release_raw or 'gh release upload' not in release_raw:
+        return fail('release write permission/upload behavior missing')
     for dep in ['PyYAML','jsonschema','referencing']:
         if dep not in req.read_text(encoding='utf-8'): return fail('CI requirements missing '+dep)
     version=(ROOT/'VERSION').read_text(encoding='utf-8').strip()
