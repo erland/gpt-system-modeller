@@ -32,9 +32,8 @@ def main():
         if zf.testzip():
             errors.append("Chat ZIP is corrupt")
         names=[n for n in zf.namelist() if not n.endswith("/")]
-        roots={n.split("/")[0] for n in names}
-        if roots!={"system-modeller"}:
-            errors.append(f"unexpected Chat ZIP root(s): {sorted(roots)}")
+        if any(n.startswith("system-modeller/") for n in names):
+            errors.append("Chat ZIP must expose runtime files directly at archive root")
 
         required=[
             "SYSTEM-MODELLER-CHAT.md",
