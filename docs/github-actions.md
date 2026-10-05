@@ -1,6 +1,6 @@
 # GitHub Actions – verifiering och releasepublicering
 
-Workflowen `.github/workflows/build-distributions.yml` separerar repository-verifiering, unified build-kontroll och faktisk GitHub Release-publicering.
+Workflowen `.github/workflows/ci.yml` och `.github/workflows/release.yml` separerar repository-verifiering, unified build-kontroll och faktisk GitHub Release-publicering.
 
 ## Triggers
 
