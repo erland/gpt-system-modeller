@@ -16,8 +16,6 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 import versioning
 SPEC = ROOT / "templates" / "custom-gpt-distribution.yaml"
-CUSTOM_ROOT = "system-modeller-custom-gpt/"
-CHAT_ROOT = "system-modeller/"
 MAX_INSTRUCTION_CHARS = 8000
 FORBIDDEN_PARTS = {"tests", "scripts", "distributions", "__pycache__", ".pytest_cache"}
 
@@ -26,16 +24,13 @@ def digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def read_zip_map(path: Path, root: str) -> dict[str, bytes]:
+def read_zip_map(path: Path) -> dict[str, bytes]:
     with ZipFile(path) as zf:
-        files = {}
-        for name in zf.namelist():
-            if name.endswith("/"):
-                continue
-            if not name.startswith(root):
-                raise ValueError(f"unexpected ZIP root entry: {name}")
-            files[name[len(root):]] = zf.read(name)
-    return files
+        return {
+            name: zf.read(name)
+            for name in zf.namelist()
+            if not name.endswith("/")
+        }
 
 
 def read_dir_map(path: Path) -> dict[str, bytes]:
@@ -45,10 +40,10 @@ def read_dir_map(path: Path) -> dict[str, bytes]:
     }
 
 
-def read_distribution(path: Path, root: str) -> dict[str, bytes]:
+def read_distribution(path: Path) -> dict[str, bytes]:
     if path.is_dir():
         return read_dir_map(path)
-    return read_zip_map(path, root)
+    return read_zip_map(path)
 
 
 def text(files: dict[str, bytes], rel: str) -> str:
@@ -79,7 +74,7 @@ def validate(custom: Path, chat: Path | None, expected_version: str | None = Non
         findings.append({"level": level, "code": code, "message": message})
 
     try:
-        cfiles = read_distribution(custom, CUSTOM_ROOT)
+        cfiles = read_distribution(custom)
     except Exception as exc:
         return [{"level": "ERROR", "code": "CUSTOM_READ", "message": str(exc)}], {}
 
@@ -148,7 +143,7 @@ def validate(custom: Path, chat: Path | None, expected_version: str | None = Non
     chat_version = None
     if chat is not None:
         try:
-            hfiles = read_distribution(chat, CHAT_ROOT)
+            hfiles = read_distribution(chat)
         except Exception as exc:
             add("ERROR", "CHAT_READ", str(exc))
             hfiles = {}
