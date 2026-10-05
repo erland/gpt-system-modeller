@@ -41,11 +41,11 @@ def main():
         custom=td/'system-modeller-custom-gpt-v2.3.4.zip'
         if not chat.is_file() or not custom.is_file(): return fail('tag did not control ZIP filenames')
         with zipfile.ZipFile(chat) as zf:
-            if zf.read('system-modeller/VERSION').decode().strip() != '2.3.4':
+            if zf.read('VERSION').decode().strip() != '2.3.4':
                 return fail('tag did not control embedded Chat VERSION')
         with zipfile.ZipFile(custom) as zf:
-            manifest=yaml.safe_load(zf.read('system-modeller-custom-gpt/manifest.yaml'))
-            inst=zf.read('system-modeller-custom-gpt/instructions.md').decode('utf-8')
+            manifest=yaml.safe_load(zf.read('manifest.yaml'))
+            inst=zf.read('instructions.md').decode('utf-8')
             if manifest.get('version') != '2.3.4': return fail('tag did not control Custom manifest')
             if 'Version: **2.3.4**' not in inst: return fail('tag did not control Custom instructions')
         bm=yaml.safe_load((td/'build-manifest.yaml').read_text(encoding='utf-8'))
@@ -58,7 +58,7 @@ def main():
     # A36 introduced tag-authoritative version resolution. A37 may evolve the
     # workflow trigger from tag push to release.published, so keep this
     # regression focused on the resolver/build behavior rather than old YAML.
-    wf=(ROOT/'.github/workflows/build-distributions.yml').read_text(encoding='utf-8')
+    wf=(ROOT/'.github/workflows/ci.yml').read_text(encoding='utf-8') + (ROOT/'.github/workflows/release.yml').read_text(encoding='utf-8')
     if 'versioning' not in (ROOT/'scripts/ci_build.py').read_text(encoding='utf-8'):
         return fail('CI builder no longer uses shared version resolver')
     if 'build' not in wf.lower():
