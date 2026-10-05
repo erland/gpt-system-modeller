@@ -94,6 +94,33 @@ def build(output_dir: Path, explicit_version: str | None = None) -> dict:
     ]
     checksums = write_checksums(output_dir, [item["path"] for item in artifacts] + [parity_path])
 
+    delivery_artifacts = artifacts + [
+        {"type": "runtime_parity", "path": parity_path},
+        {"type": "checksums", "path": checksums},
+    ]
+    delivery_manifest = {
+        "project": "system-modeller",
+        "project_name": "System Modeller",
+        "version": release,
+        "custom_gpt_enabled": "custom_gpt" in registry["active_targets"],
+        "runtime_strategy": "peer_runtimes",
+        "runtime_targets": list(registry["active_targets"]),
+        "artifacts": [
+            {
+                "type": item["type"],
+                "file": item["path"].name,
+                "sha256": sha256(item["path"]),
+                "size": item["path"].stat().st_size,
+            }
+            for item in delivery_artifacts
+        ],
+    }
+    delivery_path = output_dir / registry["derived_artifacts"]["delivery_manifest"]
+    delivery_path.write_text(
+        yaml.safe_dump(delivery_manifest, sort_keys=False, allow_unicode=True),
+        encoding="utf-8",
+    )
+
     manifest = {
         "schema_version": 2,
         "repository_version": version,
@@ -122,6 +149,12 @@ def build(output_dir: Path, explicit_version: str | None = None) -> dict:
                 "sha256": sha256(checksums),
                 "bytes": checksums.stat().st_size,
             },
+            {
+                "type": "delivery_manifest",
+                "file": delivery_path.name,
+                "sha256": sha256(delivery_path),
+                "bytes": delivery_path.stat().st_size,
+            },
         ],
         "validation": {
             "custom_gpt_chat": custom_summary,
@@ -134,7 +167,7 @@ def build(output_dir: Path, explicit_version: str | None = None) -> dict:
     manifest_path = output_dir / "build-manifest.yaml"
     manifest_path.write_text(yaml.safe_dump(manifest, sort_keys=False, allow_unicode=True), encoding="utf-8")
 
-    for path in (project, chat, custom, claude, opencode, plugin, parity_path, checksums, manifest_path):
+    for path in (project, chat, custom, claude, opencode, plugin, parity_path, checksums, delivery_path, manifest_path):
         print(path)
     return manifest
 

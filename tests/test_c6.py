@@ -12,18 +12,18 @@ def fail(message):
 
 
 def main():
-    workflow = (ROOT / ".github/workflows/build-distributions.yml").read_text(encoding="utf-8")
+    ci = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    release = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
+    workflow = ci + "\n" + release
     required = [
-        "name: Build unified project and runtime artifacts",
-        "scripts/validate_custom_gpt.py",
-        "scripts/validate_claude.py",
-        "scripts/validate_opencode.py",
-        "name: system-modeller-unified-build",
+        "scripts/ci_build.py",
+        "scripts/validate_runtime_artifacts_1_5.py",
         "scripts/validate_release_assets_1_5.py",
         "dist/*.zip",
         "dist/runtime-parity.yaml",
         "dist/SHA256SUMS.txt",
         "dist/build-manifest.yaml",
+        "dist/delivery-manifest.yaml",
         "gh release upload",
         "--clobber",
     ]
@@ -31,12 +31,14 @@ def main():
         if phrase not in workflow:
             return fail("workflow missing C6 behavior: " + phrase)
 
-    if workflow.count("contents: write") != 1:
-        return fail("write permission must remain isolated to release job")
-    if "permissions:\n  contents: read" not in workflow:
-        return fail("workflow default must remain read-only")
+    if "contents: write" in ci:
+        return fail("CI workflow must remain read-only")
+    if release.count("contents: write") != 1:
+        return fail("release write permission must be isolated to release workflow")
+    if "permissions:\n  contents: read" not in ci:
+        return fail("CI workflow default must remain read-only")
 
-    release_upload = workflow.split("gh release upload", 1)[1]
+    release_upload = release.split("gh release upload", 1)[1]
     if "assets[@]" not in release_upload:
         return fail("GitHub Release upload must use validated registry-derived asset list")
     if "system-modeller-chat-v*.zip" in release_upload or "system-modeller-opencode-v*.zip" in release_upload:

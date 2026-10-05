@@ -46,7 +46,7 @@ def normalize_distribution_version(value: str) -> str:
     value = value.strip()
     if not DISTRIBUTION_VERSION.fullmatch(value):
         raise ValueError(
-            "distribution version must match X.Y.Z or X.Y.Z-dev.N, "
+            "distribution version must match X.Y.Z, X.Y.Z-dev.N or 0.0.0-ci, "
             f"got {value!r}"
         )
     return value
@@ -84,6 +84,9 @@ def resolve(root: Path = ROOT, env: dict[str, str] | None = None, explicit: str 
 
     requested = explicit or env.get("SYSTEM_MODELLER_RELEASE_VERSION")
     if requested:
+        requested = requested.strip()
+        if requested == "0.0.0-ci":
+            return VersionInfo(repo, requested, requested, "explicit_ci", None)
         release = normalize_release(requested)
         return VersionInfo(repo, release, release, "explicit", f"v{release}")
 

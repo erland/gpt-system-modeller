@@ -20,8 +20,9 @@ def fail(message):
 def main():
     spec_path = ROOT / "templates" / "custom-gpt-distribution.yaml"
     doc_path = ROOT / "docs" / "plan-b-release-readiness.md"
-    workflow_path = ROOT / ".github" / "workflows" / "build-distributions.yml"
-    for path in (spec_path, doc_path, workflow_path, ROOT / "metamodel" / "report-profiles" / "catalog.yaml"):
+    ci_path = ROOT / ".github" / "workflows" / "ci.yml"
+    release_path = ROOT / ".github" / "workflows" / "release.yml"
+    for path in (spec_path, doc_path, ci_path, release_path, ROOT / "metamodel" / "report-profiles" / "catalog.yaml"):
         if not path.is_file():
             return fail(f"missing B12 artifact {path.relative_to(ROOT)}")
 
@@ -56,8 +57,8 @@ def main():
     if not required_caps.issubset(capabilities):
         return fail("Plan B capabilities missing from parity contract")
 
-    workflow = workflow_path.read_text(encoding="utf-8")
-    if "github.event_name == 'pull_request'" not in workflow:
+    workflow = ci_path.read_text(encoding="utf-8")
+    if "pull_request:" not in workflow or "scripts/ci_build.py" not in workflow or "validate_release_assets_1_5.py" not in workflow:
         return fail("PR workflow does not build and validate distributions")
 
     with tempfile.TemporaryDirectory() as td:
@@ -78,16 +79,16 @@ def main():
         with zipfile.ZipFile(chat) as zf:
             names = set(zf.namelist())
             required_chat = {
-                "system-modeller/scripts/context.py",
-                "system-modeller/scripts/report_profile.py",
-                "system-modeller/scripts/diagram_complexity.py",
-                "system-modeller/scripts/view_split.py",
-                "system-modeller/scripts/sequence_diagrams.py",
-                "system-modeller/scripts/pdf_contract.py",
-                "system-modeller/metamodel/report-profiles/catalog.yaml",
-                "system-modeller/metamodel/report-profiles/standard.yaml",
-                "system-modeller/docs/report-profile-groundwork.md",
-                "system-modeller/docs/plan-b-release-readiness.md",
+                "scripts/context.py",
+                "scripts/report_profile.py",
+                "scripts/diagram_complexity.py",
+                "scripts/view_split.py",
+                "scripts/sequence_diagrams.py",
+                "scripts/pdf_contract.py",
+                "metamodel/report-profiles/catalog.yaml",
+                "metamodel/report-profiles/standard.yaml",
+                "docs/report-profile-groundwork.md",
+                "docs/plan-b-release-readiness.md",
             }
             missing = required_chat - names
             if missing:
@@ -95,8 +96,8 @@ def main():
 
         with zipfile.ZipFile(custom) as zf:
             names = set(zf.namelist())
-            knowledge_name = "system-modeller-custom-gpt/knowledge/04-views-and-architecture-description.md"
-            manifest_name = "system-modeller-custom-gpt/manifest.yaml"
+            knowledge_name = "knowledge/04-views-and-architecture-description.md"
+            manifest_name = "manifest.yaml"
             if knowledge_name not in names or manifest_name not in names:
                 return fail("Custom GPT ZIP missing report Knowledge or manifest")
             text = zf.read(knowledge_name).decode("utf-8")

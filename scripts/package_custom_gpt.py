@@ -274,7 +274,7 @@ def deterministic_zip(source_dir: Path, out: Path) -> Path:
             if not p.is_file():
                 continue
             rel = p.relative_to(source_dir).as_posix()
-            info = ZipInfo(f"system-modeller-custom-gpt/{rel}", FIXED_DATE)
+            info = ZipInfo(rel, FIXED_DATE)
             info.compress_type = ZIP_DEFLATED
             info.external_attr = 0o644 << 16
             zf.writestr(info, p.read_bytes())

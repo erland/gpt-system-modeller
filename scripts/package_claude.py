@@ -65,7 +65,7 @@ def deterministic_zip(source:Path,out:Path):
         for p in sorted(source.rglob("*")):
             if not p.is_file(): continue
             rel=p.relative_to(source).as_posix()
-            info=ZipInfo(f"system-modeller-claude/{rel}",FIXED_DATE); info.compress_type=ZIP_DEFLATED; info.external_attr=0o644<<16
+            info=ZipInfo(rel,FIXED_DATE); info.compress_type=ZIP_DEFLATED; info.external_attr=0o644<<16
             zf.writestr(info,p.read_bytes())
     return out
 

@@ -59,6 +59,7 @@ derived_artifacts:
   runtime_parity: runtime-parity.yaml
   checksums: SHA256SUMS.txt
   manifest: build-manifest.yaml
+  delivery_manifest: delivery-manifest.yaml
 
 release:
   runtime_assets_from: active_targets
@@ -67,4 +68,5 @@ release:
     - runtime_parity
     - checksums
     - manifest
+    - delivery_manifest
   wildcard_runtime_selection: false

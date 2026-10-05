@@ -124,7 +124,7 @@ def build(out: Path, distribution_version: str | None = None):
     out.parent.mkdir(parents=True, exist_ok=True)
     with ZipFile(out, "w", compression=ZIP_DEFLATED, compresslevel=9) as zf:
         for p, rel in included_files():
-            info = ZipInfo(f"system-modeller/{rel.as_posix()}", FIXED_DATE)
+            info = ZipInfo(rel.as_posix(), FIXED_DATE)
             info.compress_type = ZIP_DEFLATED
             mode = 0o755 if rel.parts and rel.parts[0] == "scripts" and p.suffix in {".py", ".sh"} else 0o644
             data = (

@@ -125,6 +125,7 @@ Den producerar:
 - `runtime-parity.yaml`
 - `SHA256SUMS.txt`
 - `build-manifest.yaml`
+- `delivery-manifest.yaml`
 
 Full lokal release-readiness:
 
@@ -162,9 +163,9 @@ python3 scripts/package_project.py /path/to/system-project --output project.zip
 
 ## GitHub Actions och release
 
-`.github/workflows/build-distributions.yml` verifierar repositoryt och bygger den unified leveransen på pull requests, `main` och manuella körningar.
+`.github/workflows/ci.yml` verifierar repositoryt, kör project hygiene och bygger den unified leveransen på pull requests, `main` och manuella körningar. CI använder den reserverade distributionsversionen `0.0.0-ci`.
 
-En publicerad GitHub Release använder release-taggen som auktoritativ versionskälla och bifogar projektpaketet, alla fem runtime-ZIP:ar, parity report, checksummor och build manifest. Endast release-jobbet har write-behörighet.
+`.github/workflows/release.yml` triggas av en publicerad GitHub Release. Release-taggen är auktoritativ versionskälla och releasen bifogar projektpaketet, alla fem runtime-ZIP:ar, parity report, checksummor, build manifest och GPT delivery manifest. Endast release-jobbet har write-behörighet.
 
 Se [`docs/github-actions.md`](docs/github-actions.md), [`docs/unified-build.md`](docs/unified-build.md), [`docs/runtime-parity-baseline.md`](docs/runtime-parity-baseline.md), [`docs/claude-project-distribution.md`](docs/claude-project-distribution.md) och [`docs/opencode-distribution.md`](docs/opencode-distribution.md).
 

@@ -38,7 +38,7 @@ def test_chat_package_runtime_scripts_are_executable(tmp_path):
     with zipfile.ZipFile(out) as zf:
         script_infos = [
             i for i in zf.infolist()
-            if i.filename.startswith("system-modeller/scripts/")
+            if i.filename.startswith("scripts/")
             and Path(i.filename).suffix in {".py", ".sh"}
         ]
         assert script_infos

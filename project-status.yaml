@@ -9,14 +9,15 @@ progress:
   total_steps: 7
   state: complete
 version: 0.1.0-dev.57
-milestone: Plan C complete – four-runtime architecture, unified build, CI/release publication and final hygiene verified.
+milestone: Plan C complete – five-runtime architecture, unified build, CI/release publication and final hygiene verified.
 runtime_status:
   chat: ready
   custom_gpt: ready
   claude: ready
   opencode: ready
+  openai_plugin: equivalent_runtime_dependent
 notes:
-  - Chat, Custom GPT, Claude Project and OpenCode are generated from the same canonical project/runtime contract.
-  - Unified build produces project plus all four runtime ZIPs, runtime parity, checksums and build manifest.
+  - Chat, Custom GPT, Claude Project, OpenCode and OpenAI Plugin are generated from the same canonical project/runtime contract.
+  - Unified build produces the project package plus all five runtime ZIPs, runtime parity, checksums, build manifest and delivery manifest.
   - CI and GitHub Release publish the complete validated artifact set.
-  - Final C7 work is documentation/hygiene only and does not change canonical runtime behavior.
+  - OpenAI Plugin full parity depends on writable persistent workspace and compatible Python/code execution.

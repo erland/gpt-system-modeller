@@ -68,9 +68,9 @@ def main():
             '--expected-version', '4.5.6',
         ], cwd=ROOT, env=env, check=True)
 
-    wf=(ROOT/'.github/workflows/build-distributions.yml').read_text(encoding='utf-8')
-    if '--expected-version "${DIST_VERSION}"' not in wf:
-        return fail('workflow no longer tests resolved development distribution version')
+    wf=(ROOT/'.github/workflows/ci.yml').read_text(encoding='utf-8')
+    if '--release-version 0.0.0-ci' not in wf or '--version 0.0.0-ci' not in wf:
+        return fail('CI workflow no longer uses the reserved 0.0.0-ci distribution version')
 
     print('A38 tests passed')
     return 0

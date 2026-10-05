@@ -283,7 +283,7 @@ def deterministic_zip(source: Path, out: Path) -> Path:
             if not path.is_file():
                 continue
             rel = path.relative_to(source).as_posix()
-            info = ZipInfo(f"system-modeller-opencode/{rel}", FIXED_DATE)
+            info = ZipInfo(rel, FIXED_DATE)
             info.compress_type = ZIP_DEFLATED
             info.external_attr = 0o644 << 16
             zf.writestr(info, path.read_bytes())

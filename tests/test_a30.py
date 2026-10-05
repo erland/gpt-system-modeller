@@ -48,7 +48,7 @@ def main():
         c1=td/'chat1.zip'; c2=td/'chat2.zip'; package_chat.build(c1); package_chat.build(c2)
         if not same(c1,c2): return fail('Chat-ZIP is not deterministic')
         with zipfile.ZipFile(c1) as zf: names=set(zf.namelist())
-        for name in ['system-modeller/SYSTEM-MODELLER-CHAT.md','system-modeller/instructions/chat-runtime.md','system-modeller/instructions/source-analysis.md','system-modeller/scripts/validate.py','system-modeller/scripts/view.py','system-modeller/scripts/report.py','system-modeller/metamodel/README.md','system-modeller/schemas/project.schema.json','system-modeller/examples/reference-order-system/project/project.yaml']:
+        for name in ['SYSTEM-MODELLER-CHAT.md','instructions/chat-runtime.md','instructions/source-analysis.md','scripts/validate.py','scripts/view.py','scripts/report.py','metamodel/README.md','schemas/project.schema.json','examples/reference-order-system/project/project.yaml']:
             if name not in names: return fail('Chat-ZIP missing '+name)
     v=(ROOT/'VERSION').read_text().strip()
     if not re.fullmatch(r'0\.1\.0-dev\.(\d+)',v) or int(v.rsplit('.',1)[1])<30: return fail('version not A30 or later')

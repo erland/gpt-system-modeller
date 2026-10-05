@@ -50,8 +50,10 @@ def main():
             names=zf.namelist()
             if any('/tests/' in n or '/scripts/' in n or '__pycache__' in n for n in names):
                 return fail('excluded development content leaked into Custom GPT ZIP')
-            if not all(n.startswith('system-modeller-custom-gpt/') for n in names):
-                return fail('unexpected ZIP root')
+            if any(n.startswith('system-modeller-custom-gpt/') for n in names):
+                return fail('unexpected wrapped ZIP root')
+            if 'instructions.md' not in names or 'manifest.yaml' not in names:
+                return fail('runtime files must be present at ZIP root')
     text=doc.read_text(encoding='utf-8')
     for phrase in ['genererad projektion','manifest.yaml','byte-identiska','A33']:
         if phrase not in text: return fail('builder doc missing '+phrase)
