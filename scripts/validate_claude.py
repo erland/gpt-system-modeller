@@ -6,7 +6,6 @@ from zipfile import ZipFile
 import yaml
 
 ROOT=Path(__file__).resolve().parents[1]
-PREFIX="system-modeller-claude/"
 
 def digest(b): return hashlib.sha256(b).hexdigest()
 
@@ -14,7 +13,7 @@ def read(path):
     if path.is_dir():
         return {p.relative_to(path).as_posix():p.read_bytes() for p in path.rglob("*") if p.is_file()}
     with ZipFile(path) as zf:
-        return {n[len(PREFIX):]:zf.read(n) for n in zf.namelist() if n.startswith(PREFIX) and not n.endswith("/")}
+        return {n:zf.read(n) for n in zf.namelist() if not n.endswith("/")}
 
 def validate(path:Path):
     files=read(path); errors=[]
