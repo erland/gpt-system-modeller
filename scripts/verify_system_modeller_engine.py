@@ -51,7 +51,11 @@ def main() -> int:
         assert fallbacks["validate"] == "block", fallbacks
         assert fallbacks["model"] == "block", fallbacks
         for name in skills:
+            reference = name.rsplit("/", 1)[0] + "/references/runtime-contract.json"
+            assert reference in names, reference
+            assert z.read(reference) == z.read("runtime-contract.json"), reference
             body = z.read(name).decode("utf-8")
+            assert "references/runtime-contract.json" in body, name
             assert "Work-first execution and Engine ZIP fallback" in body, name
             assert "\n## Work-first execution and Engine ZIP fallback\n\n" in body, name
             assert "\\n## Work-first execution" not in body, name
