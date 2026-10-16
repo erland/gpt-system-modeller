@@ -46,7 +46,7 @@ def test_c6_release_permission_and_upload_guard():
     assert 'contents: write' not in ci
     assert 'contents: write' in release
     assert 'validate_distributions.py' in release
-    assert 'test "${#assets[@]}" -eq 6' in release
+    assert 'test "${#assets[@]}" -eq 7' in release
 
 def test_c7_release_only_after_regression_and_validation():
     release=(ROOT/'.github/workflows/release.yml').read_text()
