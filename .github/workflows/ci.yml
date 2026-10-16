@@ -98,7 +98,9 @@ jobs:
           find . -type d \( -name __pycache__ -o -name .pytest_cache \) -prune -exec rm -rf {} +
 
       - name: Lint canonical 1.6.25 project
-        run: python scripts/lint_gpt_project.py --project-root .
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -B scripts/lint_gpt_project.py --project-root .
 
       - name: Build canonical runtime distributions
         run: python scripts/build_distributions.py --project-root . --version 0.0.0-ci
