@@ -1,0 +1,12 @@
+id: no-knowledge-core-001
+title: Start without optional knowledge
+criticality: critical
+input:
+  scenario: Start the canonical modelling workflow with only runtime instruction available
+expected:
+  required:
+  - Inspect canonical YAML and use deterministic tools when available
+  forbidden:
+  - Require external Knowledge files before inspecting the model
+scoring:
+  pass_threshold: 1.0
