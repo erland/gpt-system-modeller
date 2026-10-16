@@ -56,7 +56,7 @@ jobs:
         env:
           PYTHONDONTWRITEBYTECODE: '1'
         run: python -B scripts/lint_gpt_project.py --project-root .
-      - name: Build five distributions
+      - name: Build five distributions and Engine
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
@@ -70,11 +70,17 @@ jobs:
         run: |
           VERSION="${RELEASE_TAG#v}"
           python scripts/verify_chat_main_parity.py --project-root . --version "$VERSION"
+      - name: Verify Engine archive
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          VERSION="${RELEASE_TAG#v}"
+          python -B scripts/verify_system_modeller_engine.py --version "$VERSION"
       - name: Attach release files
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
           mapfile -t assets < <(find dist -maxdepth 1 -type f -name '*.zip' -print | sort)
-          test "${#assets[@]}" -eq 6
+          test "${#assets[@]}" -eq 7
           gh release upload "$RELEASE_TAG" "${assets[@]}" --clobber
