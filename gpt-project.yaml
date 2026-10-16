@@ -693,7 +693,7 @@ engine:
   - schemas
   - metamodel
   - examples/reference-order-system/project
-  - requirements.txt
+  - requirements-ci.txt
   - VERSION
   required_files:
   - scripts/validate.py
