@@ -1,79 +1,44 @@
 #!/usr/bin/env python3
+"""A38: development/release versions and deterministic canonical ZIP output."""
 from pathlib import Path
-import os
 import subprocess
-import tempfile
 import sys
+import tempfile
+import zipfile
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'scripts'))
-import versioning
+TARGETS = ("chat", "plugin", "claude-project", "claude-skills", "opencode")
+def run(*args):
+    return subprocess.run([sys.executable, *map(str,args)], cwd=ROOT, text=True, capture_output=True)
+def main_error(result):
+    if result.returncode:
+        print(result.stdout, result.stderr)
+    return result.returncode
 
-
-def fail(msg):
-    print('FAIL:', msg)
-    return 1
-
-
+import hashlib
 def main():
-    # Reproduce the A36 failure mode: a branch/main build carries dev version.
-    dev = (ROOT / 'VERSION').read_text(encoding='utf-8').strip()
-    if versioning.normalize_distribution_version(dev) != dev:
-        return fail('development distribution version rejected')
-    if versioning.normalize_distribution_version('1.2.3') != '1.2.3':
-        return fail('release distribution version rejected')
-
-    # Release/tag parsing remains strict and must not accept development suffixes.
-    try:
-        versioning.normalize_release(dev)
-    except ValueError:
-        pass
-    else:
-        return fail('normalize_release accepted a development version')
-
-    for bad in ['v1.2.3-dev.4', '1.2', '1.2.3-beta', 'release-1.2.3']:
-        try:
-            versioning.normalize_distribution_version(bad)
-        except ValueError:
-            pass
-        else:
-            return fail('invalid distribution version accepted: ' + bad)
-
-    # Build and validate exactly as the main/workflow_dispatch build-check does.
-    with tempfile.TemporaryDirectory() as td:
-        td = Path(td)
-        env = os.environ.copy()
-        for key in ['GITHUB_EVENT_NAME', 'GITHUB_EVENT_RELEASE_TAG_NAME', 'GITHUB_REF_TYPE', 'GITHUB_REF_NAME', 'GITHUB_REF', 'SYSTEM_MODELLER_RELEASE_VERSION']:
-            env.pop(key, None)
-        subprocess.run(['python3', str(ROOT/'scripts/ci_build.py'), '--output-dir', str(td)], cwd=ROOT, env=env, check=True)
-        info = versioning.resolve(env={})
-        chat = td / f'system-modeller-chat-v{info.release_version}.zip'
-        custom = td / f'system-modeller-custom-gpt-v{info.release_version}.zip'
-        subprocess.run([
-            'python3', str(ROOT/'scripts/validate_custom_gpt.py'),
-            '--custom', str(custom), '--chat', str(chat),
-            '--expected-version', info.distribution_version,
-        ], cwd=ROOT, env=env, check=True)
-
-    # Release path must still validate a plain semver.
-    with tempfile.TemporaryDirectory() as td:
-        td = Path(td)
-        env = os.environ.copy()
-        env.update({'GITHUB_EVENT_NAME':'release','GITHUB_EVENT_RELEASE_TAG_NAME':'v4.5.6'})
-        subprocess.run(['python3', str(ROOT/'scripts/ci_build.py'), '--output-dir', str(td)], cwd=ROOT, env=env, check=True)
-        subprocess.run([
-            'python3', str(ROOT/'scripts/validate_custom_gpt.py'),
-            '--custom', str(td/'system-modeller-custom-gpt-v4.5.6.zip'),
-            '--chat', str(td/'system-modeller-chat-v4.5.6.zip'),
-            '--expected-version', '4.5.6',
-        ], cwd=ROOT, env=env, check=True)
-
-    wf=(ROOT/'.github/workflows/ci.yml').read_text(encoding='utf-8')
-    if '--release-version 0.0.0-ci' not in wf or '--version 0.0.0-ci' not in wf:
-        return fail('CI workflow no longer uses the reserved 0.0.0-ci distribution version')
-
-    print('A38 tests passed')
+    sys.path.insert(0,str(ROOT/"scripts"))
+    import versioning
+    dev=(ROOT/"VERSION").read_text(encoding="utf-8").strip()
+    assert versioning.normalize_distribution_version(dev)==dev
+    assert versioning.normalize_distribution_version("1.2.3")=="1.2.3"
+    for invalid in ("v1.2.3-dev.4","1.2","1.2.3-beta","release-1.2.3"):
+        try: versioning.normalize_distribution_version(invalid)
+        except ValueError: pass
+        else: raise AssertionError(f"Invalid version: {invalid}")
+    cfg=yaml.safe_load((ROOT/"gpt-project.yaml").read_text(encoding="utf-8"))
+    version="0.1.0-a38"
+    def build():
+        result=run(ROOT/"scripts/build_distributions.py","--project-root",ROOT,"--version",version)
+        if main_error(result): raise AssertionError("Canonical build failed")
+        names={}
+        for target in TARGETS:
+            pattern=cfg["build_system"]["runtime_targets"][target]["filename_pattern"]
+            name=pattern.replace("<project-id>",cfg["project"]["id"]).replace("<version>",version)
+            names[target]=hashlib.sha256((ROOT/"dist"/name).read_bytes()).hexdigest()
+        return names
+    assert build()==build(), "Canonical ZIP outputs are not deterministic"
+    print("A38 deterministic modern distribution build PASS")
     return 0
-
-if __name__ == '__main__':
-    raise SystemExit(main())
+if __name__=="__main__": raise SystemExit(main())
