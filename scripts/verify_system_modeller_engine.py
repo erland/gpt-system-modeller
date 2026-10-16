@@ -3,6 +3,7 @@
 from __future__ import annotations
 import argparse
 import json
+import hashlib
 import subprocess
 import sys
 import tempfile
@@ -24,6 +25,10 @@ def main() -> int:
         destination = Path(temporary)
         with zipfile.ZipFile(archive) as z:
             assert z.testzip() is None
+            manifest = json.loads(z.read("engine-package.json"))
+            assert manifest["version"] == version, manifest["version"]
+            assert z.read("VERSION").decode("utf-8") == version + "\n"
+            assert manifest["files"]["VERSION"] == hashlib.sha256(z.read("VERSION")).hexdigest()
             names = z.namelist()
             assert len(names) == len(set(names))
             assert all(not Path(name).is_absolute() and ".." not in Path(name).parts for name in names)
