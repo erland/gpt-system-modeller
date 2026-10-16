@@ -653,6 +653,8 @@ def build_claude_skills(root: Path, cfg: dict, build_root: Path, version: str) -
         skill_dir = out / "skills" / skill_id
         resources = resolve_plugin_skill_resources(root, cfg, skill)
         _copy_skill_resources(root, skill_dir, resources)
+        if cfg.get("project", {}).get("id") == "system-modeller":
+            _system_modeller_runtime_resources(root, skill_dir)
         if resources.get("scripts") and (root / "scripts" / "lib").exists():
             copy_tree_filtered(root / "scripts" / "lib", skill_dir / "scripts" / "lib")
         if cfg.get("project", {}).get("id") == "gpt-byggaren" and skill_id == "distribution-and-parity":
@@ -1139,6 +1141,19 @@ def _copy_skill_resources(root: Path, skill_dir: Path, resources: dict[str, list
                 copy_file(helper, skill_dir / "scripts" / "lib" / helper.name)
 
 
+def _system_modeller_runtime_resources(root: Path, skill_dir: Path) -> None:
+    """Keep runnable domain scripts beside the schemas/metamodel they resolve.
+
+    Restrict to System Modeller: other GPT Builder clients have different layouts.
+    Each independently installable Skill must carry its own self-contained data.
+    """
+    for directory in ("schemas", "metamodel"):
+        source = root / directory
+        if not source.is_dir():
+            raise SystemExit(f"Missing System Modeller domain directory: {directory}")
+        copy_tree_filtered(source, skill_dir / directory)
+
+
 def build_plugin(root: Path, cfg: dict, build_root: Path, version: str) -> Path:
     """Build a portable skills-first OpenAI Plugin v1 distribution."""
     out = build_root / "plugin"
@@ -1153,6 +1168,8 @@ def build_plugin(root: Path, cfg: dict, build_root: Path, version: str) -> Path:
         skill_dir = out / "skills" / skill_id
         resources = resolve_plugin_skill_resources(root, cfg, skill)
         _copy_skill_resources(root, skill_dir, resources)
+        if cfg.get("project", {}).get("id") == "system-modeller":
+            _system_modeller_runtime_resources(root, skill_dir)
         if resources.get("scripts") and (root / "scripts" / "lib").exists():
             copy_tree_filtered(root / "scripts" / "lib", skill_dir / "scripts" / "lib")
 
@@ -1477,6 +1494,10 @@ def build_opencode(root: Path, cfg: dict, build_root: Path, version: str) -> Pat
 
     built_skills = build_opencode_skills(root, cfg, out)
     tool_integrations = build_opencode_tools(root, cfg, out)
+    if cfg.get("project", {}).get("id") == "system-modeller":
+        for directory in ("schemas", "metamodel"):
+            copy_tree_filtered(root / directory, out / directory)
+
 
     contract_ref = runtime_cfg["layout"]["runtime_contract"]
     contract_path = out / contract_ref
