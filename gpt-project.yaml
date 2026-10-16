@@ -676,6 +676,7 @@ knowledge_architecture:
 
 engine:
   enabled: true
+  release_repository: erland/gpt-system-modeller
   selftest: scripts/selftest_system_modeller_engine.py
   resources:
   - scripts/validate.py
