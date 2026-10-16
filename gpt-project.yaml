@@ -210,33 +210,75 @@ skills:
   contract_version: 1
   schema: schemas/skill-contract.schema.json
   mode: inferred
+  resource_policy: explicit
   definitions:
   - id: sparbarhet-och-osakerhet
     name: sparbarhet-och-osakerhet
     description: Bevara ursprung, evidens och olösta antaganden.
     source: canonical/skills/sparbarhet-och-osakerhet/behavior.md
+    references: []
+    assets:
+    - metamodel
+    - schemas
+    scripts:
+    - scripts/validate.py
   - id: kallanalys
     name: kallanalys
     description: Analysera källkod och dokumentation till observationer och evidens.
     source: canonical/skills/kallanalys/behavior.md
     references:
     - instructions/source-analysis.md
+    assets:
+    - metamodel
+    - schemas
+    scripts:
+    - scripts/validate.py
+    - scripts/analyze.py
   - id: modellforstaelse
     name: modellforstaelse
     description: Beskriv ansvar, information och logisk systemstruktur.
     source: canonical/skills/modellforstaelse/behavior.md
+    references: []
+    assets:
+    - metamodel
+    - schemas
+    scripts:
+    - scripts/validate.py
+    - scripts/context.py
+    - scripts/model.py
   - id: arkitekturvyer
     name: arkitekturvyer
     description: Härled arkitekturvyer och diagram ur kanonisk YAML.
     source: canonical/skills/arkitekturvyer/behavior.md
+    references: []
+    assets:
+    - metamodel
+    - schemas
+    scripts:
+    - scripts/validate.py
+    - scripts/view.py
   - id: arkitekturrapport
     name: arkitekturrapport
     description: Generera begripliga spårbara arkitekturbeskrivningar.
     source: canonical/skills/arkitekturrapport/behavior.md
+    references: []
+    assets:
+    - metamodel
+    - schemas
+    scripts:
+    - scripts/validate.py
+    - scripts/report.py
   - id: projektleverans
     name: projektleverans
     description: Skilj systemprojekt från runtime-distributioner och leverera projekt.
     source: canonical/skills/projektleverans/behavior.md
+    references: []
+    assets:
+    - metamodel
+    - schemas
+    scripts:
+    - scripts/validate.py
+    - scripts/package_project.py
 capabilities:
   contract_version: 1
   schema: schemas/capability-contract.schema.json
