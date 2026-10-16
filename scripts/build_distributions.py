@@ -291,10 +291,15 @@ def build_chat(root: Path, cfg: dict, build_root: Path, version: str) -> Path:
         src = root / "scripts" / filename
         if src.is_file():
             copy_file(src, out / "scripts" / filename)
-    for filename in ("SYSTEM-MODELLER-CHAT.md",):
+    for filename in ("README.md", "SYSTEM-MODELLER-CHAT.md"):
         src = root / filename
         if src.is_file():
             copy_file(src, out / filename)
+
+    for filename in ("chat-runtime.md", "source-analysis.md"):
+        src = root / "instructions" / filename
+        if src.is_file():
+            copy_file(src, out / "instructions" / filename)
 
     declared_tool_scripts = copy_declared_tool_scripts(root, cfg, out / "scripts")
 
