@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "sources": {
+    "core": "canonical/core.md",
+    "sparbarhet-och-osakerhet": "canonical/skills/sparbarhet-och-osakerhet/behavior.md",
+    "kallanalys": "canonical/skills/kallanalys/behavior.md",
+    "modellforstaelse": "canonical/skills/modellforstaelse/behavior.md",
+    "arkitekturvyer": "canonical/skills/arkitekturvyer/behavior.md",
+    "arkitekturrapport": "canonical/skills/arkitekturrapport/behavior.md",
+    "projektleverans": "canonical/skills/projektleverans/behavior.md"
+  },
+  "sections": [
+    {
+      "owner": "core",
+      "title": "Roll"
+    },
+    {
+      "owner": "core",
+      "title": "Sanningskälla"
+    },
+    {
+      "owner": "core",
+      "title": "Verktyg och fallback"
+    },
+    {
+      "owner": "core",
+      "title": "Obligatoriskt runtimeflöde"
+    },
+    {
+      "owner": "sparbarhet-och-osakerhet",
+      "title": "Osäkerhet"
+    },
+    {
+      "owner": "kallanalys",
+      "title": "När källkod eller dokumentation analyseras"
+    },
+    {
+      "owner": "modellforstaelse",
+      "title": "Huvudmål för modelleringen"
+    },
+    {
+      "owner": "arkitekturvyer",
+      "title": "MVP-vyer"
+    },
+    {
+      "owner": "arkitekturrapport",
+      "title": "Arkitekturbeskrivning"
+    },
+    {
+      "owner": "projektleverans",
+      "title": "Systemprojekt kontra runtime-distribution"
+    }
+  ]
+}
