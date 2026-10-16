@@ -673,11 +673,15 @@ def build_claude_skills(root: Path, cfg: dict, build_root: Path, version: str) -
             if skill_id == "distribution-and-parity":
                 copy_file(root / "scripts" / "selftest_distribution_engine.py",
                           skill_dir / "scripts" / "selftest_distribution_engine.py")
+        if cfg.get("project", {}).get("id") == "system-modeller":
+            skill_markdown_routing = system_modeller_skill_tool_routing(cfg, skill, resources["scripts"])
+        else:
+            skill_markdown_routing = ""
         compiled = dict(skill)
         compiled.update(resources)
         skill_dir.mkdir(parents=True, exist_ok=True)
         (skill_dir / "SKILL.md").write_text(
-            compile_skill_markdown(
+            skill_markdown_routing + compile_skill_markdown(
                 compiled,
                 canonical_instruction=skill_instruction(root, cfg, canonical_skill_definitions(cfg), skill),
                 include_canonical_behavior=True,
@@ -901,6 +905,65 @@ def plugin_script_runtime_requirements(cfg: dict, scripts: list[str] | None = No
             "fallback": "block" if blocking else "degrade",
         }
     }
+
+
+def system_modeller_skill_tool_routing(cfg: dict, skill: dict, scripts: list[str]) -> str:
+    """Explicitly resolve legacy core tool references for independently installed Skills."""
+    if cfg.get("project", {}).get("id") != "system-modeller":
+        return ""
+    import re
+
+    declared = {
+        Path(tool["script"]).name
+        for tool in normalize_tool_contract(cfg).get("tools", [])
+        if tool.get("type") == "script" and tool.get("script")
+    }
+    selected = {Path(path).name for path in scripts}
+    if not selected <= declared:
+        raise ValueError(f"Unknown runtime script in {skill['id']}: {selected - declared}")
+    owners = {
+        Path(ref).name: other["id"]
+        for other in canonical_skill_definitions(cfg)
+        for ref in other.get("scripts", []) or []
+        if Path(ref).name not in selected and Path(ref).name != "validate.py"
+    }
+    lines = [
+        "## Installed tool availability (authoritative)",
+        "",
+        "The canonical core below describes the complete end-to-end workflow, not a list "
+        "of scripts installed with this individual Skill. Only the scripts listed in "
+        "this Skill's Scripts section are local executable resources. Never attempt "
+        "to execute a missing local script or claim it ran.",
+        "",
+        "Resolve canonical `scripts/*.py` examples as follows:",
+        "",
+    ]
+    for name in sorted(declared):
+        if name in selected:
+            lines.append(f"- `scripts/{name}`: available locally in this Skill.")
+        else:
+            other_owners = [
+                item["id"] for item in canonical_skill_definitions(cfg)
+                if any(Path(ref).name == name for ref in item.get("scripts", []) or [])
+            ]
+            message = (
+                "Use an installed Skill providing it (" + ", ".join(f"`{item}`" for item in other_owners)
+                + "), or another verified compatible runtime tool."
+                if other_owners else
+                "Use another verified compatible runtime tool if available."
+            )
+            lines.append(
+                f"- `scripts/{name}`: NOT installed in this Skill. {message} "
+                "Otherwise follow the canonical safe fallback rules; never bypass required validation."
+            )
+    lines.extend([
+        "",
+        "Before any canonical model mutation, reliable validation is mandatory. "
+        "If the required operation cannot be carried out with installed scripts, "
+        "an activated dependency or a verified equivalent, stop and explain the blocker.",
+        "",
+    ])
+    return "\n".join(lines)
 
 
 def compile_skill_markdown(
@@ -1173,10 +1236,14 @@ def build_plugin(root: Path, cfg: dict, build_root: Path, version: str) -> Path:
         if resources.get("scripts") and (root / "scripts" / "lib").exists():
             copy_tree_filtered(root / "scripts" / "lib", skill_dir / "scripts" / "lib")
 
+        if cfg.get("project", {}).get("id") == "system-modeller":
+            skill_markdown_routing = system_modeller_skill_tool_routing(cfg, skill, resources["scripts"])
+        else:
+            skill_markdown_routing = ""
         compiled_skill = dict(skill)
         compiled_skill.update(resources)
         skill_dir.mkdir(parents=True, exist_ok=True)
-        skill_markdown = compile_skill_markdown(
+        skill_markdown = skill_markdown_routing + compile_skill_markdown(
             compiled_skill,
             canonical_instruction=skill_instruction(root, cfg, canonical_skill_definitions(cfg), skill),
             include_canonical_behavior=True,
