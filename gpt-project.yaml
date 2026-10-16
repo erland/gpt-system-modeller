@@ -318,7 +318,7 @@ tools:
     deterministic: true
     mutates_workspace: false
     working_directory: workspace
-    runtime_fallback: manual
+    runtime_fallback: block
   - id: model
     type: script
     requirement: required
@@ -328,7 +328,7 @@ tools:
     mutates_workspace: true
     approval_required: true
     working_directory: workspace
-    runtime_fallback: manual
+    runtime_fallback: block
   - id: view
     type: script
     requirement: required
