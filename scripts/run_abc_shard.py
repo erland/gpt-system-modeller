@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Bounded A/B/C standalone regression; historical tests are explicit blockers."""
-import argparse, json, subprocess, sys, time
+import argparse, json, os, subprocess, sys, time
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 HISTORICAL={'test_a34','test_a39','test_b12','test_c1','test_c2','test_c5','test_c6','test_c7'}
@@ -14,8 +14,13 @@ def main():
    results.append(dict(test=file.stem,status='MIGRATED_CONTRACT',replacement='tests/test_migration_1625.py',note='Historical 1.5-only assertion; replacement coverage must pass independently'))
    continue
   start=time.monotonic()
+  # A/B/C is a local-development regression suite. GitHub Release tags must
+  # not override VERSION inside historical test subprocesses.
+  test_env=os.environ.copy()
+  for key in ('GITHUB_EVENT_NAME','GITHUB_EVENT_RELEASE_TAG_NAME','GITHUB_REF','GITHUB_REF_TYPE','GITHUB_REF_NAME','SYSTEM_MODELLER_RELEASE_VERSION'):
+   test_env.pop(key,None)
   try:
-   cp=subprocess.run([sys.executable,str(file)],cwd=ROOT,capture_output=True,text=True,timeout=ns.timeout)
+   cp=subprocess.run([sys.executable,str(file)],cwd=ROOT,capture_output=True,text=True,timeout=ns.timeout,env=test_env)
    results.append(dict(test=file.stem,status='PASS' if cp.returncode==0 else 'FAIL',exit_code=cp.returncode,seconds=round(time.monotonic()-start,2),output=(cp.stdout+cp.stderr)[-3500:]))
   except subprocess.TimeoutExpired as exc:
    results.append(dict(test=file.stem,status='TIMEOUT',seconds=round(time.monotonic()-start,2),output=str(exc)))
