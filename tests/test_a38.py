@@ -8,7 +8,7 @@ import zipfile
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-TARGETS = ("chat", "plugin", "claude-project", "claude-skills", "opencode")
+TARGETS = ("chat", "plugin", "claude_project", "claude_skills", "opencode")
 def run(*args):
     return subprocess.run([sys.executable, *map(str,args)], cwd=ROOT, text=True, capture_output=True)
 def main_error(result):
