@@ -26,7 +26,7 @@ def main():
     assert conflict.release_version=="3.4.5"
     ci=(ROOT/".github/workflows/ci.yml").read_text(encoding="utf-8")
     release=(ROOT/".github/workflows/release.yml").read_text(encoding="utf-8")
-    for value in ("pull_request:","standalone-abc:","validate-and-build:","needs: standalone-abc","validate_distributions.py"):
+    for value in ("pull_request:","standalone-abc:","validate-and-build:","needs: [standalone-abc, behavior-parity]","validate_distributions.py"):
         assert value in ci, f"CI lacks {value}"
     for value in ("types: [published]","contents: write","build_distributions.py","validate_distributions.py","gh release upload"):
         assert value in release, f"Release lacks {value}"
