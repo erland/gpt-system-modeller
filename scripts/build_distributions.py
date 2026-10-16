@@ -261,6 +261,41 @@ def build_chat(root: Path, cfg: dict, build_root: Path, version: str) -> Path:
         if path.exists():
             copy_tree_filtered(path, out / key, ignore_names={"README.md"})
 
+    # Preserve the 1.5 Chat runtime's data, reference docs and helper modules.
+    # Existing modelling scripts resolve metamodel/ relative to the runtime.
+    for directory in ("metamodel", "examples"):
+        copy_tree_filtered(root / directory, out / directory)
+    legacy_docs = (
+        "architecture-decisions-and-constraints.md", "architecture-description.md",
+        "architecture-report-profile.md", "context-model.md", "context-summary.md",
+        "data-stores.md", "deployment-context.md", "deployment-relations.md",
+        "design-principles.md", "diagram-complexity.md", "diagram-splitting.md",
+        "functional-model.md", "information-model.md", "information-usage.md",
+        "interactions.md", "interfaces-and-apis.md", "logical-architecture.md",
+        "messages-and-events.md", "model-format.md", "model-operations.md",
+        "modeling-principles.md", "origin-declared-observed-inferred.md",
+        "pdf-presentation-contract.md", "plan-b-release-readiness.md",
+        "provenance-and-evidence.md", "report-profile-groundwork.md",
+        "runtime-units.md", "scenario-sequence-diagrams.md", "scenarios.md",
+        "source-analysis.md", "system-project-format.md", "use-case-model.md",
+        "validation.md", "views.md",
+    )
+    for filename in legacy_docs:
+        src = root / "docs" / filename
+        if src.is_file():
+            copy_file(src, out / "docs" / filename)
+    for filename in (
+        "ids.py", "diagram_complexity.py", "pdf_contract.py",
+        "report_profile.py", "sequence_diagrams.py", "view_split.py",
+    ):
+        src = root / "scripts" / filename
+        if src.is_file():
+            copy_file(src, out / "scripts" / filename)
+    for filename in ("SYSTEM-MODELLER-CHAT.md",):
+        src = root / filename
+        if src.is_file():
+            copy_file(src, out / filename)
+
     declared_tool_scripts = copy_declared_tool_scripts(root, cfg, out / "scripts")
 
     contract_snapshot = chat_runtime_contract(cfg)
