@@ -1401,6 +1401,14 @@ def build_plugin(root: Path, cfg: dict, build_root: Path, version: str) -> Path:
                         "its integrity and self-test before execution. "
                         "Never mutate a canonical model without verified validation.\n"
                     )
+        if cfg.get("project", {}).get("id") == "system-modeller":
+            skill_markdown += (
+                "\n## Installed runtime contract\n\n"
+                "Read `references/runtime-contract.json` for the actual plugin "
+                "runtime tool contract. For validate and model, "
+                "`runtime_fallback: block` means manual review is not a substitute "
+                "for deterministic execution.\n"
+            )
         (skill_dir / "SKILL.md").write_text(skill_markdown, encoding="utf-8")
         built_skills.append(skill_id)
 
@@ -1417,10 +1425,16 @@ def build_plugin(root: Path, cfg: dict, build_root: Path, version: str) -> Path:
         encoding="utf-8",
     )
     (out / "VERSION").write_text(version + "\n", encoding="utf-8")
-    (out / "runtime-contract.json").write_text(
-        json.dumps(plugin_runtime_contract(cfg, built_skills), ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
+    runtime_contract_json = (
+        json.dumps(plugin_runtime_contract(cfg, built_skills), ensure_ascii=False, indent=2) + "\n"
     )
+    (out / "runtime-contract.json").write_text(runtime_contract_json, encoding="utf-8")
+    if cfg.get("project", {}).get("id") == "system-modeller":
+        # Each skill must expose a readable copy to skills.read in Chat.
+        for skill_id in built_skills:
+            target = out / "skills" / skill_id / "references" / "runtime-contract.json"
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(runtime_contract_json, encoding="utf-8")
 
     write_manifest(out, cfg["project"]["id"] + "-plugin", version, "plugin.json")
     manifest_path = out / "MANIFEST.json"
