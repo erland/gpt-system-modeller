@@ -681,8 +681,9 @@ def build_claude_skills(root: Path, cfg: dict, build_root: Path, version: str) -
         compiled.update(resources)
         skill_dir.mkdir(parents=True, exist_ok=True)
         (skill_dir / "SKILL.md").write_text(
-            skill_markdown_routing + compile_skill_markdown(
+            compile_skill_markdown(
                 compiled,
+                tool_routing=skill_markdown_routing,
                 canonical_instruction=skill_instruction(root, cfg, canonical_skill_definitions(cfg), skill),
                 include_canonical_behavior=True,
                 runtime_requirements=plugin_script_runtime_requirements(cfg, resources["scripts"]),
@@ -973,6 +974,7 @@ def compile_skill_markdown(
     canonical_instruction: str | None = None,
     include_canonical_behavior: bool = False,
     runtime_requirements: dict | None = None,
+    tool_routing: str = "",
 ) -> str:
     """Compile one canonical skill definition into deterministic SKILL.md text."""
     # Agent Skills frontmatter name is the directory/technical identifier,
@@ -1000,6 +1002,8 @@ def compile_skill_markdown(
     ])
 
     body = frontmatter
+    if tool_routing:
+        body.extend([tool_routing.strip(), ""])
 
     if (skill.get("_inferred_default") or include_canonical_behavior) and canonical_instruction:
         body.extend([
@@ -1243,8 +1247,9 @@ def build_plugin(root: Path, cfg: dict, build_root: Path, version: str) -> Path:
         compiled_skill = dict(skill)
         compiled_skill.update(resources)
         skill_dir.mkdir(parents=True, exist_ok=True)
-        skill_markdown = skill_markdown_routing + compile_skill_markdown(
+        skill_markdown = compile_skill_markdown(
             compiled_skill,
+            tool_routing=skill_markdown_routing,
             canonical_instruction=skill_instruction(root, cfg, canonical_skill_definitions(cfg), skill),
             include_canonical_behavior=True,
             runtime_requirements=plugin_script_runtime_requirements(cfg, resources["scripts"]),
