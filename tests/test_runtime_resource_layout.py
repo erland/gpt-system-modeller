@@ -33,7 +33,7 @@ def test_runtime_layout_and_validator(tmp_path):
             for skill in SKILLS:
                 skill_root = destination/"skills"/skill
                 body = (skill_root/"SKILL.md").read_text(encoding="utf-8")
-                assert body.startswith("---\\nname: "+skill+"\\n"),(runtime,skill)
+                assert body.startswith("---\nname: "+skill+"\n"),(runtime,skill)
                 routing = body.split("## Installed tool availability (authoritative)",1)[1].split("## Canonical behavior",1)[0]
                 assert "reliable validation is mandatory" in routing
                 for name in declared:
