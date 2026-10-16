@@ -45,6 +45,11 @@ def main() -> int:
             assert "Work-first execution and Engine ZIP fallback" in body, name
             assert ("no public release link" in body) if version == "0.0.0-ci" else (expected in body), name
             assert "Without a verified validator, stop" in body, name
+            assert "## Executable Engine ZIP preflight" not in body, name
+            assert "The Plugin does not embed the executable engine" not in body, name
+            assert "No verified release download link is configured" not in body, name
+            assert "For read-only explanation" in body, name
+            assert "If direct execution is unavailable" in body, name
     print("ENGINE_DELIVERY_OK", version)
     return 0
 

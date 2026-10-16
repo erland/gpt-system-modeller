@@ -1263,6 +1263,15 @@ def build_plugin(root: Path, cfg: dict, build_root: Path, version: str) -> Path:
             skill_markdown += (
                 "\\n## Work-first execution and Engine ZIP fallback\\n\\n"
                 "For read-only explanation, planning and conceptual diagrams, do not request an Engine. "
+                "In Work, if the installed files are accessible but Python fails with "
+                "ModuleNotFoundError for yaml or jsonschema, use an approved isolated "
+                "Python environment to install PyYAML and jsonschema and retry direct "
+                "validation before considering an Engine ZIP. Do not modify the plugin cache. "
+                "In Chat without actual script execution, provide read-only analysis but "
+                "do not claim deterministic validation or canonical mutation; for such "
+                "tasks explain how to use Work or attach the version-matched Engine ZIP "
+                "to a Python-capable workspace. Attaching ZIP alone does not grant "
+                "execution capability. "
                 "For a concrete project validation or mutation, first check whether Work offers "
                 "an actual writable Python workspace and whether this Skill's installed scripts, "
                 "schemas and metamodel can be materialized and run. Do not merely assume access "
@@ -1366,38 +1375,32 @@ def build_plugin(root: Path, cfg: dict, build_root: Path, version: str) -> Path:
                     "back to the separately released Engine ZIP if direct file "
                     "access or execution is unavailable; report actual test errors.\n"
                 )
-        # Generic Engine handoff for generated GPT projects; no embedded scripts.
+        # Engine fallback is a second choice: installed resources may execute in Work.
         if cfg.get("project", {}).get("id") != "gpt-byggaren":
             from lib.engine_package import engine_config, engine_filename
             if engine_config(cfg):
                 engine_name = engine_filename(cfg, version)
                 is_test = version.endswith("-ci") or version.startswith("0.0.0-")
-                engine_cfg = cfg["engine"]
-                release_repo = engine_cfg.get("release_repository")
-                link = (
+                release_repo = cfg["engine"].get("release_repository")
+                url = (
                     f"https://github.com/{release_repo}/releases/download/v{version}/{engine_name}"
                     if isinstance(release_repo, str) and "/" in release_repo and not is_test
                     else None
                 )
-                handoff = (
-                    f"Direct Engine ZIP download for this exact release: {link}. "
-                    if link else
-                    "No verified release download link is configured for this build. "
-                )
-                skill_markdown += (
-                    "\n## Executable Engine ZIP preflight\n\n"
-                    "At the first task requiring executable scripts, check once "
-                    f"for a real user-attached `{engine_name}` file in the Python workspace. "
-                    "The Plugin does not embed the executable engine. "
-                    + handoff +
-                    "If missing, ask once for the Engine ZIP and permit non-executable "
-                    "work without falsely claiming a completed build. "
-                    "Before execution, verify engine-package.json, expected engine_id "
-                    f"({cfg['project']['id']}), version ({version}), file hashes, "
-                    "and safe relative paths; execute only the declared selftest "
-                    f"({engine_cfg['selftest']}) in a compatible workspace. "
-                    "Never invent an archive, link, test result or replacement engine.\n"
-                )
+                # System Modeller's canonical Work-first section already gives its
+                # release URL. Never append a contradictory ZIP-first preflight.
+                if cfg.get("project", {}).get("id") != "system-modeller":
+                    skill_markdown += (
+                        "\n## Executable Engine ZIP preflight\n\n"
+                        "For executable tasks, first try installed scripts if accessible "
+                        "in Work; do not claim they ran without real execution. "
+                        f"If unavailable, check whether `{engine_name}` is attached. "
+                        + (f"Download exact-version Engine ZIP: {url}. " if url
+                           else "No public release link for this CI build. ") +
+                        "If needed, ask the user to attach that ZIP and verify "
+                        "its integrity and self-test before execution. "
+                        "Never mutate a canonical model without verified validation.\n"
+                    )
         (skill_dir / "SKILL.md").write_text(skill_markdown, encoding="utf-8")
         built_skills.append(skill_id)
 
