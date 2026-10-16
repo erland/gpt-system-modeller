@@ -1,201 +1,626 @@
-schema_version: "1.0"
+schema_version: 1
 project:
   id: system-modeller
   name: System Modeller
-  description: >
-    LLM-based system modelling assistant for building, maintaining, analysing
+  language: sv
+  description: 'LLM-based system modelling assistant for building, maintaining, analysing
     and presenting a traceable YAML model of how a system works and is structured.
-  version_source: VERSION
-  canonical_instruction: instructions/chat-runtime.md
 
-knowledge:
-  canonical_roots:
-    - metamodel
-    - schemas
-    - docs
-  optional_roots:
-    - examples
-  source_analysis_instruction: instructions/source-analysis.md
-
-contracts:
-  capabilities:
-    - id: inspect_project
-      description: Inspect a system project and establish compact working context.
-      critical: true
-    - id: validate_before_change
-      description: Validate canonical model before mutation and stop on blocking failures.
-      critical: true
-    - id: mutate_canonical_model
-      description: Change canonical YAML while preserving stable IDs, provenance and uncertainty.
-      critical: true
-    - id: derive_views
-      description: Materialise deterministic architecture views from canonical YAML.
-      critical: true
-    - id: generate_architecture_report
-      description: Generate the standard architecture description and diagram set.
-      critical: true
-    - id: package_system_project
-      description: Package a portable system project after successful validation.
-      critical: false
-    - id: analyse_sources
-      description: Analyse source code or documents into observations and evidence before modelling.
-      critical: false
-
-  artifacts:
-    canonical:
-      - id: system_project
-        format: zip
-        producer: scripts/package_project.py
-        description: Portable System Modeller project package.
-      - id: architecture_report
-        format: markdown
-        producer: scripts/report.py
-        description: Deterministically derived architecture description.
-    runtime_distributions:
-      - chat
-      - custom_gpt
-      - claude
-      - opencode
-      - openai_plugin
-
-  workspace:
-    source_of_truth: canonical_yaml
-    required_project_file: project.yaml
-    mutation_policy: validate_before_and_after
-    preserve:
-      - stable_ids
-      - provenance
-      - evidence
-      - origin
-      - unresolved_uncertainty
-    runtime_sequence:
-      - INSPECT
-      - VALIDATE
-      - PLAN
-      - CHANGE
-      - VALIDATE
-      - DERIVE
-      - PACKAGE
-
-  tools:
-    - id: context
-      path: scripts/context.py
-      mode: read_only
-      capability: inspect_project
-      runtime_required: true
-    - id: validate
-      path: scripts/validate.py
-      mode: read_only
-      capability: validate_before_change
-      runtime_required: true
-    - id: model
-      path: scripts/model.py
-      mode: mutating
-      capability: mutate_canonical_model
-      runtime_required: true
-      approval_required: true
-    - id: view
-      path: scripts/view.py
-      mode: derived_output
-      capability: derive_views
-      runtime_required: true
-    - id: report
-      path: scripts/report.py
-      mode: derived_output
-      capability: generate_architecture_report
-      runtime_required: true
-    - id: package_project
-      path: scripts/package_project.py
-      mode: derived_output
-      capability: package_system_project
-      runtime_required: true
-    - id: analyze
-      path: scripts/analyze.py
-      mode: read_only
-      capability: analyse_sources
-      runtime_required: true
-
-runtimes:
-  chat:
+    '
+development:
+  plan: docs/development-plan-1.6.md
+  status: project-status.yaml
+  human_readable_status: STATUS.md
+  status_schema: schemas/project-status.schema.json
+  project_documentation:
+  - PROJECT.md
+  - docs/product-vision.md
+  - docs/user-journeys.md
+  - docs/canonical-project-structure.md
+model_robustness:
+  design_target: simpler_and_stronger_llms
+  separate_model_instructions: false
+  prefer_deterministic_validation: true
+  max_core_policy_hops: 1
+  model_compatibility:
+    scenarios: evals/model-compatibility/
+structure:
+  canonical_root: instructions
+  instructions:
+    required: true
+    path: instructions
+  conversation_starters:
+    required: true
+    path: instructions
+  runtime_policy:
+    required: false
+    path: instructions
+  knowledge:
+    path: knowledge
+    required: false
+  templates:
+    path: templates
+    required: false
+  schemas:
+    path: schemas
+    required: false
+  scripts:
+    path: scripts
+    required: false
+  tests:
+    path: tests
+    required: false
+  evals:
+    path: evals
+    required: false
+  research:
+    path: research
+    required: false
+  build:
+    path: build
+    generated: true
+    create_when_needed: true
+  dist:
+    path: dist
+    generated: true
+    create_when_needed: true
+runtime:
+  primary: none
+  chat_zip:
     enabled: true
-    compatibility: ready
-    adapter: existing
-    build_target: chat
-    artifact_pattern: system-modeller-chat-v{version}.zip
-    local_tools: runtime_dependent
-    parity:
-      behavior: ready
-      capabilities: ready
-      artifacts: ready
-      workspace_state: runtime_dependent
-      tools: runtime_dependent
-  custom_gpt:
-    enabled: true
-    compatibility: ready
-    adapter: existing
-    build_target: custom_gpt
-    artifact_pattern: system-modeller-custom-gpt-v{version}.zip
-    local_tools: unavailable
-    parity:
-      behavior: ready
-      capabilities: ready_with_fallbacks
-      artifacts: ready
-      workspace_state: reduced
-      tools: unavailable
+    role: peer_distribution
+    allow_richer_runtime_than_custom_gpt: true
+    entrypoint: START-HERE.md
+    start_here_template: templates/START-HERE.chat.md.tpl
+    layout:
+      assistant: assistant
+      knowledge: knowledge
+      schemas: schemas
+      scripts: scripts
+      templates: templates
+      runtime: runtime
+    include:
+      instructions:
+      - instructions/chat-runtime.md
+      policies:
+      - src/runtime-policy/*.md
+      conversation_starters:
+      - src/conversation-starters/**
+      knowledge:
+      - knowledge/**
+      schemas:
+      - schemas/**
+      scripts:
+      - scripts/**
+      templates:
+      - templates/**
+    exclude:
+    - docs/**
+    - tests/**
+    - evals/**
+    - research/**
+    - .github/**
+    - .git/**
+    - build/**
+    - dist/**
+    - project-status.yaml
+    - PROJECT.md
+    - STATUS.md
+    manifest:
+      required: true
+      checksums: true
+    deterministic_build: true
+    omit_empty_runtime_directories: true
   claude:
     enabled: true
-    compatibility: ready
-    adapter: claude_project
-    build_target: claude
-    artifact_pattern: system-modeller-claude-v{version}.zip
-    local_tools: unavailable
-    parity:
-      behavior: ready
-      capabilities: ready_with_fallbacks
-      artifacts: ready
-      workspace_state: reduced
-      tools: unavailable
+    role: peer_distribution
+    mode: claude_project
+    project:
+      instructions: project/instructions.md
+      knowledge: project/knowledge
+      runtime_contract: project/runtime-contract.json
+    templates:
+      readme: templates/README.claude.md.tpl
+    validation:
+      require_instructions: true
+      require_runtime_contract: true
   opencode:
     enabled: true
-    compatibility: ready
-    adapter: opencode_workspace
-    build_target: opencode
-    artifact_pattern: system-modeller-opencode-v{version}.zip
-    local_tools: declared_custom_tools
-    parity:
-      behavior: ready
-      capabilities: ready
-      artifacts: ready
-      workspace_state: ready
-      tools: declared_custom_tools
-  openai_plugin:
+    role: peer_distribution
+    mode: opencode_workspace
+    layout:
+      instructions: AGENTS.md
+      config: opencode.json
+      tools: .opencode/tools
+      runtime_scripts: scripts
+      runtime_contract: .opencode/runtime-contract.json
+      knowledge: knowledge
+    templates:
+      readme: templates/README.opencode.md.tpl
+    skills:
+      enabled: true
+      directory: .opencode/skills
+      definitions:
+      - id: gpt-project-workflow
+        name: gpt-project-workflow
+        description: Planera, återuppta och fortsätt ett GPT Byggaren-projekt utifrån
+          faktisk projektstatus.
+        references:
+        - docs/dynamic-planning.md
+        - docs/resume-flow.md
+        - docs/next-step-recommendation.md
+    validation:
+      require_agents_md: true
+      require_runtime_contract: true
+  plugin:
     enabled: true
-    compatibility: equivalent_runtime_dependent
-    adapter: skills_first_plugin
-    build_target: openai_plugin
-    artifact_pattern: system-modeller-plugin-v{version}.zip
-    local_tools: packaged_python_scripts
-    parity:
-      behavior: ready
-      capabilities: runtime_dependent
-      artifacts: ready
-      workspace_state: runtime_dependent
-      tools: runtime_dependent
-
-build:
-  active_targets:
-    - chat
-    - custom_gpt
-    - claude
-    - opencode
-    - openai_plugin
-  planned_targets: []
-  parity_dimensions:
-    - behavior
-    - capabilities
-    - artifacts
-    - workspace_state
-    - tools
-  version_authority:
-    development: VERSION
-    release: github_tag
+    role: peer_distribution
+    mode: openai_plugin
+    layout:
+      manifest_file: plugin.json
+      skills: skills
+      references: references
+      assets: assets
+      scripts: scripts
+    templates:
+      readme: templates/README.plugin.md.tpl
+    validation:
+      require_manifest: true
+      require_skill: true
+      require_skill_frontmatter: true
+  custom_gpt:
+    enabled: false
+    role: peer_distribution
+    compilation_mode: adaptive
+    allow_reduced_functionality: true
+    platform_limits:
+      instruction_max_characters: 8000
+      knowledge_max_files: 20
+    notes:
+    - Platform limits are configuration values and must be easy to update.
+    - Custom GPT and Chat ZIP are peer distribution targets derived from the same
+      canonical contract.
+    instruction:
+      mode: compressed
+      max_characters: 8000
+    knowledge:
+      strategy: hybrid
+      max_files: 20
+    builder:
+      instructions: builder/instructions.md
+      conversation_starters: builder/conversation-starters.md
+      capabilities: builder/capabilities.md
+      runtime_contract: builder/runtime-contract.json
+      knowledge_package: builder/knowledge-package
+    templates:
+      readme: templates/README.custom-gpt.md.tpl
+      compatibility: templates/COMPATIBILITY.md.tpl
+      capabilities: templates/capabilities.md.tpl
+    compatibility:
+      report_required: true
+      parity_symbols:
+        equivalent: ✓
+        reduced: '~'
+        missing: '-'
+    validation:
+      block_on_instruction_limit: true
+      block_on_knowledge_limit: true
+      block_on_misleading_core_functionality: true
+skills:
+  contract_version: 1
+  schema: schemas/skill-contract.schema.json
+  mode: inferred
+  definitions:
+  - id: system-modellering
+    name: system-modellering
+    description: Inspektera, validera, ändra och härled en spårbar kanonisk YAML-systemmodell.
+    source: instructions/chat-runtime.md
+    references:
+    - instructions/source-analysis.md
+capabilities:
+  contract_version: 1
+  schema: schemas/capability-contract.schema.json
+  recommendation_mode: inferred_from_use_case
+  ask_user_only_when_business_choice_is_ambiguous: true
+  requirements:
+    web:
+      level: to_be_recommended
+    filesystem:
+      read: required
+      write: required
+    shell:
+      level: optional
+    code_execution:
+      level: recommended
+    structured_data:
+      level: required
+    persistent_state:
+      level: recommended
+    external_tools:
+      level: optional
+      preferred_protocols:
+      - mcp
+    image_generation:
+      level: to_be_recommended
+  legacy_mapping:
+    web: web
+    data_analysis: code_execution
+    file_handling: filesystem
+    image_generation: image_generation
+    structured_knowledge: structured_data
+tools:
+  contract_version: 1
+  schema: schemas/tool-contract.schema.json
+  tools:
+  - id: context
+    type: script
+    requirement: required
+    purpose: inspect_project
+    script: scripts/context.py
+    deterministic: true
+    mutates_workspace: false
+    working_directory: workspace
+    runtime_fallback: manual
+  - id: validate
+    type: script
+    requirement: required
+    purpose: validate_before_change
+    script: scripts/validate.py
+    deterministic: true
+    mutates_workspace: false
+    working_directory: workspace
+    runtime_fallback: manual
+  - id: model
+    type: script
+    requirement: required
+    purpose: mutate_canonical_model
+    script: scripts/model.py
+    deterministic: true
+    mutates_workspace: true
+    approval_required: true
+    working_directory: workspace
+    runtime_fallback: manual
+  - id: view
+    type: script
+    requirement: required
+    purpose: derive_views
+    script: scripts/view.py
+    deterministic: true
+    mutates_workspace: false
+    working_directory: workspace
+    runtime_fallback: manual
+  - id: report
+    type: script
+    requirement: required
+    purpose: generate_architecture_report
+    script: scripts/report.py
+    deterministic: true
+    mutates_workspace: false
+    working_directory: workspace
+    runtime_fallback: manual
+  - id: package_project
+    type: script
+    requirement: required
+    purpose: package_system_project
+    script: scripts/package_project.py
+    deterministic: true
+    mutates_workspace: false
+    working_directory: workspace
+    runtime_fallback: manual
+  - id: analyze
+    type: script
+    requirement: required
+    purpose: analyse_sources
+    script: scripts/analyze.py
+    deterministic: true
+    mutates_workspace: false
+    working_directory: workspace
+    runtime_fallback: manual
+analysis:
+  recommendation_schema: schemas/analysis-recommendation.schema.json
+  profiles:
+  - simple
+  - standard
+  - zip_first_advanced
+  - workflow_research_heavy
+  infer_technical_choices_from_use_case: true
+  ask_only_for_unresolved_business_choices: true
+release:
+  github:
+    optional: false
+    version_source: github_release_tag
+    tag_pattern: v{semver}
+    build_on_published_release: true
+    workflow: .github/workflows/release.yml
+    trigger: release.published
+    permissions:
+    - contents:write
+    run_tests: true
+    run_distribution_validation: true
+    upload_artifacts_to_release: true
+    artifacts:
+    - project_zip
+    - chat_zip
+    - claude_project_zip_when_enabled
+    - claude_skills_zip_when_enabled
+    - opencode_zip_when_enabled
+    - plugin_zip_when_enabled
+    - checksums
+    - delivery_manifest
+    enabled: false
+    default: false
+  local:
+    supported: true
+    version_strategy_before_github_release: development_version
+artifacts:
+  contract_version: 1
+  schema: schemas/artifact-contract.schema.json
+  outputs:
+    development_plan:
+      kind: document
+      format: markdown
+      requirement: required
+      persistence: persistent
+      multiplicity: one
+      description: Stegvis utvecklingsplan som kan återanvändas mellan runtimes.
+    project_package:
+      kind: package
+      format: zip
+      requirement: required
+      persistence: persistent
+      multiplicity: one
+      filename_pattern: <project-id>-project.zip
+      description: Komplett utvecklingsprojekt för fortsatt arbete och migrering.
+    runtime_package:
+      kind: distribution
+      format: zip
+      requirement: required
+      persistence: persistent
+      multiplicity: many
+      description: En eller flera runtime-specifika distributioner byggda från samma
+        canonical projekt.
+    validation_report:
+      kind: report
+      format: structured
+      requirement: required
+      persistence: persistent
+      multiplicity: one
+    parity_report:
+      kind: report
+      format: markdown
+      requirement: conditional
+      condition: multiple_runtimes
+      persistence: persistent
+      multiplicity: one
+    checksums:
+      kind: metadata
+      format: sha256
+      requirement: required
+      persistence: persistent
+      multiplicity: one
+  legacy_mapping:
+    project_zip: project_package
+    chat_zip: runtime_package
+    custom_gpt_zip: runtime_package
+    claude_project_zip: runtime_package
+    claude_skills_zip: runtime_package
+    opencode_zip: runtime_package
+    plugin_zip: runtime_package
+    validation_report: validation_report
+    parity_report: parity_report
+    checksums: checksums
+workspace_state:
+  contract_version: 1
+  schema: schemas/workspace-state-contract.schema.json
+  workspace:
+    requirement: required
+    persistence: required
+    portable: true
+    separate_from_assistant: true
+    artifact: project_package
+    description: GPT-projektet som användaren utvecklar är ett portabelt workspace
+      separat från GPT Byggarens runtimepaket.
+  state:
+    requirement: required
+    persistence: required
+    authority: workspace_file
+    format: yaml
+    path: project-status.yaml
+    conversation_fallback: false
+    description: Projektets maskinläsbara status är auktoritativ och ska göra fortsatt
+      arbete oberoende av tidigare chatthistorik.
+  runtime_preferences:
+    chat: conversation_or_file
+    agent: workspace_file
+instructions:
+  architecture: docs/instruction-architecture.md
+  mode: single_source
+  canonical: instructions/chat-runtime.md
+  core: src/instructions/core.md
+  assembly: src/instructions/assembly.json
+  policies:
+    include:
+    - src/runtime-policy/*.md
+  compilation:
+    chat:
+      mode: full
+    custom_gpt:
+      mode: compressed
+      max_characters_from: runtime.custom_gpt.platform_limits.instruction_max_characters
+  single_source_of_truth: true
+  distribution_specific_instructions_are_generated: true
+  core_contract:
+    enabled: true
+    required_markers:
+    - Den kanoniska YAML-modellen
+    - INSPECT → VALIDATE → PLAN → CHANGE → VALIDATE → DERIVE → PACKAGE
+    - Påstå aldrig att ett verktyg har körts
+    required_runtime_dependencies: []
+    max_required_file_hops: 1
+    knowledge_may_not_be_required_for_core_behavior: true
+runtime_parity:
+  report_template: templates/runtime-parity-report.md.tpl
+  reference:
+    type: canonical_contract
+  registered_runtimes:
+  - chatgpt_chat
+  - claude_project
+  - claude_skills
+  - opencode
+  - openai_plugin
+  compared_categories:
+  - behavior
+  - capability
+  - artifact
+  - workspace_state
+  - tool
+  levels:
+  - full
+  - high
+  - moderate
+  - low
+  - not_viable
+  states:
+  - equivalent
+  - reduced
+  - missing
+  - not_applicable
+  criticality:
+  - critical
+  - important
+  - optional
+  weights:
+    state:
+      equivalent: 1.0
+      reduced: 0.5
+      missing: 0.0
+    criticality:
+      critical: 3
+      important: 2
+      optional: 1
+  release_rules:
+    full: publish
+    high: publish
+    moderate: publish_with_warning
+    low: publish_with_warning
+    not_viable: do_not_publish
+  generate_separate_report_artifact: true
+build_system:
+  build_script: scripts/build_distributions.py
+  validation_script: scripts/validate_distributions.py
+  targets:
+  - project
+  - chat
+  - claude_project
+  - claude_skills
+  - opencode
+  - plugin
+  runtime_targets:
+    chat:
+      runtime_id: chatgpt_chat
+      runtime_key: chat_zip
+      builder: chat
+      artifact_type: chat_zip
+      filename_pattern: <project-id>-chat-<version>.zip
+    claude_project:
+      runtime_id: claude_project
+      runtime_key: claude
+      builder: claude
+      artifact_type: claude_project_zip
+      filename_pattern: <project-id>-claude-project-<version>.zip
+    claude_skills:
+      runtime_id: claude_skills
+      runtime_key: claude
+      builder: claude_skills
+      artifact_type: claude_skills_zip
+      filename_pattern: <project-id>-claude-skills-<version>.zip
+    opencode:
+      runtime_id: opencode
+      runtime_key: opencode
+      builder: opencode
+      artifact_type: opencode_zip
+      filename_pattern: <project-id>-opencode-<version>.zip
+    plugin:
+      runtime_id: openai_plugin
+      runtime_key: plugin
+      builder: plugin
+      artifact_type: plugin_zip
+      filename_pattern: <project-id>-plugin-<version>.zip
+  output_root: dist
+  working_root: build
+  deterministic_zip: true
+  manifest: true
+  checksums: sha256
+  project_zip_excludes:
+  - build/**
+  - dist/**
+  - .git/**
+  - '**/__pycache__/**'
+  - '**/.pytest_cache/**'
+ci:
+  workflow: .github/workflows/ci.yml
+  triggers:
+  - push
+  - pull_request
+  - workflow_dispatch
+  development_version: 0.0.0-ci
+  checks:
+  - yaml_json_parse
+  - tests
+  - build_distributions
+  - validate_distributions
+  - expected_artifacts
+  - project_hygiene
+  upload_ci_artifacts: true
+  same_toolchain_as_release: true
+  enabled: true
+  default: true
+testing:
+  eval_case_schema: schemas/eval-case.schema.json
+  layers:
+  - deterministic
+  - contract
+  - build
+  - runtime_smoke
+  - behavioral
+  - regression
+  - reference
+  criticality:
+  - critical
+  - important
+  - optional
+  profiles:
+    simple:
+    - contract
+    - build
+    - behavioral_core
+    standard:
+    - deterministic
+    - contract
+    - build
+    - runtime_smoke
+    - behavioral
+    zip_first_advanced:
+    - deterministic
+    - contract
+    - build
+    - runtime_smoke
+    - behavioral
+    - regression
+    - reference
+    workflow_research_heavy:
+    - deterministic
+    - contract
+    - build
+    - runtime_smoke
+    - behavioral
+    - regression
+    - reference
+  release_gate:
+    critical_deterministic_tests_must_pass: true
+    blocking_schemas_must_pass: true
+    build_must_pass: true
+    distribution_validation_must_pass: true
+    critical_evals_must_meet_threshold: true
+knowledge_architecture:
+  canonical_root: instructions

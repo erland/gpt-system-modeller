@@ -213,3 +213,7 @@ Development distribution versions (`X.Y.Z-dev.N`) are now valid inputs to ZIP pa
 ## A39 – Test environment isolation
 
 Release/tag environment variables are now isolated from ordinary regression tests. Explicit version-context tests inject their own environment, so the same suite behaves identically on PR, main, workflow_dispatch and release.published jobs.
+
+## Migration GPT Byggaren 1.6.25 (pågående – fas 1)
+
+En säker kopiemigrering har genomförts. Inventering och befintliga C1–C4-kontroller är godkända. Ny distributionsmotor och nya runtime-distributioner är ännu **inte** aktiverade eller verifierade. Se `docs/migration-gpt-byggaren-1.6.25.md` och `MIGRATION-REPORT.json`. Äldre statusuppgifter ovan avser 1.5-baslinjen.

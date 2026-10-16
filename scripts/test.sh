@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-cd "$ROOT"
+cd "$(dirname "$0")/.."
 python3 scripts/check_structure.py
 python3 scripts/validate_project_contract.py
 python3 scripts/validate_instruction_adherence.py --project-root .
-for test_file in tests/test_*.py; do
-  bash scripts/run_test_isolated.sh "$test_file"
-done
+# The 1.5 distribution-only checks are archived as historical tests; never run as 1.6 gates.
+python3 -m pytest -q tests
+# A/B/C scripts are standalone programs, not pytest test functions.
+# Legacy incompatibilities and timeouts are blocking, never silent skips.
+# Standalone A/B/C tests are enforced by the matrix jobs in .github/workflows/ci.yml.
+# Do not run them twice or accept historical exclusions without replacement tests.
