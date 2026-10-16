@@ -40,9 +40,16 @@ def main() -> int:
         skills = [n for n in names if n.endswith("/SKILL.md") and n.startswith("skills/")]
         assert len(skills) == 6, skills
         expected = f"https://github.com/erland/gpt-system-modeller/releases/download/v{version}/system-modeller-engine-{version}.zip"
+        contract = json.loads(z.read("runtime-contract.json"))
+        tools = contract["tools"]["tools"]
+        fallbacks = {tool["id"]: tool.get("runtime_fallback") for tool in tools}
+        assert fallbacks["validate"] == "block", fallbacks
+        assert fallbacks["model"] == "block", fallbacks
         for name in skills:
             body = z.read(name).decode("utf-8")
             assert "Work-first execution and Engine ZIP fallback" in body, name
+            assert "\n## Work-first execution and Engine ZIP fallback\n\n" in body, name
+            assert "\\n## Work-first execution" not in body, name
             assert ("no public release link" in body) if version == "0.0.0-ci" else (expected in body), name
             assert "Without a verified validator, stop" in body, name
             assert "## Executable Engine ZIP preflight" not in body, name
