@@ -5,7 +5,38 @@ on:
 permissions:
   contents: write
 jobs:
+  standalone-abc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {group: a, from: 1, to: 10}
+          - {group: a, from: 11, to: 20}
+          - {group: a, from: 21, to: 30}
+          - {group: a, from: 31, to: 42}
+          - {group: b, from: 1, to: 99}
+          - {group: c, from: 1, to: 99}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r requirements-ci.txt
+      - name: Verify migrated contracts
+        run: python -m pytest -q tests/test_migration_1625.py
+      - name: Full standalone A/B/C regression
+        run: python scripts/run_abc_shard.py --group ${{ matrix.group }} --from-number ${{ matrix.from }} --to-number ${{ matrix.to }} --timeout 120 --output test-results/abc-${{ matrix.group }}-${{ matrix.from }}-${{ matrix.to }}.json
+      - name: Upload regression results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-abc-${{ matrix.group }}-${{ matrix.from }}-${{ matrix.to }}
+          path: test-results/abc-${{ matrix.group }}-${{ matrix.from }}-${{ matrix.to }}.json
+          if-no-files-found: error
   release:
+    needs: standalone-abc
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -28,6 +59,12 @@ jobs:
           python scripts/build_distributions.py --project-root . --version "$VERSION"
       - name: Validate canonical distributions
         run: python scripts/validate_distributions.py --project-root .
+      - name: Verify Chat runtime file parity with main
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          VERSION="${RELEASE_TAG#v}"
+          python scripts/verify_chat_main_parity.py --project-root . --version "$VERSION"
       - name: Attach release files
         env:
           GH_TOKEN: ${{ github.token }}
