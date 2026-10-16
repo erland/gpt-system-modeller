@@ -217,9 +217,7 @@ skills:
     description: Bevara ursprung, evidens och olösta antaganden.
     source: canonical/skills/sparbarhet-och-osakerhet/behavior.md
     references: []
-    assets:
-    - metamodel
-    - schemas
+    assets: []
     scripts:
     - scripts/validate.py
   - id: kallanalys
@@ -228,9 +226,7 @@ skills:
     source: canonical/skills/kallanalys/behavior.md
     references:
     - instructions/source-analysis.md
-    assets:
-    - metamodel
-    - schemas
+    assets: []
     scripts:
     - scripts/validate.py
     - scripts/analyze.py
@@ -239,9 +235,7 @@ skills:
     description: Beskriv ansvar, information och logisk systemstruktur.
     source: canonical/skills/modellforstaelse/behavior.md
     references: []
-    assets:
-    - metamodel
-    - schemas
+    assets: []
     scripts:
     - scripts/validate.py
     - scripts/context.py
@@ -251,9 +245,7 @@ skills:
     description: Härled arkitekturvyer och diagram ur kanonisk YAML.
     source: canonical/skills/arkitekturvyer/behavior.md
     references: []
-    assets:
-    - metamodel
-    - schemas
+    assets: []
     scripts:
     - scripts/validate.py
     - scripts/view.py
@@ -262,9 +254,7 @@ skills:
     description: Generera begripliga spårbara arkitekturbeskrivningar.
     source: canonical/skills/arkitekturrapport/behavior.md
     references: []
-    assets:
-    - metamodel
-    - schemas
+    assets: []
     scripts:
     - scripts/validate.py
     - scripts/report.py
@@ -273,9 +263,7 @@ skills:
     description: Skilj systemprojekt från runtime-distributioner och leverera projekt.
     source: canonical/skills/projektleverans/behavior.md
     references: []
-    assets:
-    - metamodel
-    - schemas
+    assets: []
     scripts:
     - scripts/validate.py
     - scripts/package_project.py
