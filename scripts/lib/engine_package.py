@@ -55,6 +55,16 @@ def package_engine(root: Path, cfg: dict, version: str, dist: Path) -> Path | No
         return None
     files = engine_paths(root, cfg)
     output = dist / engine_filename(cfg, version)
+    # The release tag is authoritative for packaged VERSION, without modifying
+    # the development VERSION file in the source checkout.
+    payloads = {
+        p.relative_to(root).as_posix(): (
+            (version + "\n").encode("utf-8")
+            if p.relative_to(root).as_posix() == "VERSION"
+            else p.read_bytes()
+        )
+        for p in files
+    }
     manifest = {
         "schema_version": 1,
         "engine_id": cfg["project"]["id"],
@@ -62,13 +72,13 @@ def package_engine(root: Path, cfg: dict, version: str, dist: Path) -> Path | No
         "entrypoint": engine["selftest"],
         "required_files": sorted({engine["selftest"], *engine.get("required_files", [])}),
         "python_dependencies": engine.get("python_dependencies", []),
-        "files": {p.relative_to(root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
+        "files": {name: hashlib.sha256(data).hexdigest() for name, data in payloads.items()},
     }
     if not set(manifest["required_files"]) <= set(manifest["files"]):
         raise ValueError("engine.required_files must be included in engine.resources")
     dist.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as z:
-        for name, data in [*((p.relative_to(root).as_posix(), p.read_bytes()) for p in files),
+        for name, data in [*payloads.items(),
                            ("engine-package.json", (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode())]:
             info = zipfile.ZipInfo(name, DATE)
             info.compress_type = zipfile.ZIP_DEFLATED
