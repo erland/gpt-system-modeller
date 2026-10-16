@@ -22,9 +22,6 @@
         "inferred"
       ]
     },
-    "resource_policy": {
-      "enum": ["explicit", "inherited"]
-    },
     "definitions": {
       "type": "array",
       "minItems": 1,
