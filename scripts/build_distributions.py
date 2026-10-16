@@ -1261,7 +1261,7 @@ def build_plugin(root: Path, cfg: dict, build_root: Path, version: str) -> Path:
                 f"v{version}/{engine_file}"
             )
             skill_markdown += (
-                "\\n## Work-first execution and Engine ZIP fallback\\n\\n"
+                "\n## Work-first execution and Engine ZIP fallback\n\n"
                 "For read-only explanation, planning and conceptual diagrams, do not request an Engine. "
                 "In Work, if the installed files are accessible but Python fails with "
                 "ModuleNotFoundError for yaml or jsonschema, use an approved isolated "
@@ -1292,7 +1292,7 @@ def build_plugin(root: Path, cfg: dict, build_root: Path, version: str) -> Path:
                 "hashes and real reference-project validation before using any Engine script. "
                 "Install declared dependencies only in an approved compatible environment. "
                 "Without a verified validator, stop before canonical model mutation. "
-                "Report unavailable functionality instead of simulating success.\\n"
+                "Report unavailable functionality instead of simulating success.\n"
             )
         if cfg.get("project", {}).get("id") == "gpt-byggaren" and skill_id == "distribution-and-parity":
             skill_markdown += (
