@@ -210,7 +210,6 @@ skills:
   contract_version: 1
   schema: schemas/skill-contract.schema.json
   mode: inferred
-  resource_policy: explicit
   definitions:
   - id: sparbarhet-och-osakerhet
     name: sparbarhet-och-osakerhet
