@@ -259,7 +259,7 @@ def build_chat(root: Path, cfg: dict, build_root: Path, version: str) -> Path:
     for key in ["schemas", "templates"]:
         path = root / cfg["structure"][key]["path"]
         if path.exists():
-            copy_tree_filtered(path, out / key, ignore_names={"README.md"})
+            copy_tree_filtered(path, out / key)
 
     # Preserve the 1.5 Chat runtime's data, reference docs and helper modules.
     # Existing modelling scripts resolve metamodel/ relative to the runtime.
