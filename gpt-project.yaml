@@ -673,3 +673,34 @@ testing:
     critical_evals_must_meet_threshold: true
 knowledge_architecture:
   canonical_root: instructions
+
+engine:
+  enabled: true
+  selftest: scripts/selftest_system_modeller_engine.py
+  resources:
+  - scripts/validate.py
+  - scripts/context.py
+  - scripts/model.py
+  - scripts/ids.py
+  - scripts/analyze.py
+  - scripts/view.py
+  - scripts/view_split.py
+  - scripts/sequence_diagrams.py
+  - scripts/report.py
+  - scripts/report_profile.py
+  - scripts/package_project.py
+  - scripts/lib
+  - schemas
+  - metamodel
+  - examples/reference-order-system/project
+  - requirements-ci.txt
+  - VERSION
+  required_files:
+  - scripts/validate.py
+  - scripts/model.py
+  - scripts/package_project.py
+  - schemas/project.schema.json
+  - metamodel/common.yaml
+  python_dependencies:
+  - PyYAML
+  - jsonschema
