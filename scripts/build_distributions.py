@@ -1254,6 +1254,37 @@ def build_plugin(root: Path, cfg: dict, build_root: Path, version: str) -> Path:
             include_canonical_behavior=True,
             runtime_requirements=plugin_script_runtime_requirements(cfg, resources["scripts"]),
         )
+        if cfg.get("project", {}).get("id") == "system-modeller":
+            engine_file = f"system-modeller-engine-{version}.zip"
+            engine_url = (
+                "https://github.com/erland/gpt-system-modeller/releases/download/"
+                f"v{version}/{engine_file}"
+            )
+            skill_markdown += (
+                "\\n## Work-first execution and Engine ZIP fallback\\n\\n"
+                "For read-only explanation, planning and conceptual diagrams, do not request an Engine. "
+                "For a concrete project validation or mutation, first check whether Work offers "
+                "an actual writable Python workspace and whether this Skill's installed scripts, "
+                "schemas and metamodel can be materialized and run. Do not merely assume access "
+                "because SKILL.md lists files. Verify direct execution with a real validator call. "
+                "If this succeeds, use installed resources and do not request the Engine. "
+                "If direct execution is unavailable, look for a real, user-attached "
+                f"`{engine_file}` in the current Python workspace. "
+                "Never claim the attached ZIP is accessible without checking its existence. "
+                "If it is missing, give the user this exact-version GitHub Release download link: "
+                + (engine_url if version != "0.0.0-ci" else
+                   f"(CI build only: {engine_file} has no public release link)") +
+                ". Explain that the user should download the Engine ZIP, attach it in this "
+                "conversation and ask to continue. Do not claim the download or attachment "
+                "has happened. Do not substitute the latest release or a different version. "
+                "After attachment, safely extract into a fresh workspace; reject unsafe paths, "
+                "symlinks, excessive archive sizes and duplicate entries, then run "
+                "`python -B scripts/selftest_system_modeller_engine.py` to verify all SHA-256 "
+                "hashes and real reference-project validation before using any Engine script. "
+                "Install declared dependencies only in an approved compatible environment. "
+                "Without a verified validator, stop before canonical model mutation. "
+                "Report unavailable functionality instead of simulating success.\\n"
+            )
         if cfg.get("project", {}).get("id") == "gpt-byggaren" and skill_id == "distribution-and-parity":
             skill_markdown += (
                 "\\n## Mandatory engine access self-test\\n\\n"
