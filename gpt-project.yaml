@@ -211,12 +211,32 @@ skills:
   schema: schemas/skill-contract.schema.json
   mode: inferred
   definitions:
-  - id: system-modellering
-    name: system-modellering
-    description: Inspektera, validera, ändra och härled en spårbar kanonisk YAML-systemmodell.
-    source: instructions/chat-runtime.md
+  - id: sparbarhet-och-osakerhet
+    name: sparbarhet-och-osakerhet
+    description: Bevara ursprung, evidens och olösta antaganden.
+    source: canonical/skills/sparbarhet-och-osakerhet/behavior.md
+  - id: kallanalys
+    name: kallanalys
+    description: Analysera källkod och dokumentation till observationer och evidens.
+    source: canonical/skills/kallanalys/behavior.md
     references:
     - instructions/source-analysis.md
+  - id: modellforstaelse
+    name: modellforstaelse
+    description: Beskriv ansvar, information och logisk systemstruktur.
+    source: canonical/skills/modellforstaelse/behavior.md
+  - id: arkitekturvyer
+    name: arkitekturvyer
+    description: Härled arkitekturvyer och diagram ur kanonisk YAML.
+    source: canonical/skills/arkitekturvyer/behavior.md
+  - id: arkitekturrapport
+    name: arkitekturrapport
+    description: Generera begripliga spårbara arkitekturbeskrivningar.
+    source: canonical/skills/arkitekturrapport/behavior.md
+  - id: projektleverans
+    name: projektleverans
+    description: Skilj systemprojekt från runtime-distributioner och leverera projekt.
+    source: canonical/skills/projektleverans/behavior.md
 capabilities:
   contract_version: 1
   schema: schemas/capability-contract.schema.json
@@ -434,10 +454,10 @@ workspace_state:
     agent: workspace_file
 instructions:
   architecture: docs/instruction-architecture.md
-  mode: single_source
+  mode: modular_skills
   canonical: instructions/chat-runtime.md
-  core: src/instructions/core.md
-  assembly: src/instructions/assembly.json
+  core: canonical/core.md
+  assembly: canonical/assembly.json
   policies:
     include:
     - src/runtime-policy/*.md
