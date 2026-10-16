@@ -111,6 +111,11 @@ jobs:
       - name: Verify Chat runtime file parity with main
         run: python scripts/verify_chat_main_parity.py --project-root . --version 0.0.0-ci
 
+      - name: Execute unpacked System Modeller runtime validators
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -B -m pytest -q tests/test_runtime_resource_layout.py
+
       - name: Upload CI artifacts
         uses: actions/upload-artifact@v7
         with:
