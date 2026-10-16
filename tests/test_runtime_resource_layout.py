@@ -31,11 +31,10 @@ def test_runtime_layout_and_validator(tmp_path):
                 assert (root/directory/"common.yaml").is_file() if directory=="metamodel" else (root/directory/"common.schema.json").is_file()
             script=root/"scripts"/"validate.py"
             assert script.is_file()
-            # An invalid project path must fail with a domain error rather than a
-            # missing-schema/metamodel import or file error.
-            result=subprocess.run([sys.executable,"-B",str(script),str(tmp_path/"nonexistent-project")],
+            project=ROOT/"examples"/"reference-order-system"/"project"
+            assert project.is_dir()
+            result=subprocess.run([sys.executable,"-B",str(script),str(project),"--format","json"],
                                   cwd=root,env={**os.environ,"PYTHONDONTWRITEBYTECODE":"1"},
                                   capture_output=True,text=True,timeout=30)
-            assert result.returncode!=0
-            output=result.stdout+result.stderr
-            assert "schemas/" not in output and "metamodel/" not in output,output
+            assert result.returncode==0,(runtime,root,result.stdout,result.stderr)
+            assert "VALIDATION_OK" in result.stdout,(runtime,root,result.stdout)
